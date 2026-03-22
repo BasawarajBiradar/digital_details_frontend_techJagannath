@@ -1,0 +1,35 @@
+// === Brand Colors (Spider-Man) ===
+$primary: #E8222A;       // Spider-Man Red
+$accent: #1A44AE;        // Spider-Man Blue
+$warn: #FF6D00;          // Warning Orange
+
+// === Light Theme Surfaces ===
+$light-background: #F5F5F5;
+$light-surface: #FFFFFF;
+$light-on-surface: #1A1A1A;
+$light-on-primary: #FFFFFF;
+
+// === Dark Theme Surfaces ===
+$dark-background: #0D0D0D;
+$dark-surface: #1C1C1E;
+$dark-on-surface: #F0F0F0;
+$dark-on-primary: #FFFFFF;
+
+// === Spacing Scale ===
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// === Border Radius ===
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 16px;
+$radius-full: 9999px;
+
+// === Shadow ===
+$shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+$shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+$shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
