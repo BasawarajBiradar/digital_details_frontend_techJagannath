@@ -37,6 +37,6 @@ export class SetupCardComponent {
 
   continue() {
     const card = this.cards.find(c => c.id === this.selectedCard);
-    if (card) this.router.navigate([card.route]);
+    if (card) this.router.navigate(['/register', card.id]);
   }
 }
