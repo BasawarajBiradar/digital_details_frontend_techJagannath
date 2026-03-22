@@ -1,0 +1,67 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <div class="login-card__header">
+      <h1 class="login-card__title">Welcome back</h1>
+      <p class="login-card__subtitle">Sign in to your TAPAXE account</p>
+    </div>
+
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <mat-form-field appearance="outline" class="login-form__field">
+        <mat-label>Email address</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          autocomplete="email"/>
+        <mat-icon matSuffix>mail_outline</mat-icon>
+        @if (email.touched && email.hasError('required')) {
+          <mat-error>Email is required</mat-error>
+        } @else if (email.touched && email.hasError('email')) {
+          <mat-error>Enter a valid email address</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-form__field">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          placeholder="Min. 8 characters"
+          autocomplete="current-password"/>
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (password.touched && password.hasError('required')) {
+          <mat-error>Password is required</mat-error>
+        } @else if (password.touched && password.hasError('minlength')) {
+          <mat-error>Password must be at least 8 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="login-form__forgot">
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button
+        class="login-form__submit"
+        type="submit"
+        [disabled]="isLoading">
+        {{ isLoading ? 'Signing in...' : 'Sign in' }}
+      </button>
+
+    </form>
+
+    <div class="login-card__footer">
+      <p>Don't have an account? <a routerLink="/setup">Create new account</a></p>
+    </div>
+
+  </div>
+</div>
