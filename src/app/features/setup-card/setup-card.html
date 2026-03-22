@@ -1,0 +1,29 @@
+<div class="setup-page">
+  <div class="setup-header">
+    <h1>Welcome 👋</h1>
+    <h2>Setup Your Card</h2>
+    <p class="subtitle">Choose what this card is for. You can always change it later.</p>
+  </div>
+
+  <div class="cards-grid">
+    @for (card of cards; track card.id) {
+      <div
+        class="card"
+        [class.selected]="selectedCard === card.id"
+        (click)="select(card)">
+        <span class="card__emoji">{{ card.emoji }}</span>
+        <h3 class="card__title">{{ card.title }}</h3>
+        <p class="card__desc">{{ card.description }}</p>
+      </div>
+    }
+  </div>
+
+  <div class="continue-bar">
+    <button
+      class="continue-btn"
+      [disabled]="!selectedCard"
+      (click)="continue()">
+      Continue →
+    </button>
+  </div>
+</div>

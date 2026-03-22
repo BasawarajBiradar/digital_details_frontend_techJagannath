@@ -4,9 +4,9 @@
   justify-content: space-between;
   padding: 0 clamp(16px, 4vw, 32px);
   height: clamp(52px, 8vh, 64px);
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px var(--color-shadow);
+  background-color: var(--color-background);  
+  border-bottom: none;                         
+  box-shadow: none; 
 
   &__logo {
     font-size: clamp(0.65rem, 2vw, 1rem);
