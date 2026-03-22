@@ -1,0 +1,46 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(16px, 4vw, 32px);
+  height: clamp(52px, 8vh, 64px);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px var(--color-shadow);
+
+  &__logo {
+    font-size: clamp(0.65rem, 2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #CCFF00;
+    border: 2px solid #CCFF00;
+    border-radius: 999px;
+    padding: clamp(4px, 1vw, 6px) clamp(12px, 2vw, 20px);
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 12px);
+  }
+}
+
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}

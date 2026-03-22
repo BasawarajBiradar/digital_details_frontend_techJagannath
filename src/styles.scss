@@ -3,6 +3,7 @@
 @use 'styles/reset';
 @use 'styles/breakpoints';
 @use 'styles/mixins';
+@use 'styles/typography';
 
 @include mat.core();
 

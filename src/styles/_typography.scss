@@ -1,0 +1,32 @@
+// Fluid font scale using clamp()
+// clamp(min, preferred, max)
+
+:root {
+  --font-xs:    clamp(0.65rem,  1.2vw, 0.75rem);
+  --font-sm:    clamp(0.75rem,  1.5vw, 0.875rem);
+  --font-base:  clamp(0.875rem, 2vw,   1rem);
+  --font-md:    clamp(1rem,     2.5vw, 1.25rem);
+  --font-lg:    clamp(1.125rem, 3vw,   1.5rem);
+  --font-xl:    clamp(1.25rem,  4vw,   2rem);
+  --font-xxl:   clamp(1.5rem,   5vw,   3rem);
+
+  --line-height-tight:  1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose:  1.8;
+
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    700;
+}
+
+body {
+  font-size: var(--font-base);
+  line-height: var(--line-height-normal);
+}
+
+h1 { font-size: var(--font-xxl); font-weight: var(--font-weight-bold); }
+h2 { font-size: var(--font-xl);  font-weight: var(--font-weight-bold); }
+h3 { font-size: var(--font-lg);  font-weight: var(--font-weight-medium); }
+h4 { font-size: var(--font-md);  font-weight: var(--font-weight-medium); }
+h5 { font-size: var(--font-sm);  font-weight: var(--font-weight-medium); }
+h6 { font-size: var(--font-xs);  font-weight: var(--font-weight-regular); }

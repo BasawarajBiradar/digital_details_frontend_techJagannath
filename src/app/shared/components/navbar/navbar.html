@@ -1,0 +1,11 @@
+<nav class="navbar">
+  <div class="navbar__brand">
+    <span class="navbar__logo">TAPAXE SMART CARD</span>
+  </div>
+
+  <div class="navbar__actions">
+    <button class="theme-toggle" (click)="themeService.toggle()">
+      {{ themeService.theme() === 'light-theme' ? '🌙' : '☀️' }}
+    </button>
+  </div>
+</nav>

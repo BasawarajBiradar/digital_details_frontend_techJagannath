@@ -8,6 +8,7 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;          // prevents iOS font inflation
 }
 
 body {
@@ -22,7 +23,12 @@ a {
   text-decoration: none;
 }
 
-img, svg {
+img, video, svg {
   display: block;
   max-width: 100%;
+  height: auto;
+}
+
+input, button, textarea, select {
+  font: inherit;          
 }
