@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { FormStateService } from '@core/services/form-state';
 
 export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 'social';
 
@@ -46,12 +47,17 @@ export class RegistrationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+      private formState: FormStateService
   ) {}
 
   ngOnInit() {
     this.accountType = this.route.snapshot.paramMap.get('type') as AccountType;
     this.form = this.buildForm();
+    const saved = this.formState.commonFields();
+    if (Object.keys(saved).length) {
+      this.form.patchValue(saved);
+    }
   }
 
   // ── Common fields shared by all types ──────────────────────────────

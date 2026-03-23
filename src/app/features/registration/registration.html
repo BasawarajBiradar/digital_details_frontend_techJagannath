@@ -10,7 +10,7 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- ── COMMON FIELDS ── -->
+      <!-- ── COMMON FIELDS ── 
       <div class="form-section">
         <h2 class="form-section__title">Basic Information</h2>
 
@@ -44,9 +44,9 @@
             <input matInput formControlName="alternate_contact_number"/>
           </mat-form-field>
         </div>
-      </div>
+      </div> -->
 
-      <!-- ── ADDRESS ── -->
+      <!-- ── ADDRESS ── 
       <div class="form-section">
         <h2 class="form-section__title">Address</h2>
         <div class="form-grid">
@@ -80,9 +80,9 @@
             <input matInput formControlName="pincode"/>
           </mat-form-field>
         </div>
-      </div>
+      </div> -->
 
-      <!-- ── SAFETY ── -->
+      <!-- ── SAFETY ── 
       <div class="form-section">
         <h2 class="form-section__title">Safety Notes</h2>
         <div class="form-grid">
@@ -98,7 +98,7 @@
               placeholder="e.g. Allergic to penicillin"></textarea>
           </mat-form-field>
         </div>
-      </div>
+      </div> -->
 
       <!-- ── KIDS SPECIFIC ── -->
       @if (accountType === 'kids') {
