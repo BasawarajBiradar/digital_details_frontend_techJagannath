@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormStateService } from '@core/services/form-state';
+import { HttpClient } from '@angular/common/http';
 
 export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 'social';
 
@@ -48,7 +49,8 @@ export class RegistrationComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     public router: Router,
-      private formState: FormStateService
+    private formState: FormStateService,
+    private http: HttpClient 
   ) {}
 
   ngOnInit() {
@@ -60,24 +62,6 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
-  // ── Common fields shared by all types ──────────────────────────────
-  private commonFields() {
-    return {
-      display_name:              ['', Validators.required],
-      primary_contact_number:    ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
-      alternate_contact_number:  [''],
-      email:                     ['', [Validators.required, Validators.email]],
-      address_line1:             ['', Validators.required],
-      address_line2:             [''],
-      city:                      ['', Validators.required],
-      state:                     ['', Validators.required],
-      country:                   ['', Validators.required],
-      pincode:                   ['', [Validators.required, Validators.pattern(/^[0-9]{4,10}$/)]],
-      emergency_note:            [''],
-      medical_note:              [''],
-    };
-  }
-
   // ── Build form based on account type ──────────────────────────────
   private buildForm(): FormGroup {
     switch (this.accountType) {
@@ -87,13 +71,11 @@ export class RegistrationComponent implements OnInit {
       case 'vehicle':  return this.buildVehicleForm();
       case 'pets':     return this.buildPetsForm();
       case 'social':   return this.buildSocialForm();
-      default:         return this.fb.group(this.commonFields());
     }
   }
 
   private buildKidsForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       child_name:         ['', Validators.required],
       date_of_birth:      ['', Validators.required],
       gender:             ['', Validators.required],
@@ -108,7 +90,6 @@ export class RegistrationComponent implements OnInit {
 
   private buildSeniorForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       full_name:            ['', Validators.required],
       date_of_birth:        ['', Validators.required],
       gender:               ['', Validators.required],
@@ -126,7 +107,6 @@ export class RegistrationComponent implements OnInit {
 
   private buildBusinessForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       business_name:        ['', Validators.required],
       business_type:        ['', Validators.required],
       registration_number:  [''],
@@ -143,7 +123,6 @@ export class RegistrationComponent implements OnInit {
 
   private buildVehicleForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       vehicle_number:       ['', Validators.required],
       vehicle_type:         ['', Validators.required],
       brand:                [''],
@@ -162,7 +141,6 @@ export class RegistrationComponent implements OnInit {
 
   private buildPetsForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       pet_name:             ['', Validators.required],
       species:              ['', Validators.required],
       breed:                [''],
@@ -182,7 +160,6 @@ export class RegistrationComponent implements OnInit {
 
   private buildSocialForm(): FormGroup {
     return this.fb.group({
-      ...this.commonFields(),
       full_name:                  ['', Validators.required],
       nickname:                   [''],
       instagram_handle:           [''],
@@ -238,15 +215,24 @@ export class RegistrationComponent implements OnInit {
   // ── Submit ─────────────────────────────────────────────────────────
   onSubmit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    this.isLoading = true;
-    console.log({ account_type: this.accountType, ...this.form.value });
-    setTimeout(() => {
-      this.isLoading = false;
-      this.router.navigate(['/login']);
-    }, 1000);
+        this.form.markAllAsTouched();
+        return;
+      }
+      this.isLoading = true;
+
+      const payload = { account_type: this.accountType, ...this.form.value };
+      const endpoint = `save/profile-details/${this.accountType}`;
+
+      this.http.post(endpoint, payload).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Registration failed', err);
+        }
+      });
   }
 
   get config() { return this.typeConfig[this.accountType]; }
