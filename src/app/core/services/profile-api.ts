@@ -26,6 +26,6 @@ export class ProfileApiService {
   constructor(private http: HttpClient) {}
 
   saveCommonProfile(payload: CommonProfilePayload): Observable<any> {
-    return this.http.post(`${this.baseUrl}/profile/common`, payload);
+    return this.http.post(`${this.baseUrl}/api/user-management/register`, payload);
   }
 }

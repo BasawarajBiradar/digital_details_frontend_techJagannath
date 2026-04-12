@@ -49,7 +49,8 @@ export class SetupCardComponent {
     private profileApi: ProfileApiService
   ) {
     this.commonForm = this.fb.group({
-      display_name:             ['', Validators.required],
+      first_name:               ['', Validators.required],
+      last_name:                ['', Validators.required],
       email:                    ['', [Validators.required, Validators.email]],
       primary_contact_number:   ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
       alternate_contact_number: [''],
@@ -98,8 +99,8 @@ export class SetupCardComponent {
 
     // Map form field names → API field names
     const payload: CommonProfilePayload = {
-      firstName:        formValue.display_name.split(' ')[0] ?? formValue.display_name,
-      lastName:         formValue.display_name.split(' ').slice(1).join(' ') ?? '',
+      firstName:        formValue.first_name || '',
+      lastName:         formValue.last_name || '',
       emailId:          formValue.email,
       phoneNumber:      formValue.primary_contact_number,
       alternateNumber:  formValue.alternate_contact_number ?? '',
