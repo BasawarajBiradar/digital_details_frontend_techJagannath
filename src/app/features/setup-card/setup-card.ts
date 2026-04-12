@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormStateService } from '@core/services/form-state';
+import { ProfileApiService, CommonProfilePayload } from '@core/services/profile-api';
 
 interface CardType {
   id: string;
@@ -29,7 +30,8 @@ export class SetupCardComponent {
   selectedCard: string | null = null;
   commonForm: FormGroup;
   formSaved = false;
-
+  isSaving = false;
+  saveError: string | null = null;
 
   cards: CardType[] = [
     { id: 'kids',     emoji: '👶', title: 'Kids',     description: 'Emergency info for children'  },
@@ -43,7 +45,8 @@ export class SetupCardComponent {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private formState: FormStateService
+    private formState: FormStateService,
+    private profileApi: ProfileApiService
   ) {
     this.commonForm = this.fb.group({
       display_name:             ['', Validators.required],
@@ -81,6 +84,7 @@ export class SetupCardComponent {
     this.router.navigate(['/register', this.selectedCard]);
   }
 
+
     save() {
     if (this.commonForm.invalid) {
       this.commonForm.markAllAsTouched();
@@ -88,5 +92,39 @@ export class SetupCardComponent {
     }
     this.formState.save(this.commonForm.value);
     this.formSaved = true;
+    this.isSaving = true;
+    this.saveError = null;
+    const formValue = this.commonForm.value;
+
+    // Map form field names → API field names
+    const payload: CommonProfilePayload = {
+      firstName:        formValue.display_name.split(' ')[0] ?? formValue.display_name,
+      lastName:         formValue.display_name.split(' ').slice(1).join(' ') ?? '',
+      emailId:          formValue.email,
+      phoneNumber:      formValue.primary_contact_number,
+      alternateNumber:  formValue.alternate_contact_number ?? '',
+      addressLineOne:   formValue.address_line1,
+      addressLineTwo:   formValue.address_line2 ?? '',
+      city:             formValue.city,
+      state:            formValue.state,
+      country:          formValue.country,
+      pinCode:          formValue.pincode,
+      safetyNote:       formValue.emergency_note ?? '',
+      medicalNote:      formValue.medical_note ?? '',
+    };
+
+    this.profileApi.saveCommonProfile(payload).subscribe({
+      next: () => {
+        this.formState.save(formValue);
+        this.formSaved = true;
+        this.isSaving = false;
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.saveError = 'Failed to save details. Please try again.';
+        console.error('Save failed:', err);
+      }
+    });
+    
   }
 }

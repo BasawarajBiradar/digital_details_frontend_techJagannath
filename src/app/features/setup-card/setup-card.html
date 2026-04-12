@@ -103,12 +103,18 @@
       </div>
     </div>
 
-        <!-- Save Button -->
-    <div class="save-bar">
-      <button type="button" class="save-btn" (click)="save()">
-        @if (formSaved) { ✓ Details Saved } @else { Save Details }
-      </button>
-    </div>
+      <!-- Save Button -->
+      <div class="save-bar">
+        <button type="button" class="save-btn" (click)="save()" [disabled]="isSaving">
+          @if (isSaving) { Saving... }
+          @else if (formSaved) { ✓ Details Saved }
+          @else { Save Details }
+        </button>
+      </div>
+
+      @if (saveError) {
+        <p class="save-error">{{ saveError }}</p>
+      }
 
   </form>
 
