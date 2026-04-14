@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormStateService } from '@core/services/form-state';
-import { HttpClient } from '@angular/common/http';
+import { ProfileApiService } from '@core/services/profile-api';
 
 export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 'social';
 
@@ -50,12 +50,13 @@ export class RegistrationComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private formState: FormStateService,
-    private http: HttpClient 
+  private profileApi: ProfileApiService  
   ) {}
 
   ngOnInit() {
     this.accountType = this.route.snapshot.paramMap.get('type') as AccountType;
     this.form = this.buildForm();
+    console.log('userId on registration load:', this.formState.getUserId()); 
     const saved = this.formState.commonFields();
     if (Object.keys(saved).length) {
       this.form.patchValue(saved);
@@ -215,24 +216,30 @@ export class RegistrationComponent implements OnInit {
   // ── Submit ─────────────────────────────────────────────────────────
   onSubmit() {
     if (this.form.invalid) {
-        this.form.markAllAsTouched();
-        return;
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const userId = this.formState.getUserId();
+    if (!userId) {
+      console.error('No userId found');
+      return;
+    }
+
+    this.isLoading = true;
+    const payload = { ...this.form.value };
+
+    this.profileApi.saveProfileDetails(userId, this.accountType, payload).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Registration failed', err);
       }
-      this.isLoading = true;
+    });
 
-      const payload = { account_type: this.accountType, ...this.form.value };
-      const endpoint = `save/profile-details/${this.accountType}`;
-
-      this.http.post(endpoint, payload).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          this.isLoading = false;
-          console.error('Registration failed', err);
-        }
-      });
   }
 
   get config() { return this.typeConfig[this.accountType]; }

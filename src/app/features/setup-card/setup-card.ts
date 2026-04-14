@@ -115,8 +115,9 @@ export class SetupCardComponent {
     };
 
     this.profileApi.saveCommonProfile(payload).subscribe({
-      next: () => {
+      next: (res) => {                          
         this.formState.save(formValue);
+        this.formState.setUserId(res.data.userId);   
         this.formSaved = true;
         this.isSaving = false;
       },

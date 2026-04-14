@@ -25,7 +25,14 @@ export class ProfileApiService {
 
   constructor(private http: HttpClient) {}
 
-  saveCommonProfile(payload: CommonProfilePayload): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/user-management/register`, payload);
+  saveCommonProfile(payload: CommonProfilePayload): Observable<{ data: { userId: number } }> {
+    return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/user-management/register`, payload);
   }
+
+  saveProfileDetails(userId: number, accountType: string, payload: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/user-management/save/${userId}/${accountType}`, payload
+    );
+  }
+
 }
