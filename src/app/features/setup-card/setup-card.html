@@ -28,6 +28,25 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password"/>
+          @if (commonForm.get('password')?.touched && commonForm.get('password')?.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="password" formControlName="confirm_password"/>
+          @if (commonForm.get('confirm_password')?.touched && commonForm.get('confirm_password')?.hasError('required')) {
+            <mat-error>Please confirm your password</mat-error>
+          }
+          @if (commonForm.get('confirm_password')?.touched && commonForm.get('confirm_password')?.hasError('passwordMismatch')) {
+            <mat-error>Passwords do not match</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email"/>
           @if (commonForm.get('email')?.touched && commonForm.get('email')?.hasError('email')) {

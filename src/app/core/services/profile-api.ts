@@ -6,6 +6,8 @@ import { environment } from '@env/environment';
 export interface CommonProfilePayload {
   firstName: string;
   lastName: string;
+  password: string;
+  confirmPassword: string;
   emailId: string;
   phoneNumber: string;
   alternateNumber: string;
