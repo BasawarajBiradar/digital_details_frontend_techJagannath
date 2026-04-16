@@ -37,4 +37,8 @@ export class ProfileApiService {
     );
   }
 
+  saveCardProfileDetails(accountType: string, payload: any): Observable<{ data: { userId: number } }> {
+    return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/user-management/register/${accountType}`, payload);
+  }
+
 }

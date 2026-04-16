@@ -1,0 +1,592 @@
+<div class="reg-page">
+  <div class="reg-card">
+
+    <!-- Header -->
+    <div class="reg-card__header">
+      <span class="reg-card__emoji">{{ config.emoji }}</span>
+      <h1 class="reg-card__title">{{ config.title }}</h1>
+      <p class="reg-card__subtitle">{{ config.subtitle }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- ── KIDS SPECIFIC ── -->
+      @if (accountType === 'kids') {
+        <div class="form-section">
+          <h2 class="form-section__title">Child Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Child Name</mat-label>
+              <input matInput formControlName="child_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput type="date" formControlName="date_of_birth"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="female">Female</mat-option>
+                <mat-option value="other">Other</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Blood Group</mat-label>
+              <mat-select formControlName="blood_group">
+                @for (bg of ['A+','A-','B+','B-','O+','O-','AB+','AB-']; track bg) {
+                  <mat-option [value]="bg">{{ bg }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>School Name</mat-label>
+              <input matInput formControlName="school_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>School Address</mat-label>
+              <input matInput formControlName="school_address"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Allergies</mat-label>
+              <textarea matInput formControlName="allergies" rows="2"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Medical Conditions</mat-label>
+              <textarea matInput formControlName="medical_conditions" rows="2"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Guardians -->
+        <div class="form-section">
+          <div class="form-section__row">
+            <h2 class="form-section__title">Guardians</h2>
+            <button type="button" class="add-btn" (click)="addGuardian()">
+              <mat-icon>add</mat-icon> Add Guardian
+            </button>
+          </div>
+
+          @for (g of guardians.controls; track $index) {
+            <div class="sub-card">
+              <div class="sub-card__header">
+                <span>Guardian {{ $index + 1 }}</span>
+                @if ($index > 0) {
+                  <button type="button" class="remove-btn" (click)="removeGuardian($index)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </div>
+              <div class="form-grid" [formGroup]="$any(g)">
+                <mat-form-field appearance="outline">
+                  <mat-label>Guardian Name</mat-label>
+                  <input matInput formControlName="guardian_name"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Relationship</mat-label>
+                  <mat-select formControlName="relationship">
+                    <mat-option value="father">Father</mat-option>
+                    <mat-option value="mother">Mother</mat-option>
+                    <mat-option value="relative">Relative</mat-option>
+                    <mat-option value="caretaker">Caretaker</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Primary Phone</mat-label>
+                  <input matInput formControlName="primary_phone"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Alternate Phone</mat-label>
+                  <input matInput formControlName="alternate_phone"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>ID Proof Type</mat-label>
+                  <mat-select formControlName="id_proof_type">
+                    <mat-option value="aadhar">Aadhar</mat-option>
+                    <mat-option value="pan">PAN</mat-option>
+                    <mat-option value="passport">Passport</mat-option>
+                    <mat-option value="driving_license">Driving License</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-span-2">
+                  <mat-label>ID Proof Number</mat-label>
+                  <input matInput formControlName="id_proof_number"/>
+                </mat-form-field>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ── SENIOR SPECIFIC ── -->
+      @if (accountType === 'senior') {
+        <div class="form-section">
+          <h2 class="form-section__title">Personal Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="full_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput type="date" formControlName="date_of_birth"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="female">Female</mat-option>
+                <mat-option value="other">Other</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Blood Group</mat-label>
+              <mat-select formControlName="blood_group">
+                @for (bg of ['A+','A-','B+','B-','O+','O-','AB+','AB-']; track bg) {
+                  <mat-option [value]="bg">{{ bg }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Medical Information</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Medical Conditions</mat-label>
+              <textarea matInput formControlName="medical_conditions" rows="2"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Current Medications</mat-label>
+              <textarea matInput formControlName="medications" rows="2"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Doctor Name</mat-label>
+              <input matInput formControlName="doctor_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Doctor Contact</mat-label>
+              <input matInput formControlName="doctor_contact"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hospital Preference</mat-label>
+              <input matInput formControlName="hospital_preference"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Insurance Provider</mat-label>
+              <input matInput formControlName="insurance_provider"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Insurance Number</mat-label>
+              <input matInput formControlName="insurance_number"/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Caretakers -->
+        <div class="form-section">
+          <div class="form-section__row">
+            <h2 class="form-section__title">Caretakers</h2>
+            <button type="button" class="add-btn" (click)="addCaretaker()">
+              <mat-icon>add</mat-icon> Add Caretaker
+            </button>
+          </div>
+
+          @for (c of caretakers.controls; track $index) {
+            <div class="sub-card">
+              <div class="sub-card__header">
+                <span>Caretaker {{ $index + 1 }}</span>
+                @if ($index > 0) {
+                  <button type="button" class="remove-btn" (click)="removeCaretaker($index)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </div>
+              <div class="form-grid" [formGroup]="$any(c)">
+                <mat-form-field appearance="outline">
+                  <mat-label>Caretaker Name</mat-label>
+                  <input matInput formControlName="caretaker_name"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Relationship</mat-label>
+                  <input matInput formControlName="relationship"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Phone</mat-label>
+                  <input matInput formControlName="phone"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Alternate Phone</mat-label>
+                  <input matInput formControlName="alternate_phone"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-span-2">
+                  <mat-label>Address</mat-label>
+                  <input matInput formControlName="address"/>
+                </mat-form-field>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ── BUSINESS SPECIFIC ── -->
+      @if (accountType === 'business') {
+        <div class="form-section">
+          <h2 class="form-section__title">Business Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Business Name</mat-label>
+              <input matInput formControlName="business_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Business Type</mat-label>
+              <input matInput formControlName="business_type"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Registration Number</mat-label>
+              <input matInput formControlName="registration_number"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>GST Number</mat-label>
+              <input matInput formControlName="gst_number"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Business Email</mat-label>
+              <input matInput formControlName="business_email"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Business Phone</mat-label>
+              <input matInput formControlName="business_phone"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Website URL</mat-label>
+              <input matInput formControlName="website_url" placeholder="https://"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Business Address</mat-label>
+              <textarea matInput formControlName="business_address" rows="2"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Owner Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Name</mat-label>
+              <input matInput formControlName="owner_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Contact</mat-label>
+              <input matInput formControlName="owner_contact"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Email</mat-label>
+              <input matInput formControlName="owner_email"/>
+            </mat-form-field>
+          </div>
+        </div>
+      }
+
+      <!-- ── VEHICLE SPECIFIC ── -->
+      @if (accountType === 'vehicle') {
+        <div class="form-section">
+          <h2 class="form-section__title">Vehicle Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Vehicle Number</mat-label>
+              <input matInput formControlName="vehicle_number" placeholder="MH12AB1234"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Vehicle Type</mat-label>
+              <mat-select formControlName="vehicle_type">
+                <mat-option value="car">Car</mat-option>
+                <mat-option value="bike">Bike</mat-option>
+                <mat-option value="truck">Truck</mat-option>
+                <mat-option value="scooter">Scooter</mat-option>
+                <mat-option value="other">Other</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Brand</mat-label>
+              <input matInput formControlName="brand"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Model</mat-label>
+              <input matInput formControlName="model"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Color</mat-label>
+              <input matInput formControlName="color"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Year of Manufacture</mat-label>
+              <input matInput type="number" formControlName="year_of_manufacture"/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Owner Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Name</mat-label>
+              <input matInput formControlName="owner_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Contact</mat-label>
+              <input matInput formControlName="owner_contact"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Alternate Contact</mat-label>
+              <input matInput formControlName="alternate_contact"/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Legal Documents</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>RC Number</mat-label>
+              <input matInput formControlName="rc_number"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Insurance Number</mat-label>
+              <input matInput formControlName="insurance_number"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Insurance Expiry</mat-label>
+              <input matInput type="date" formControlName="insurance_expiry"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Chassis Number</mat-label>
+              <input matInput formControlName="chassis_number"/>
+            </mat-form-field>
+          </div>
+        </div>
+      }
+
+      <!-- ── PETS SPECIFIC ── -->
+      @if (accountType === 'pets') {
+        <div class="form-section">
+          <h2 class="form-section__title">Pet Details</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Pet Name</mat-label>
+              <input matInput formControlName="pet_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Species</mat-label>
+              <mat-select formControlName="species">
+                <mat-option value="dog">Dog</mat-option>
+                <mat-option value="cat">Cat</mat-option>
+                <mat-option value="bird">Bird</mat-option>
+                <mat-option value="rabbit">Rabbit</mat-option>
+                <mat-option value="other">Other</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Breed</mat-label>
+              <input matInput formControlName="breed"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="female">Female</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Age</mat-label>
+              <input matInput formControlName="age" placeholder="e.g. 2 years"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Color</mat-label>
+              <input matInput formControlName="color"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Microchip ID</mat-label>
+              <input matInput formControlName="microchip_id"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Vaccination Status</mat-label>
+              <mat-select formControlName="vaccination_status">
+                <mat-option value="up_to_date">Up to date</mat-option>
+                <mat-option value="partial">Partial</mat-option>
+                <mat-option value="none">None</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Veterinary & Owner</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Vet Name</mat-label>
+              <input matInput formControlName="vet_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Vet Contact</mat-label>
+              <input matInput formControlName="vet_contact"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Medical Notes</mat-label>
+              <textarea matInput formControlName="medical_notes" rows="2"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Name</mat-label>
+              <input matInput formControlName="owner_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Owner Contact</mat-label>
+              <input matInput formControlName="owner_contact"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Alternate Contact</mat-label>
+              <input matInput formControlName="alternate_contact"/>
+            </mat-form-field>
+          </div>
+        </div>
+      }
+
+      <!-- ── SOCIAL SPECIFIC ── -->
+      @if (accountType === 'social') {
+        <div class="form-section">
+          <h2 class="form-section__title">Identity</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="full_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nickname</mat-label>
+              <input matInput formControlName="nickname"/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Social Handles</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Instagram</mat-label>
+              <input matInput formControlName="instagram_handle" placeholder="@username"/>
+              <mat-icon matPrefix>camera_alt</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Facebook</mat-label>
+              <input matInput formControlName="facebook_profile" placeholder="Profile URL"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>LinkedIn</mat-label>
+              <input matInput formControlName="linkedin_profile" placeholder="Profile URL"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Twitter / X</mat-label>
+              <input matInput formControlName="twitter_handle" placeholder="@username"/>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-section__title">Emergency Contact</h2>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Contact Name</mat-label>
+              <input matInput formControlName="emergency_contact_name"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contact Number</mat-label>
+              <input matInput formControlName="emergency_contact_number"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Message to Finder</mat-label>
+              <textarea matInput formControlName="message_to_finder" rows="3"
+                placeholder="e.g. If found, please contact my family immediately."></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      }
+
+      <!-- ── SUBMIT ── -->
+      <div class="form-actions">
+        <button type="button" class="form-actions__back" (click)="router.navigate(['/setup'])">
+          ← Back
+        </button>
+        <button type="submit" class="form-actions__submit" [disabled]="isLoading">
+          {{ isLoading ? 'Saving...' : 'Create Profile →' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
