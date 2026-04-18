@@ -13,16 +13,16 @@
       <div class="form-grid">
         <mat-form-field appearance="outline">
           <mat-label>First Name</mat-label>
-          <input matInput formControlName="first_name" placeholder="First name"/>
-          @if (commonForm.get('first_name')?.touched && commonForm.get('first_name')?.hasError('required')) {
+          <input matInput formControlName="firstName" placeholder="First name"/>
+          @if (commonForm.get('firstName')?.touched && commonForm.get('firstName')?.hasError('required')) {
             <mat-error>First name is required</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Last Name</mat-label>
-          <input matInput formControlName="last_name" placeholder="Last name"/>
-          @if (commonForm.get('last_name')?.touched && commonForm.get('last_name')?.hasError('required')) {
+          <input matInput formControlName="lastName" placeholder="Last name"/>
+          @if (commonForm.get('lastName')?.touched && commonForm.get('lastName')?.hasError('required')) {
             <mat-error>Last name is required</mat-error>
           }
         </mat-form-field>
@@ -48,23 +48,23 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email"/>
-          @if (commonForm.get('email')?.touched && commonForm.get('email')?.hasError('email')) {
+          <input matInput type="emailId" formControlName="emailId"/>
+          @if (commonForm.get('emailId')?.touched && commonForm.get('emailId')?.hasError('email')) {
             <mat-error>Enter a valid email</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Primary Contact</mat-label>
-          <input matInput formControlName="primary_contact_number" placeholder="+91XXXXXXXXXX"/>
-          @if (commonForm.get('primary_contact_number')?.touched && commonForm.get('primary_contact_number')?.hasError('required')) {
+          <input matInput formControlName="phoneNumber" placeholder="XXXXXXXXXX"/>
+          @if (commonForm.get('phoneNumber')?.touched && commonForm.get('phoneNumber')?.hasError('required')) {
             <mat-error>Contact number is required</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Alternate Contact</mat-label>
-          <input matInput formControlName="alternate_contact_number"/>
+          <input matInput formControlName="alternateNumber"/>
         </mat-form-field>
       </div>
     </div>
@@ -74,15 +74,15 @@
       <div class="form-grid">
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Address Line 1</mat-label>
-          <input matInput formControlName="address_line1"/>
-          @if (commonForm.get('address_line1')?.touched && commonForm.get('address_line1')?.hasError('required')) {
+          <input matInput formControlName="addressLineOne"/>
+          @if (commonForm.get('addressLineOne')?.touched && commonForm.get('addressLineOne')?.hasError('required')) {
             <mat-error>Address is required</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Address Line 2</mat-label>
-          <input matInput formControlName="address_line2"/>
+          <input matInput formControlName="addressLineTwo"/>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -118,13 +118,13 @@
       <div class="form-grid">
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Emergency Note</mat-label>
-          <textarea matInput formControlName="emergency_note" rows="2"
+          <textarea matInput formControlName="safetyNote" rows="2"
             placeholder="e.g. Call 108 immediately if unconscious"></textarea>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Medical Note</mat-label>
-          <textarea matInput formControlName="medical_note" rows="2"
+          <textarea matInput formControlName="medicalNote" rows="2"
             placeholder="e.g. Allergic to penicillin"></textarea>
         </mat-form-field>
       </div>

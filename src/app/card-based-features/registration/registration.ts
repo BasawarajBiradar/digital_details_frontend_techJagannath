@@ -50,21 +50,21 @@ export class Registration {
     private route: ActivatedRoute
   ) {
     this.commonForm = this.fb.group({
-      first_name:               ['', Validators.required],
-      last_name:                ['', Validators.required],
+      firstName:               ['', Validators.required],
+      lastName:                ['', Validators.required],
       password:                 ['', Validators.required],
       confirm_password:         ['', Validators.required],
-      email:                    ['', [Validators.required, Validators.email]],
-      primary_contact_number:   ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
-      alternate_contact_number: [''],
-      address_line1:            ['', Validators.required],
-      address_line2:            [''],
+      emailId:                    ['', [Validators.required, Validators.email]],
+      phoneNumber:   ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
+      alternateNumber: [''],
+      addressLineOne:            ['', Validators.required],
+      addressLineTwo:            [''],
       city:                     ['', Validators.required],
       state:                    ['', Validators.required],
       country:                  ['', Validators.required],
       pincode:                  ['', [Validators.required, Validators.pattern(/^[0-9]{4,10}$/)]],
-      emergency_note:           [''],
-      medical_note:             [''],
+      safetyNote:           [''],
+      medicalNote:             [''],
     }, { validators: Registration.passwordMatchValidator() });
 
       this.commonForm.valueChanges.subscribe(() => {
