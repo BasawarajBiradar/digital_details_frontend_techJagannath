@@ -11,108 +11,240 @@
 
     <!-- ── KIDS ── -->
     <ng-container *ngIf="accountType() === 'kids'">
+
       <div class="section">
         <h2>Child Details</h2>
         <div class="grid">
-          <div><label>Name</label><p>{{ profile().childName }}</p></div>
-          <div><label>DOB</label><p>{{ profile().dateOfBirth }}</p></div>
-          <div><label>Gender</label><p>{{ profile().gender }}</p></div>
-          <div><label>Blood Group</label><p>{{ profile().bloodGroup }}</p></div>
-          <div><label>School</label><p>{{ profile().schoolName }}</p></div>
-          <div><label>Address</label><p>{{ profile().schoolAddress }}</p></div>
+          <div><label>Name</label><p>{{ profile()?.childName }}</p></div>
+          <div><label>Date of Birth</label><p>{{ profile()?.dateOfBirth }}</p></div>
+          <div><label>Gender</label><p>{{ profile()?.gender }}</p></div>
+          <div><label>Blood Group</label><p>{{ profile()?.bloodGroup }}</p></div>
+          <div><label>School</label><p>{{ profile()?.schoolName }}</p></div>
+          <div><label>School Address</label><p>{{ profile()?.schoolAddress }}</p></div>
         </div>
-
         <div class="full">
           <label>Allergies</label>
-          <p>{{ profile().allergies }}</p>
+          <p>{{ profile()?.allergies }}</p>
         </div>
-
         <div class="full">
           <label>Medical Conditions</label>
-          <p>{{ profile().medical_conditions }}</p>
+          <p>{{ profile()?.medicalConditions }}</p>
         </div>
       </div>
 
       <div class="section">
         <h2>Guardians</h2>
-        <div *ngFor="let g of profile().guardians; let i = index" class="sub-card">
-          <h3>Guardian {{ i + 1 }}</h3>
+        <div *ngFor="let g of profile()?.guardians; let i = index" class="sub-card">
+          <div class="sub-card__header">
+            <h3>Guardian {{ i + 1 }}</h3>
+            <span class="badge badge--primary" *ngIf="g.isPrimary">Primary</span>
+          </div>
           <div class="grid">
             <div><label>Name</label><p>{{ g.guardianName }}</p></div>
-            <div><label>Relation</label><p>{{ g.relationship }}</p></div>
-            <div><label>Phone</label><p>{{ g.primaryPhone }}</p></div>
+            <div><label>Relationship</label><p>{{ g.relationship }}</p></div>
+            <div><label>Primary Phone</label><p>{{ g.primaryPhone }}</p></div>
+            <div><label>Alternate Phone</label><p>{{ g.alternatePhone }}</p></div>
             <div><label>Email</label><p>{{ g.email }}</p></div>
+            <div><label>ID Proof Type</label><p>{{ g.idProofType }}</p></div>
+            <div><label>ID Proof Number</label><p>{{ g.idProofNumber }}</p></div>
+          </div>
+          <div class="full">
+            <label>Address</label>
+            <p>{{ g.address }}</p>
           </div>
         </div>
       </div>
+
     </ng-container>
 
     <!-- ── SENIOR ── -->
     <ng-container *ngIf="accountType() === 'senior'">
+
       <div class="section">
         <h2>Personal Details</h2>
         <div class="grid">
-          <div><label>Name</label><p>{{ profile().fullName }}</p></div>
-          <div><label>DOB</label><p>{{ profile().dateOfBirth }}</p></div>
-          <div><label>Blood Group</label><p>{{ profile().bloodGroup }}</p></div>
+          <div><label>Full Name</label><p>{{ profile()?.fullName }}</p></div>
+          <div><label>Date of Birth</label><p>{{ profile()?.dateOfBirth }}</p></div>
+          <div><label>Gender</label><p>{{ profile()?.gender }}</p></div>
+          <div><label>Blood Group</label><p>{{ profile()?.bloodGroup }}</p></div>
         </div>
       </div>
 
       <div class="section">
         <h2>Medical</h2>
-        <p>{{ profile().medical_conditions }}</p>
-        <p>{{ profile().medications }}</p>
+        <div class="full">
+          <label>Medical Conditions</label>
+          <p>{{ profile()?.medicalConditions }}</p>
+        </div>
+        <div class="full">
+          <label>Medications</label>
+          <p>{{ profile()?.medications }}</p>
+        </div>
+        <div class="grid" style="margin-top: 10px;">
+          <div><label>Doctor Name</label><p>{{ profile()?.doctorName }}</p></div>
+          <div><label>Doctor Contact</label><p>{{ profile()?.doctorContact }}</p></div>
+          <div><label>Hospital Preference</label><p>{{ profile()?.hospitalPreference }}</p></div>
+          <div><label>Insurance Provider</label><p>{{ profile()?.insuranceProvider }}</p></div>
+          <div><label>Insurance Number</label><p>{{ profile()?.insuranceNumber }}</p></div>
+        </div>
       </div>
+
+      <div class="section">
+        <h2>Caretakers</h2>
+        <div *ngFor="let c of profile()?.caretakers; let i = index" class="sub-card">
+          <div class="sub-card__header">
+            <h3>Caretaker {{ i + 1 }}</h3>
+            <span class="badge badge--primary" *ngIf="c.isPrimary">Primary</span>
+          </div>
+          <div class="grid">
+            <div><label>Name</label><p>{{ c.caretakerName }}</p></div>
+            <div><label>Relationship</label><p>{{ c.relationship }}</p></div>
+            <div><label>Phone</label><p>{{ c.phone }}</p></div>
+            <div><label>Alternate Phone</label><p>{{ c.alternatePhone }}</p></div>
+          </div>
+          <div class="full">
+            <label>Address</label>
+            <p>{{ c.address }}</p>
+          </div>
+        </div>
+      </div>
+
     </ng-container>
 
     <!-- ── BUSINESS ── -->
     <ng-container *ngIf="accountType() === 'business'">
+
       <div class="section">
-        <h2>Business</h2>
+        <h2>Business Details</h2>
         <div class="grid">
-          <div><label>Name</label><p>{{ profile().businessName }}</p></div>
-          <div><label>Type</label><p>{{ profile().businessType }}</p></div>
-          <div><label>Phone</label><p>{{ profile().businessPhone }}</p></div>
-          <div><label>Email</label><p>{{ profile().businessEmail }}</p></div>
+          <div><label>Business Name</label><p>{{ profile()?.businessName }}</p></div>
+          <div><label>Business Type</label><p>{{ profile()?.businessType }}</p></div>
+          <div><label>Registration No.</label><p>{{ profile()?.registrationNumber }}</p></div>
+          <div><label>GST Number</label><p>{{ profile()?.gstNumber }}</p></div>
+          <div><label>Phone</label><p>{{ profile()?.businessPhone }}</p></div>
+          <div><label>Email</label><p>{{ profile()?.businessEmail }}</p></div>
+          <div><label>Website</label><p>{{ profile()?.websiteUrl }}</p></div>
+        </div>
+        <div class="full">
+          <label>Business Address</label>
+          <p>{{ profile()?.businessAddress }}</p>
         </div>
       </div>
+
+      <div class="section">
+        <h2>Owner Details</h2>
+        <div class="grid">
+          <div><label>Owner Name</label><p>{{ profile()?.ownerName }}</p></div>
+          <div><label>Owner Contact</label><p>{{ profile()?.ownerContact }}</p></div>
+          <div><label>Owner Email</label><p>{{ profile()?.ownerEmail }}</p></div>
+        </div>
+      </div>
+
     </ng-container>
 
     <!-- ── VEHICLE ── -->
     <ng-container *ngIf="accountType() === 'vehicle'">
+
       <div class="section">
-        <h2>Vehicle</h2>
+        <h2>Vehicle Details</h2>
         <div class="grid">
-          <div><label>Number</label><p>{{ profile().vehicleNumber }}</p></div>
-          <div><label>Type</label><p>{{ profile().vehicleType }}</p></div>
-          <div><label>Brand</label><p>{{ profile().brand }}</p></div>
-          <div><label>Model</label><p>{{ profile().model }}</p></div>
+          <div><label>Vehicle Number</label><p>{{ profile()?.vehicleNumber }}</p></div>
+          <div><label>Vehicle Type</label><p>{{ profile()?.vehicleType }}</p></div>
+          <div><label>Brand</label><p>{{ profile()?.brand }}</p></div>
+          <div><label>Model</label><p>{{ profile()?.model }}</p></div>
+          <div><label>Color</label><p>{{ profile()?.color }}</p></div>
+          <div><label>Year of Manufacture</label><p>{{ profile()?.yearOfManufacture }}</p></div>
+          <div><label>RC Number</label><p>{{ profile()?.rcNumber }}</p></div>
+          <div><label>Chassis Number</label><p>{{ profile()?.chassisNumber }}</p></div>
+          <div><label>Insurance Number</label><p>{{ profile()?.insuranceNumber }}</p></div>
+          <div><label>Insurance Expiry</label><p>{{ profile()?.insuranceExpiry }}</p></div>
         </div>
       </div>
+
+      <div class="section">
+        <h2>Owner Details</h2>
+        <div class="grid">
+          <div><label>Owner Name</label><p>{{ profile()?.ownerName }}</p></div>
+          <div><label>Owner Contact</label><p>{{ profile()?.ownerContact }}</p></div>
+          <div><label>Alternate Contact</label><p>{{ profile()?.alternateContact }}</p></div>
+        </div>
+      </div>
+
     </ng-container>
 
     <!-- ── PETS ── -->
     <ng-container *ngIf="accountType() === 'pets'">
+
       <div class="section">
-        <h2>Pet</h2>
+        <h2>Pet Details</h2>
         <div class="grid">
-          <div><label>Name</label><p>{{ profile().petName }}</p></div>
-          <div><label>Species</label><p>{{ profile().species }}</p></div>
-          <div><label>Breed</label><p>{{ profile().breed }}</p></div>
+          <div><label>Pet Name</label><p>{{ profile()?.petName }}</p></div>
+          <div><label>Species</label><p>{{ profile()?.species }}</p></div>
+          <div><label>Breed</label><p>{{ profile()?.breed }}</p></div>
+          <div><label>Gender</label><p>{{ profile()?.gender }}</p></div>
+          <div><label>Age</label><p>{{ profile()?.age }}</p></div>
+          <div><label>Color</label><p>{{ profile()?.color }}</p></div>
+          <div><label>Microchip ID</label><p>{{ profile()?.microchipId }}</p></div>
+          <div><label>Vaccination Status</label><p>{{ profile()?.vaccinationStatus }}</p></div>
+        </div>
+        <div class="full">
+          <label>Medical Notes</label>
+          <p>{{ profile()?.medicalNotes }}</p>
         </div>
       </div>
+
+      <div class="section">
+        <h2>Vet Details</h2>
+        <div class="grid">
+          <div><label>Vet Name</label><p>{{ profile()?.vetName }}</p></div>
+          <div><label>Vet Contact</label><p>{{ profile()?.vetContact }}</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Owner Details</h2>
+        <div class="grid">
+          <div><label>Owner Name</label><p>{{ profile()?.ownerName }}</p></div>
+          <div><label>Owner Contact</label><p>{{ profile()?.ownerContact }}</p></div>
+          <div><label>Alternate Contact</label><p>{{ profile()?.alternateContact }}</p></div>
+        </div>
+      </div>
+
     </ng-container>
 
     <!-- ── SOCIAL ── -->
     <ng-container *ngIf="accountType() === 'social'">
+
       <div class="section">
         <h2>Identity</h2>
         <div class="grid">
-          <div><label>Name</label><p>{{ profile().fullName }}</p></div>
-          <div><label>Instagram</label><p>{{ profile().instagramHandle }}</p></div>
-          <div><label>Emergency</label><p>{{ profile().emergencyContactNumber }}</p></div>
+          <div><label>Full Name</label><p>{{ profile()?.fullName }}</p></div>
+          <div><label>Nickname</label><p>{{ profile()?.nickname }}</p></div>
         </div>
       </div>
+
+      <div class="section">
+        <h2>Social Handles</h2>
+        <div class="grid">
+          <div><label>Instagram</label><p>{{ profile()?.instagramHandle }}</p></div>
+          <div><label>Facebook</label><p>{{ profile()?.facebookProfile }}</p></div>
+          <div><label>LinkedIn</label><p>{{ profile()?.linkedinProfile }}</p></div>
+          <div><label>Twitter / X</label><p>{{ profile()?.twitterHandle }}</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Emergency Contact</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile()?.emergencyContactName }}</p></div>
+          <div><label>Phone</label><p>{{ profile()?.emergencyContactNumber }}</p></div>
+        </div>
+        <div class="full">
+          <label>Message to Finder</label>
+          <p>{{ profile()?.messageToFinder }}</p>
+        </div>
+      </div>
+
     </ng-container>
 
   </div>
