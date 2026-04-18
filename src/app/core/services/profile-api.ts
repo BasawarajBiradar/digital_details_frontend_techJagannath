@@ -21,7 +21,7 @@ export interface CommonProfilePayload {
   medicalNote: string;
 }
 
-interface CardData {
+export interface CardData {
   accountType: string | null;
   childProfile: any;
   seniorProfile: any;

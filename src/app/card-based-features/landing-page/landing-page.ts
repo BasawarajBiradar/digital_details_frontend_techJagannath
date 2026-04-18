@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileApiService } from '@core/services/profile-api';
+import { CardData } from '@core/services/profile-api';
 
 export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 'social';
 
@@ -14,9 +15,9 @@ export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 
 })
 export class LandingPage implements OnInit {
 
-  accountType!: AccountType;
-  profile: any;
-  isLoading = true;
+  accountType = signal<AccountType | null>(null);
+  profile = signal<any>(null);
+  isLoading = signal(true);  // 👈 signal instead of boolean
 
   readonly typeConfig: Record<AccountType, { title: string; subtitle: string; emoji: string }> = {
     kids:     { title: 'Child Profile',    subtitle: 'Emergency info for children',   emoji: '👶' },
@@ -30,8 +31,7 @@ export class LandingPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private profileApi: ProfileApiService,
-    public router: Router,
-
+    public router: Router
   ) {}
 
     ngOnInit() {
@@ -39,18 +39,18 @@ export class LandingPage implements OnInit {
 
     this.profileApi.retrieveUserCardDetails(uid).subscribe({
       next: (response) => {
-        const type = response?.data?.accountType;
-
-        if (this.isValidAccountType(type)) {
-          this.accountType = type;
-        } else {
-        this.router.navigate(['/registration/', uid]);
-        }
-
-        this.isLoading = false;
+        const type = response?.data?.accountType?.trim();
+          if (this.isValidAccountType(type)) {
+          this.accountType.set(type);        // 👈 .set()
+          this.setProfileData(response.data);
+          this.isLoading.set(false);          // 👈 .set()
+          } else {
+          this.isLoading.set(false);         // 👈 .set()
+          this.router.navigate(['/registration/', uid]);
+          }
       },
       error: (err) => {
-        console.error('Registration failed', err);
+          this.isLoading.set(false);         // 👈 .set()
         this.router.navigate(['/registration/', uid]);
       }
     });
@@ -61,8 +61,19 @@ export class LandingPage implements OnInit {
   }
 
   get config() {
-    return this.typeConfig[this.accountType];
+    return this.accountType() ? this.typeConfig[this.accountType()!] : null;
   }
+
+private setProfileData(data: CardData) {
+  switch (this.accountType()) {
+    case 'kids':      this.profile.set(data.childProfile);    break; // ← was missing
+    case 'senior':    this.profile.set(data.seniorProfile);   break;
+    case 'business':  this.profile.set(data.businessProfile); break;
+    case 'vehicle':   this.profile.set(data.vehicleProfile);  break;
+    case 'pets':      this.profile.set(data.petProfile);      break;
+    case 'social':    this.profile.set(data.socialProfile);   break;
+  }
+}
 
   // Helper
   entries(obj: any) {
