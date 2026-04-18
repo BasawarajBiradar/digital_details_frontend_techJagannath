@@ -33,6 +33,7 @@ export class SetUpProfile {
  accountType!: AccountType;
   form!: FormGroup;
   isLoading = false;
+  uid: string | null = null;
 
   // Meta config per account type
   readonly typeConfig: Record<AccountType, { title: string; subtitle: string; emoji: string }> = {
@@ -54,6 +55,7 @@ export class SetUpProfile {
 
   ngOnInit() {
     this.accountType = this.route.snapshot.paramMap.get('type') as AccountType;
+    this.uid = this.route.snapshot.paramMap.get('uid');
     this.form = this.buildForm();
     console.log('userId on registration load:', this.formState.getUserId()); 
     const saved = this.formState.commonFields();
@@ -76,125 +78,125 @@ export class SetUpProfile {
 
   private buildKidsForm(): FormGroup {
     return this.fb.group({
-      child_name:         ['', Validators.required],
-      date_of_birth:      ['', Validators.required],
+      childName:         ['', Validators.required],
+      dateOfBirth:      ['', Validators.required],
       gender:             ['', Validators.required],
-      blood_group:        [''],
-      school_name:        [''],
-      school_address:     [''],
+      bloodGroup:        [''],
+      schoolName:        [''],
+      schoolAddress:     [''],
       allergies:          [''],
-      medical_conditions: [''],
+      medicalConditions: [''],
       guardians: this.fb.array([this.newGuardian()])
     });
   }
 
   private buildSeniorForm(): FormGroup {
     return this.fb.group({
-      full_name:            ['', Validators.required],
-      date_of_birth:        ['', Validators.required],
+      fullName:            ['', Validators.required],
+      dateOfBirth:        ['', Validators.required],
       gender:               ['', Validators.required],
-      blood_group:          [''],
-      medical_conditions:   [''],
+      bloodGroup:          [''],
+      medicalConditions:   [''],
       medications:          [''],
-      doctor_name:          [''],
-      doctor_contact:       [''],
-      hospital_preference:  [''],
-      insurance_provider:   [''],
-      insurance_number:     [''],
+      doctorName:          [''],
+      doctorContact:       [''],
+      hospitalPreference:  [''],
+      insuranceProvider:   [''],
+      insuranceNumber:     [''],
       caretakers: this.fb.array([this.newCaretaker()])
     });
   }
 
   private buildBusinessForm(): FormGroup {
     return this.fb.group({
-      business_name:        ['', Validators.required],
-      business_type:        ['', Validators.required],
-      registration_number:  [''],
-      gst_number:           [''],
-      business_email:       ['', Validators.email],
-      business_phone:       [''],
-      website_url:          [''],
-      business_address:     [''],
-      owner_name:           ['', Validators.required],
-      owner_contact:        [''],
-      owner_email:          ['', Validators.email],
+      businessName:        ['', Validators.required],
+      businessType:        ['', Validators.required],
+      registrationNumber:  [''],
+      gstNumber:           [''],
+      businessEmail:       ['', Validators.email],
+      businessPhone:       [''],
+      websiteUrl:          [''],
+      businessAddress:     [''],
+      ownerName:           ['', Validators.required],
+      ownerContact:        [''],
+      ownerEmail:          ['', Validators.email],
     });
   }
 
   private buildVehicleForm(): FormGroup {
     return this.fb.group({
-      vehicle_number:       ['', Validators.required],
-      vehicle_type:         ['', Validators.required],
+      vehicleNumber:       ['', Validators.required],
+      vehicleType:         ['', Validators.required],
       brand:                [''],
       model:                [''],
       color:                [''],
-      year_of_manufacture:  [''],
-      owner_name:           ['', Validators.required],
-      owner_contact:        ['', Validators.required],
-      alternate_contact:    [''],
-      rc_number:            [''],
-      insurance_number:     [''],
-      insurance_expiry:     [''],
-      chassis_number:       [''],
+      yearOfManufacture:  [''],
+      ownerName:           ['', Validators.required],
+      ownerContact:        ['', Validators.required],
+      alternateContact:    [''],
+      rcNumber:            [''],
+      insuranceNumber:     [''],
+      insuranceExpiry:     [''],
+      chassisNumber:       [''],
     });
   }
 
   private buildPetsForm(): FormGroup {
     return this.fb.group({
-      pet_name:             ['', Validators.required],
+      petName:             ['', Validators.required],
       species:              ['', Validators.required],
       breed:                [''],
       gender:               [''],
       age:                  [''],
       color:                [''],
-      microchip_id:         [''],
-      vaccination_status:   [''],
-      vet_name:             [''],
-      vet_contact:          [''],
-      medical_notes:        [''],
-      owner_name:           ['', Validators.required],
-      owner_contact:        ['', Validators.required],
-      alternate_contact:    [''],
+      microchipId:         [''],
+      vaccinationStatus:   [''],
+      vetName:             [''],
+      vetContact:          [''],
+      medicalNotes:        [''],
+      ownerName:           ['', Validators.required],
+      ownerContact:        ['', Validators.required],
+      alternateContact:    [''],
     });
   }
 
   private buildSocialForm(): FormGroup {
     return this.fb.group({
-      full_name:                  ['', Validators.required],
+      fullName:                  ['', Validators.required],
       nickname:                   [''],
-      instagram_handle:           [''],
-      facebook_profile:           [''],
-      linkedin_profile:           [''],
-      twitter_handle:             [''],
-      emergency_contact_name:     ['', Validators.required],
-      emergency_contact_number:   ['', Validators.required],
-      message_to_finder:          [''],
+      instagramHandle:           [''],
+      facebookProfile:           [''],
+      linkedinProfile:           [''],
+      twitterHandle:             [''],
+      emergencyContactName:     ['', Validators.required],
+      emergencyContactNumber:   ['', Validators.required],
+      messageToFinder:          [''],
     });
   }
 
   // ── Dynamic FormArrays ─────────────────────────────────────────────
   private newGuardian(): FormGroup {
     return this.fb.group({
-      guardian_name:    ['', Validators.required],
+      guardianName:    ['', Validators.required],
       relationship:     ['', Validators.required],
-      primary_phone:    ['', Validators.required],
-      alternate_phone:  [''],
+      primaryPhone:    ['', Validators.required],
+      alternatePhone:  [''],
       email:            ['', Validators.email],
       address:          [''],
-      is_primary:       [false],
-      id_proof_type:    [''],
-      id_proof_number:  [''],
+      isPrimary:       [false],
+      idProofType:    [''],
+      idProofNumber:  [''],
     });
   }
 
   private newCaretaker(): FormGroup {
     return this.fb.group({
-      caretaker_name:   ['', Validators.required],
+      caretakerName:   ['', Validators.required],
       relationship:     [''],
       phone:            ['', Validators.required],
-      alternate_phone:  [''],
+      alternatePhone:  [''],
       address:          [''],
-      is_primary:       [false],
+      isPrimary:       [false],
     });
   }
 
@@ -226,12 +228,11 @@ export class SetUpProfile {
       ...this.form.value,
       account_type: this.accountType
     };
-    const uid = this.route.snapshot.paramMap.get('uid');
-    this.profileApi.saveCardProfileDetails(this.accountType, payload, uid).subscribe({
+    this.profileApi.saveCardProfileDetails(this.accountType, payload, this.uid).subscribe({
       next: () => {
         this.isLoading = false;
         this.formState.clear();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/card', this.uid]);
       },
       error: (err) => {
         this.isLoading = false;
@@ -241,4 +242,8 @@ export class SetUpProfile {
   }
 
   get config() { return this.typeConfig[this.accountType]; }
+
+  goBack() {
+    this.router.navigate(['/card', this.uid]);
+  }
 }
