@@ -4,12 +4,14 @@ import { SetupCardComponent } from '@features/setup-card/setup-card';
 import { RegistrationComponent } from '@features/registration/registration';
 import { Registration } from './card-based-features/registration/registration';
 import { SetUpProfile } from './card-based-features/set-up-profile/set-up-profile';
+import { LandingPage } from './card-based-features/landing-page/landing-page';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
   { path: 'setup', component: SetupCardComponent },
   { path: 'register/:type', component: RegistrationComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'registration', component: Registration},
-  { path: 'setup-profile/:type', component: SetUpProfile }
+  { path: 'registration/:uid', component: Registration},
+  { path: 'setup-profile/:uid/:type', component: SetUpProfile },
+  { path: 'card/:uid', component: LandingPage }
 ];

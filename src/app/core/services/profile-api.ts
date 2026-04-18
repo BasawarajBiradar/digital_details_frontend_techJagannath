@@ -21,6 +21,16 @@ export interface CommonProfilePayload {
   medicalNote: string;
 }
 
+interface CardData {
+  accountType: string | null;
+  childProfile: any;
+  seniorProfile: any;
+  businessProfile: any;
+  vehicleProfile: any;
+  petProfile: any;
+  socialProfile: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProfileApiService {
   private baseUrl = environment.apiUrl;
@@ -37,8 +47,11 @@ export class ProfileApiService {
     );
   }
 
-  saveCardProfileDetails(accountType: string, payload: any): Observable<{ data: { userId: number } }> {
-    return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/user-management/register/${accountType}`, payload);
+  saveCardProfileDetails(accountType: string, payload: any, uid: string | null): Observable<{ data: { userId: number } }> {
+    return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/register-card/${accountType}/${uid}`, payload);
   }
 
+  retrieveUserCardDetails(uid: string | null): Observable<{ data: CardData }> {
+    return this.http.post<{ data: CardData }>(`${this.baseUrl}/api/register-card/retrieve`, { uid });
+  }
 }

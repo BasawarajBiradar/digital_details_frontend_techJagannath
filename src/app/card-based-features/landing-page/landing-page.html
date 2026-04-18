@@ -1,0 +1,123 @@
+<div class="view-page" *ngIf="!isLoading; else loading">
+
+  <div class="view-card">
+
+    <!-- Header -->
+    <div class="view-card__header">
+      <span class="view-card__emoji">{{ config.emoji }}</span>
+      <h1 class="view-card__title">{{ config.title }}</h1>
+      <p class="view-card__subtitle">{{ config.subtitle }}</p>
+    </div>
+
+    <!-- ── KIDS ── -->
+    <ng-container *ngIf="accountType === 'kids'">
+      <div class="section">
+        <h2>Child Details</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile.child_name }}</p></div>
+          <div><label>DOB</label><p>{{ profile.date_of_birth }}</p></div>
+          <div><label>Gender</label><p>{{ profile.gender }}</p></div>
+          <div><label>Blood Group</label><p>{{ profile.blood_group }}</p></div>
+          <div><label>School</label><p>{{ profile.school_name }}</p></div>
+          <div><label>Address</label><p>{{ profile.school_address }}</p></div>
+        </div>
+
+        <div class="full">
+          <label>Allergies</label>
+          <p>{{ profile.allergies }}</p>
+        </div>
+
+        <div class="full">
+          <label>Medical Conditions</label>
+          <p>{{ profile.medical_conditions }}</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Guardians</h2>
+        <div *ngFor="let g of profile.guardians; let i = index" class="sub-card">
+          <h3>Guardian {{ i + 1 }}</h3>
+          <div class="grid">
+            <div><label>Name</label><p>{{ g.guardian_name }}</p></div>
+            <div><label>Relation</label><p>{{ g.relationship }}</p></div>
+            <div><label>Phone</label><p>{{ g.primary_phone }}</p></div>
+            <div><label>Email</label><p>{{ g.email }}</p></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── SENIOR ── -->
+    <ng-container *ngIf="accountType === 'senior'">
+      <div class="section">
+        <h2>Personal Details</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile.full_name }}</p></div>
+          <div><label>DOB</label><p>{{ profile.date_of_birth }}</p></div>
+          <div><label>Blood Group</label><p>{{ profile.blood_group }}</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Medical</h2>
+        <p>{{ profile.medical_conditions }}</p>
+        <p>{{ profile.medications }}</p>
+      </div>
+    </ng-container>
+
+    <!-- ── BUSINESS ── -->
+    <ng-container *ngIf="accountType === 'business'">
+      <div class="section">
+        <h2>Business</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile.business_name }}</p></div>
+          <div><label>Type</label><p>{{ profile.business_type }}</p></div>
+          <div><label>Phone</label><p>{{ profile.business_phone }}</p></div>
+          <div><label>Email</label><p>{{ profile.business_email }}</p></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── VEHICLE ── -->
+    <ng-container *ngIf="accountType === 'vehicle'">
+      <div class="section">
+        <h2>Vehicle</h2>
+        <div class="grid">
+          <div><label>Number</label><p>{{ profile.vehicle_number }}</p></div>
+          <div><label>Type</label><p>{{ profile.vehicle_type }}</p></div>
+          <div><label>Brand</label><p>{{ profile.brand }}</p></div>
+          <div><label>Model</label><p>{{ profile.model }}</p></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── PETS ── -->
+    <ng-container *ngIf="accountType === 'pets'">
+      <div class="section">
+        <h2>Pet</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile.pet_name }}</p></div>
+          <div><label>Species</label><p>{{ profile.species }}</p></div>
+          <div><label>Breed</label><p>{{ profile.breed }}</p></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── SOCIAL ── -->
+    <ng-container *ngIf="accountType === 'social'">
+      <div class="section">
+        <h2>Identity</h2>
+        <div class="grid">
+          <div><label>Name</label><p>{{ profile.full_name }}</p></div>
+          <div><label>Instagram</label><p>{{ profile.instagram_handle }}</p></div>
+          <div><label>Emergency</label><p>{{ profile.emergency_contact_number }}</p></div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading">Loading profile...</div>
+</ng-template>

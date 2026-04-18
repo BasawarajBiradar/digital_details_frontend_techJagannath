@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
@@ -46,7 +46,8 @@ export class Registration {
     private router: Router,
     private fb: FormBuilder,
     private formState: FormStateService,
-    private profileApi: ProfileApiService
+    private profileApi: ProfileApiService,
+    private route: ActivatedRoute
   ) {
     this.commonForm = this.fb.group({
       first_name:               ['', Validators.required],
@@ -99,7 +100,8 @@ export class Registration {
 
     if (!this.selectedCard) return;
     this.formState.save(this.commonForm.value);
-    this.router.navigate(['/setup-profile', this.selectedCard]);
+    const uid = this.route.snapshot.paramMap.get('uid');
+    this.router.navigate(['/setup-profile', uid, this.selectedCard]);
   }
 
 

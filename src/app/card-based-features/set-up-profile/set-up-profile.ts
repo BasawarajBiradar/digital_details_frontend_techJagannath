@@ -213,6 +213,7 @@ export class SetUpProfile {
   removeCaretaker(i: number) { this.caretakers.removeAt(i); }
 
   onSubmit() {
+    
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -225,8 +226,8 @@ export class SetUpProfile {
       ...this.form.value,
       account_type: this.accountType
     };
-
-    this.profileApi.saveCardProfileDetails(this.accountType, payload).subscribe({
+    const uid = this.route.snapshot.paramMap.get('uid');
+    this.profileApi.saveCardProfileDetails(this.accountType, payload, uid).subscribe({
       next: () => {
         this.isLoading = false;
         this.formState.clear();
