@@ -5,6 +5,7 @@ import { RegistrationComponent } from '@features/registration/registration';
 import { Registration } from './card-based-features/registration/registration';
 import { SetUpProfile } from './card-based-features/set-up-profile/set-up-profile';
 import { LandingPage } from './card-based-features/landing-page/landing-page';
+import { HomePage } from '@features/home-page/home-page';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'registration/:uid', component: Registration},
   { path: 'setup-profile/:uid/:type', component: SetUpProfile },
-  { path: 'card/:uid', component: LandingPage }
+  { path: 'card/:uid', component: LandingPage },
+  { path: 'home-page', component: HomePage }
 ];

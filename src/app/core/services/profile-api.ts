@@ -31,6 +31,23 @@ export interface CardData {
   socialProfile: any;
 }
 
+export interface UserDetailsResponse {
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  phoneNumber: string;
+  alternateNumber?: string;
+  addressLineOne: string;
+  addressLineTwo?: string;
+  city: string;
+  state: string;
+  country: string;
+  pinCode: string;
+  safetyNote?: string;
+  medicalNote?: string;
+  cards: { id: string; isActive: boolean }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProfileApiService {
   private baseUrl = environment.apiUrl;
@@ -54,4 +71,19 @@ export class ProfileApiService {
   retrieveUserCardDetails(uid: string | null): Observable<{ data: CardData }> {
     return this.http.post<{ data: CardData }>(`${this.baseUrl}/api/register-card/retrieve`, { uid });
   }
+
+
+  getUserDetails(): Observable<{ data: UserDetailsResponse }> {
+    return this.http.get<{ data: UserDetailsResponse }>(
+      `${this.baseUrl}/api/home/retrieve`
+    );
+  }
+
+  login(payload: { emailId: string; password: string }): Observable<{ data: { token: string } }> {
+    return this.http.post<{ data: { token: string } }>(
+      `${this.baseUrl}/auth/login`,
+      payload
+    );
+  }
+
 }

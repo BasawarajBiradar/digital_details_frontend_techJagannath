@@ -13,13 +13,13 @@
         <input
           matInput
           type="email"
-          formControlName="email"
+          formControlName="emailId"
           placeholder="you@example.com"
           autocomplete="email"/>
         <mat-icon matSuffix>mail_outline</mat-icon>
-        @if (email.touched && email.hasError('required')) {
+        @if (emailId.touched && emailId.hasError('required')) {
           <mat-error>Email is required</mat-error>
-        } @else if (email.touched && email.hasError('email')) {
+        } @else if (emailId.touched && emailId.hasError('email')) {
           <mat-error>Enter a valid email address</mat-error>
         }
       </mat-form-field>
