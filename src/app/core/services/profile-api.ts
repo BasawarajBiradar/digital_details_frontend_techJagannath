@@ -58,9 +58,9 @@ export class ProfileApiService {
     return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/user-management/register`, payload);
   }
 
-  saveProfileDetails(userId: number, accountType: string, payload: any): Observable<any> {
+  saveProfileDetails(accountType: string, payload: any): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/user-management/save/${userId}/${accountType}`, payload
+      `${this.baseUrl}/api/user-management/save/${accountType}`, payload
     );
   }
 

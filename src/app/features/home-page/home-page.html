@@ -107,8 +107,8 @@
             class="card"
             [class.card--active]="card.isActive"
             [class.card--inactive]="!card.isActive"
-            [attr.tabindex]="card.isActive ? 0 : -1"
-            [attr.role]="card.isActive ? 'button' : null"
+            [attr.tabindex]="0"
+            role="button"
             (click)="navigateToCard(card)"
             (keydown.enter)="navigateToCard(card)">
 

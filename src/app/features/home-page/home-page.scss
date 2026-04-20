@@ -300,7 +300,13 @@
 
   &--inactive {
     opacity: 0.45;
-    cursor: default;
+    cursor: pointer;   
+
+    &:hover {
+      opacity: 0.6;
+      border-color: var(--color-border);
+      transform: translateY(-1px);
+    }
   }
 
   &__top {

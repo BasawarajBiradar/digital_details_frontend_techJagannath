@@ -213,23 +213,16 @@ export class RegistrationComponent implements OnInit {
   addCaretaker()  { this.caretakers.push(this.newCaretaker()); }
   removeCaretaker(i: number) { this.caretakers.removeAt(i); }
 
-  // ── Submit ─────────────────────────────────────────────────────────
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const userId = this.formState.getUserId();
-    if (!userId) {
-      console.error('No userId found');
-      return;
-    }
-
     this.isLoading = true;
     const payload = { ...this.form.value };
 
-    this.profileApi.saveProfileDetails(userId, this.accountType, payload).subscribe({
+    this.profileApi.saveProfileDetails(this.accountType, payload).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/login']);

@@ -5,6 +5,7 @@ import { ProfileApiService } from '@core/services/profile-api';
 
 interface CardType {
   id: string;
+  uid?: string; 
   emoji: string;
   title: string;
   description: string;
@@ -69,11 +70,11 @@ export class HomePage implements OnInit {
       next: (res) => {
         console.log('API SUCCESS', res);
 
-        const apiCards: { id: string; isActive: boolean }[] = res.data.cards ?? [];
+        const apiCards: { id: string; uid?: string; isActive: boolean }[] = res.data.cards ?? [];
 
         const cards: CardType[] = this.cardMeta.map(meta => {
           const apiCard = apiCards.find(c => c.id === meta.id);
-          return { ...meta, isActive: apiCard?.isActive ?? false };
+          return { ...meta,    uid: apiCard?.uid ?? '', isActive: apiCard?.isActive ?? false };
         });
 
         this.profile.set({ ...res.data, cards });
@@ -88,8 +89,13 @@ export class HomePage implements OnInit {
   }
 
   navigateToCard(card: CardType) {
-    if (!card.isActive) return;
-    this.router.navigate(['/card', card.id]);
+     if (!card.isActive) {
+        // No data yet → go to registration
+        this.router.navigate(['/register', card.id]);
+      } else {
+        // Has data → go to card landing page using uid
+        this.router.navigate(['/card', card.uid]);
+      }
   }
 
   // ✅ computed signals
@@ -110,4 +116,5 @@ export class HomePage implements OnInit {
   activeCardCount = computed(() => {
     return this.profile()?.cards.filter(c => c.isActive).length ?? 0;
   });
+
 }

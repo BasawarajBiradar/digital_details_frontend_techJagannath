@@ -6,8 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   console.log('Request URL:', req.url);              // 👈 and this
 
   if (req.url.includes('/auth/login') || req.url.includes('/auth/register') 
-    || req.url.includes('api/register-card/') || req.url.includes('api/user-management/register') 
-  || req.url.includes('api/user-management/save')) {
+    || req.url.includes('api/register-card/') || req.url.includes('api/user-management/register') ) {
     return next(req);
   }
 
