@@ -1,42 +1,44 @@
 <div class="profile-page">
 
-  <!-- Loading State -->
-  @if (isLoading) {
+  <!-- Loading -->
+  @if (isLoading()) {
     <div class="state-screen">
       <div class="spinner"></div>
-      <p>Loading your profile…</p>
+      <p class="state-msg">Loading your profile…</p>
     </div>
   }
 
-  <!-- Error State -->
-  @else if (loadError) {
+  <!-- Error -->
+  @else if (loadError()) {
     <div class="state-screen">
       <span class="state-icon">⚠️</span>
-      <p class="state-msg">{{ loadError }}</p>
+      <p class="state-msg">{{ loadError() }}</p>
       <button class="retry-btn" (click)="loadProfile()">Try Again</button>
     </div>
   }
 
-  <!-- Profile Display -->
-  @else if (profile) {
+  <!-- Profile -->
+  @else if (profile()) {
 
-    <!-- Header -->
     <div class="profile-header">
       <div class="avatar">
-        {{ profile.firstName[0] }}{{ profile.lastName[0] }}
+        {{ profile()!.firstName[0] }}{{ profile()!.lastName[0] }}
       </div>
+
       <div class="profile-header__text">
-        <h1 class="profile-name">{{ profile.firstName }} {{ profile.lastName }}</h1>
-        <p class="profile-meta">{{ profile.emailId }}</p>
-        <p class="profile-meta">{{ profile.phoneNumber }}</p>
+        <h1 class="profile-name">
+          {{ profile()!.firstName }} {{ profile()!.lastName }}
+        </h1>
+        <p class="profile-meta">{{ profile()!.emailId }}</p>
+        <p class="profile-meta">{{ profile()!.phoneNumber }}</p>
       </div>
+
       <div class="active-badge">
         <span class="active-badge__dot"></span>
-        {{ activeCardCount }} active card{{ activeCardCount !== 1 ? 's' : '' }}
+        {{ activeCardCount() }} active card{{ activeCardCount() !== 1 ? 's' : '' }}
       </div>
     </div>
 
-    <!-- Contact & Address -->
     <div class="info-grid">
 
       <div class="info-card">
@@ -46,16 +48,16 @@
         <dl class="info-list">
           <div class="info-row">
             <dt>Email</dt>
-            <dd>{{ profile.emailId }}</dd>
+            <dd>{{ profile()!.emailId }}</dd>
           </div>
           <div class="info-row">
             <dt>Primary</dt>
-            <dd>{{ profile.phoneNumber }}</dd>
+            <dd>{{ profile()!.phoneNumber }}</dd>
           </div>
-          @if (profile.alternateNumber) {
+          @if (profile()!.alternateNumber) {
             <div class="info-row">
               <dt>Alternate</dt>
-              <dd>{{ profile.alternateNumber }}</dd>
+              <dd>{{ profile()!.alternateNumber }}</dd>
             </div>
           }
         </dl>
@@ -65,25 +67,25 @@
         <h2 class="info-card__title">
           <span class="info-card__icon">📍</span> Address
         </h2>
-        <p class="info-address">{{ fullAddress }}</p>
+        <p class="info-address">{{ fullAddress() }}</p>
       </div>
 
-      @if (profile.safetyNote || profile.medicalNote) {
+      @if (profile()!.safetyNote || profile()!.medicalNote) {
         <div class="info-card info-card--safety">
           <h2 class="info-card__title">
             <span class="info-card__icon">🚨</span> Safety Notes
           </h2>
           <dl class="info-list">
-            @if (profile.safetyNote) {
+            @if (profile()!.safetyNote) {
               <div class="info-row info-row--block">
                 <dt>Emergency</dt>
-                <dd>{{ profile.safetyNote }}</dd>
+                <dd>{{ profile()!.safetyNote }}</dd>
               </div>
             }
-            @if (profile.medicalNote) {
+            @if (profile()!.medicalNote) {
               <div class="info-row info-row--block">
                 <dt>Medical</dt>
-                <dd>{{ profile.medicalNote }}</dd>
+                <dd>{{ profile()!.medicalNote }}</dd>
               </div>
             }
           </dl>
@@ -92,27 +94,29 @@
 
     </div>
 
-    <!-- Cards Section -->
+    <!-- Cards -->
     <div class="cards-section">
       <div class="cards-section__header">
         <h2 class="cards-section__title">Your Cards</h2>
-        <p class="cards-section__sub">Tap an active card to manage it</p>
+        <p class="cards-section__sub">Tap an active card to manage its details</p>
       </div>
 
       <div class="cards-grid">
-        @for (card of profile.cards; track card.id) {
+        @for (card of profile()!.cards; track card.id) {
           <div
             class="card"
             [class.card--active]="card.isActive"
             [class.card--inactive]="!card.isActive"
-            (click)="navigateToCard(card)"
+            [attr.tabindex]="card.isActive ? 0 : -1"
             [attr.role]="card.isActive ? 'button' : null"
-            [attr.tabindex]="card.isActive ? 0 : null"
+            (click)="navigateToCard(card)"
             (keydown.enter)="navigateToCard(card)">
 
             <div class="card__top">
               <span class="card__emoji">{{ card.emoji }}</span>
-              <span class="card__status-pill" [class.card__status-pill--on]="card.isActive">
+              <span
+                class="card__status-pill"
+                [class.card__status-pill--on]="card.isActive">
                 {{ card.isActive ? 'Active' : 'Inactive' }}
               </span>
             </div>

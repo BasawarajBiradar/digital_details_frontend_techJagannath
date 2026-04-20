@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileApiService } from '@core/services/profile-api';
@@ -36,11 +36,13 @@ interface UserProfile {
   imports: [CommonModule],
 })
 export class HomePage implements OnInit {
-  profile: UserProfile | null = null;
-  isLoading = true;
-  loadError: string | null = null;
 
-  // Static card metadata — isActive will be merged from API response
+  // ✅ Signals
+  profile = signal<UserProfile | null>(null);
+  isLoading = signal(true);
+  loadError = signal<string | null>(null);
+
+  // Static card metadata
   private cardMeta = [
     { id: 'kids',     emoji: '👶', title: 'Kids',     description: 'Emergency info for children'  },
     { id: 'senior',   emoji: '👴', title: 'Senior',   description: 'Medical & contact details'    },
@@ -60,11 +62,13 @@ export class HomePage implements OnInit {
   }
 
   loadProfile() {
-    this.isLoading = true;
-    this.loadError = null;
+    this.isLoading.set(true);
+    this.loadError.set(null);
 
     this.profileApi.getUserDetails().subscribe({
       next: (res) => {
+        console.log('API SUCCESS', res);
+
         const apiCards: { id: string; isActive: boolean }[] = res.data.cards ?? [];
 
         const cards: CardType[] = this.cardMeta.map(meta => {
@@ -72,13 +76,13 @@ export class HomePage implements OnInit {
           return { ...meta, isActive: apiCard?.isActive ?? false };
         });
 
-        this.profile = { ...res.data, cards };
-        this.isLoading = false;
+        this.profile.set({ ...res.data, cards });
+        this.isLoading.set(false);
       },
       error: (err) => {
-        this.isLoading = false;
-        this.loadError = 'Failed to load your profile. Please try again.';
-        console.error('Load failed:', err);
+        console.error('API ERROR', err);
+        this.isLoading.set(false);
+        this.loadError.set('Failed to load your profile. Please try again.');
       }
     });
   }
@@ -88,20 +92,22 @@ export class HomePage implements OnInit {
     this.router.navigate(['/card', card.id]);
   }
 
-  get fullAddress(): string {
-    if (!this.profile) return '';
-    const parts = [
-      this.profile.addressLineOne,
-      this.profile.addressLineTwo,
-      this.profile.city,
-      this.profile.state,
-      this.profile.pinCode,
-      this.profile.country,
-    ].filter(Boolean);
-    return parts.join(', ');
-  }
+  // ✅ computed signals
+  fullAddress = computed(() => {
+    const p = this.profile();
+    if (!p) return '';
 
-  get activeCardCount(): number {
-    return this.profile?.cards.filter(c => c.isActive).length ?? 0;
-  }
+    return [
+      p.addressLineOne,
+      p.addressLineTwo,
+      p.city,
+      p.state,
+      p.pinCode,
+      p.country,
+    ].filter(Boolean).join(', ');
+  });
+
+  activeCardCount = computed(() => {
+    return this.profile()?.cards.filter(c => c.isActive).length ?? 0;
+  });
 }

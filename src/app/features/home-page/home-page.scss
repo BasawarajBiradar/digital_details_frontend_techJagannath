@@ -1,9 +1,10 @@
 .profile-page {
   min-height: 100vh;
   background-color: var(--color-background);
-  padding: clamp(24px, 5vw, 48px) clamp(16px, 5vw, 32px) 60px;
+  padding: clamp(16px, 4vw, 48px) clamp(12px, 4vw, 32px) 60px;
   max-width: 900px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 // ─── Loading / Error States ──────────────────────────────────────────────────
@@ -65,19 +66,25 @@
 .profile-header {
   display: flex;
   align-items: center;
-  gap: clamp(12px, 3vw, 24px);
-  margin-bottom: clamp(24px, 5vw, 40px);
+  gap: clamp(10px, 2.5vw, 24px);
+  margin-bottom: clamp(20px, 4vw, 40px);
   flex-wrap: wrap;
+
+  // Stack vertically on very small screens
+  @media (max-width: 360px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .avatar {
   flex-shrink: 0;
-  width: clamp(56px, 10vw, 72px);
-  height: clamp(56px, 10vw, 72px);
+  width: clamp(48px, 10vw, 72px);
+  height: clamp(48px, 10vw, 72px);
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   color: white;
-  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-size: clamp(1rem, 3vw, 1.6rem);
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -88,11 +95,11 @@
 
 .profile-header__text {
   flex: 1;
-  min-width: 0;
+  min-width: 0; // critical for text-overflow to work
 }
 
 .profile-name {
-  font-size: var(--font-xxl);
+  font-size: clamp(1.1rem, 4vw, 1.75rem);
   font-weight: 800;
   color: var(--color-text);
   line-height: 1.1;
@@ -106,6 +113,9 @@
   font-size: var(--font-sm);
   color: var(--color-text-muted);
   line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .active-badge {
@@ -120,6 +130,13 @@
   border-radius: 999px;
   padding: 6px 14px;
   white-space: nowrap;
+  flex-shrink: 0;
+
+  // On wrap, push to its own row only on medium+
+  @media (max-width: 480px) {
+    margin-left: 0;
+    align-self: flex-start;
+  }
 
   &__dot {
     width: 8px;
@@ -135,10 +152,10 @@
 .info-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(12px, 2vw, 16px);
-  margin-bottom: clamp(28px, 5vw, 44px);
+  gap: clamp(10px, 2vw, 16px);
+  margin-bottom: clamp(24px, 4vw, 44px);
 
-  @media (min-width: 600px) {
+  @media (min-width: 560px) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -147,10 +164,10 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  padding: clamp(16px, 3vw, 24px);
+  padding: clamp(14px, 3vw, 24px);
 
   &--safety {
-    @media (min-width: 600px) {
+    @media (min-width: 560px) {
       grid-column: span 2;
     }
   }
@@ -176,6 +193,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
+  padding: 0;
 }
 
 .info-row {
@@ -201,6 +220,15 @@
     font-size: var(--font-base);
     color: var(--color-text);
     word-break: break-word;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+
+    // Allow email to wrap gracefully
+    @media (max-width: 400px) {
+      font-size: 0.8rem;
+    }
   }
 }
 
@@ -208,13 +236,14 @@
   font-size: var(--font-base);
   color: var(--color-text);
   line-height: 1.6;
+  margin: 0;
 }
 
 // ─── Cards Section ───────────────────────────────────────────────────────────
 
 .cards-section {
   &__header {
-    margin-bottom: clamp(16px, 3vw, 24px);
+    margin-bottom: clamp(12px, 2.5vw, 24px);
   }
 
   &__title {
@@ -233,9 +262,9 @@
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(10px, 2vw, 16px);
+  gap: clamp(8px, 2vw, 16px);
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -246,14 +275,14 @@
   background: var(--color-surface);
   border: 2px solid var(--color-border);
   border-radius: 16px;
-  padding: clamp(14px, 3vw, 22px);
+  padding: clamp(12px, 2.5vw, 22px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   position: relative;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
 
-  // Active card
   &--active {
     cursor: pointer;
 
@@ -269,7 +298,6 @@
     }
   }
 
-  // Inactive card
   &--inactive {
     opacity: 0.45;
     cursor: default;
@@ -279,21 +307,21 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 4px;
+    gap: 6px;
+    margin-bottom: 2px;
   }
 
   &__emoji {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
     line-height: 1;
   }
 
   &__status-pill {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 3px 8px;
     border-radius: 999px;
     color: var(--color-text-muted);
     background: var(--color-border);
@@ -306,23 +334,25 @@
   }
 
   &__title {
-    font-size: var(--font-md);
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     font-weight: 700;
     color: var(--color-text);
+    margin: 0;
   }
 
   &__desc {
-    font-size: var(--font-sm);
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
     color: var(--color-text-muted);
     line-height: 1.4;
     flex: 1;
+    margin: 0;
   }
 
   &__arrow {
     font-size: var(--font-base);
     color: var(--color-primary);
     font-weight: 700;
-    margin-top: 6px;
+    margin-top: 4px;
     display: inline-block;
     transition: transform 0.2s ease;
   }
