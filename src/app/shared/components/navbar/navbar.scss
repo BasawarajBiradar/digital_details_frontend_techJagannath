@@ -3,25 +3,55 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(16px, 4vw, 32px);
-  height: clamp(52px, 8vh, 64px);
-  background-color: var(--color-background);  
-  border-bottom: none;                         
-  box-shadow: none; 
+  height: clamp(52px, 8vh, 68px);
+  background-color: var(--color-background);
+  border-bottom: 1px solid rgba(74, 144, 217, 0.12);
+
+  &__brand {
+    display: flex;
+    align-items: center;
+  }
 
   &__logo {
-    font-size: clamp(0.65rem, 2vw, 1rem);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: #4A90D9;
-    border: 2px solid #4A90D9;
-    border-radius: 999px;
-    padding: clamp(4px, 1vw, 6px) clamp(12px, 2vw, 20px);
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
 
-    &:hover {
-      opacity: 0.8;
+  &__logo-icon {
+    width: clamp(22px, 3vw, 28px);
+    height: clamp(22px, 3vw, 28px);
+    color: #4A90D9;
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+
+    .navbar__logo:hover & {
+      transform: rotate(-6deg) scale(1.08);
     }
+  }
+
+  &__logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 1px;
+  }
+
+  &__logo-main {
+    font-size: clamp(0.75rem, 2vw, 0.95rem);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #4A90D9;
+  }
+
+  &__logo-sub {
+    font-size: clamp(0.5rem, 1.2vw, 0.6rem);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--color-text-secondary, #888);
+    text-transform: uppercase;
   }
 
   &__actions {
@@ -31,16 +61,87 @@
   }
 }
 
+// ─── Toggle ──────────────────────────────────────────────
 .theme-toggle {
+  --toggle-width: 48px;
+  --toggle-height: 26px;
+  --thumb-size: 20px;
+  --thumb-offset: 3px;
+  --track-bg-light: #e2edf8;
+  --track-bg-dark: #1e3248;
+  --thumb-bg-light: #fff;
+  --thumb-bg-dark: #4A90D9;
+  --icon-color-light: #4A90D9;
+  --icon-color-dark: #fff;
+
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: clamp(1rem, 3vw, 1.4rem);
-  padding: 4px 8px;
-  border-radius: 50%;
-  transition: transform 0.2s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
 
-  &:hover {
-    transform: scale(1.2);
+  &__track {
+    position: relative;
+    display: block;
+    width: var(--toggle-width);
+    height: var(--toggle-height);
+    background: var(--track-bg-light);
+    border-radius: 999px;
+    border: 1.5px solid rgba(74, 144, 217, 0.25);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+
+  &__thumb {
+    position: absolute;
+    top: var(--thumb-offset);
+    left: var(--thumb-offset);
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    background: var(--thumb-bg-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.3s ease;
+    color: var(--icon-color-light);
+  }
+
+  &__icon {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    transition: opacity 0.25s ease;
+
+    &--sun  { opacity: 1; }
+    &--moon { opacity: 0; }
+  }
+
+  // Dark mode active state
+  &--dark {
+    .theme-toggle__track {
+      background: var(--track-bg-dark);
+      border-color: rgba(74, 144, 217, 0.4);
+    }
+
+    .theme-toggle__thumb {
+      transform: translateX(calc(var(--toggle-width) - var(--thumb-size) - var(--thumb-offset) * 2));
+      background: var(--thumb-bg-dark);
+      color: var(--icon-color-dark);
+    }
+
+    .theme-toggle__icon--sun  { opacity: 0; }
+    .theme-toggle__icon--moon { opacity: 1; }
+  }
+
+  &:focus-visible .theme-toggle__track {
+    outline: 2px solid #4A90D9;
+    outline-offset: 2px;
+  }
+
+  &:hover .theme-toggle__thumb {
+    box-shadow: 0 1px 6px rgba(74, 144, 217, 0.35);
   }
 }
