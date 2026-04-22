@@ -1,3 +1,7 @@
+// home page scss file
+// Uses shared tokens from styles.scss
+
+// ─── Page Shell ──────────────────────────────────────────────────────────────
 .profile-page {
   min-height: 100vh;
   background-color: var(--color-background);
@@ -48,17 +52,14 @@
   }
 }
 
+// Spinner — references shared animation name from styles.scss
 .spinner {
   width: 40px;
   height: 40px;
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+  animation: global-spin 0.8s linear infinite;
 }
 
 // ─── Profile Header ──────────────────────────────────────────────────────────
@@ -70,7 +71,6 @@
   margin-bottom: clamp(20px, 4vw, 40px);
   flex-wrap: wrap;
 
-  // Stack vertically on very small screens
   @media (max-width: 360px) {
     flex-direction: column;
     align-items: flex-start;
@@ -91,11 +91,12 @@
   justify-content: center;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 4px 16px var(--color-shadow-md);
 }
 
 .profile-header__text {
   flex: 1;
-  min-width: 0; // critical for text-overflow to work
+  min-width: 0;
 }
 
 .profile-name {
@@ -118,6 +119,7 @@
   text-overflow: ellipsis;
 }
 
+// Active badge — uses shared pattern
 .active-badge {
   display: flex;
   align-items: center;
@@ -125,14 +127,13 @@
   font-size: var(--font-sm);
   font-weight: 600;
   color: var(--color-text-muted);
-  background: var(--color-surface);
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 6px 14px;
   white-space: nowrap;
   flex-shrink: 0;
 
-  // On wrap, push to its own row only on medium+
   @media (max-width: 480px) {
     margin-left: 0;
     align-self: flex-start;
@@ -160,11 +161,13 @@
   }
 }
 
+// info-card uses shared surface-card pattern
 .info-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: clamp(14px, 3vw, 24px);
+  box-shadow: 0 1px 3px var(--color-shadow), 0 4px 16px var(--color-shadow);
 
   &--safety {
     @media (min-width: 560px) {
@@ -225,7 +228,6 @@
     text-overflow: ellipsis;
     margin: 0;
 
-    // Allow email to wrap gracefully
     @media (max-width: 400px) {
       font-size: 0.8rem;
     }
@@ -273,7 +275,7 @@
 
 .card {
   background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: 16px;
   padding: clamp(12px, 2.5vw, 22px);
   display: flex;
@@ -282,6 +284,7 @@
   position: relative;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   box-sizing: border-box;
+  box-shadow: 0 1px 3px var(--color-shadow), 0 2px 8px var(--color-shadow);
 
   &--active {
     cursor: pointer;
@@ -289,7 +292,10 @@
     &:hover {
       border-color: var(--color-primary);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px var(--color-shadow);
+      box-shadow:
+        0 6px 20px var(--color-shadow-md),
+        0 0 0 1px var(--color-primary),
+        0 0 16px var(--color-glow);
     }
 
     &:focus-visible {
@@ -299,12 +305,12 @@
   }
 
   &--inactive {
-    opacity: 0.45;
-    cursor: pointer;   
+    opacity: 0.4;
+    cursor: pointer;
 
     &:hover {
-      opacity: 0.6;
-      border-color: var(--color-border);
+      opacity: 0.58;
+      border-color: var(--color-border-strong);
       transform: translateY(-1px);
     }
   }
@@ -330,12 +336,14 @@
     padding: 3px 8px;
     border-radius: 999px;
     color: var(--color-text-muted);
-    background: var(--color-border);
+    background: var(--color-surface-inset);
+    border: 1px solid var(--color-border);
     white-space: nowrap;
 
     &--on {
       color: #16a34a;
-      background: rgba(34, 197, 94, 0.12);
+      background: rgba(34, 197, 94, 0.10);
+      border-color: rgba(34, 197, 94, 0.25);
     }
   }
 

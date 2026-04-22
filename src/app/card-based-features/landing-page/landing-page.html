@@ -1,12 +1,21 @@
+<!--  landing page html -->
 <div class="view-page" *ngIf="!isLoading(); else loading">
 
   <div class="view-card">
 
-    <!-- Header -->
+    <!-- Header — ID Card Face -->
     <div class="view-card__header" *ngIf="config">
-      <span class="view-card__emoji">{{ config.emoji }}</span>
-      <h1 class="view-card__title">{{ config.title }}</h1>
-      <p class="view-card__subtitle">{{ config.subtitle }}</p>
+      <div class="view-card__header-inner">
+        <span class="view-card__emoji">{{ config.emoji }}</span>
+        <h1 class="view-card__title">{{ config.title }}</h1>
+        <p class="view-card__subtitle">{{ config.subtitle }}</p>
+      </div>
+
+      <!-- Verified stamp -->
+      <div class="view-card__stamp">
+        <div class="view-card__stamp-ring">✦</div>
+        <span class="view-card__stamp-label">Verified</span>
+      </div>
     </div>
 
     <!-- ── KIDS ── -->
@@ -251,5 +260,5 @@
 </div>
 
 <ng-template #loading>
-  <div class="loading">Loading profile...</div>
+  <div class="loading">Loading profile…</div>
 </ng-template>

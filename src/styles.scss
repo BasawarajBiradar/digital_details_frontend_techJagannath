@@ -7,6 +7,7 @@
 
 @include mat.core();
 
+// ─── Light Theme ────────────────────────────────────────────────────────────
 body.light-theme {
   @include mat.theme((
     color: (
@@ -16,16 +17,24 @@ body.light-theme {
     )
   ));
 
-  --color-background: #F5F5F5;
-  --color-surface: #FFFFFF;
-  --color-primary: #E8222A;
-  --color-accent: #1A44AE;
-  --color-text: #1A1A1A;
-  --color-text-muted: #666666;
-  --color-border: #E0E0E0;
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-background:     #EDEDED;
+  --color-surface:        #FFFFFF;
+  --color-surface-raised: #F8F8F8;
+  --color-surface-inset:  #F0F0F0;
+  --color-primary:        #E8222A;
+  --color-accent:         #1A44AE;
+  --color-text:           #1A1A1A;
+  --color-text-muted:     #666666;
+  --color-text-subtle:    #999999;
+  --color-border:         #E0E0E0;
+  --color-border-strong:  #C8C8C8;
+  --color-shadow:         rgba(0, 0, 0, 0.08);
+  --color-shadow-md:      rgba(0, 0, 0, 0.12);
+  --color-shadow-lg:      rgba(0, 0, 0, 0.18);
+  --color-glow:           rgba(232, 34, 42, 0.12);
 }
 
+// ─── Dark Theme ─────────────────────────────────────────────────────────────
 body.dark-theme {
   @include mat.theme((
     color: (
@@ -35,17 +44,24 @@ body.dark-theme {
     )
   ));
 
-  --color-background: #0D0D0D;
-  --color-surface: #1C1C1E;
-  --color-primary: #E8222A;
-  --color-accent: #1A44AE;
-  --color-text: #F0F0F0;
-  --color-text-muted: #AAAAAA;
-  --color-border: #2C2C2E;
-  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-background:     #161618;
+  --color-surface:        #222226;
+  --color-surface-raised: #2A2A2F;
+  --color-surface-inset:  #1A1A1E;
+  --color-primary:        #E8222A;
+  --color-accent:         #4A72E8;
+  --color-text:           #F0F0F2;
+  --color-text-muted:     #9A9AA8;
+  --color-text-subtle:    #6A6A78;
+  --color-border:         #313138;
+  --color-border-strong:  #44444E;
+  --color-shadow:         rgba(0, 0, 0, 0.35);
+  --color-shadow-md:      rgba(0, 0, 0, 0.50);
+  --color-shadow-lg:      rgba(0, 0, 0, 0.65);
+  --color-glow:           rgba(232, 34, 42, 0.15);
 }
 
-// System preference fallback
+// ─── System Preference Fallback ─────────────────────────────────────────────
 @media (prefers-color-scheme: dark) {
   body:not(.light-theme) {
     @include mat.theme((
@@ -56,20 +72,149 @@ body.dark-theme {
       )
     ));
 
-    --color-background: #0D0D0D;
-    --color-surface: #1C1C1E;
-    --color-primary: #E8222A;
-    --color-accent: #1A44AE;
-    --color-text: #F0F0F0;
-    --color-text-muted: #AAAAAA;
-    --color-border: #2C2C2E;
-    --color-shadow: rgba(0, 0, 0, 0.4);
+    --color-background:     #161618;
+    --color-surface:        #222226;
+    --color-surface-raised: #2A2A2F;
+    --color-surface-inset:  #1A1A1E;
+    --color-primary:        #E8222A;
+    --color-accent:         #4A72E8;
+    --color-text:           #F0F0F2;
+    --color-text-muted:     #9A9AA8;
+    --color-text-subtle:    #6A6A78;
+    --color-border:         #313138;
+    --color-border-strong:  #44444E;
+    --color-shadow:         rgba(0, 0, 0, 0.35);
+    --color-shadow-md:      rgba(0, 0, 0, 0.50);
+    --color-shadow-lg:      rgba(0, 0, 0, 0.65);
+    --color-glow:           rgba(232, 34, 42, 0.15);
   }
 }
 
+// ─── Base Body ───────────────────────────────────────────────────────────────
 body {
   background-color: var(--color-background);
   color: var(--color-text);
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHARED COMPONENT TOKENS — used across home, landing, and other pages
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── Shared Card Surface ─────────────────────────────────────────────────────
+// Base surface card — import via @extend or reuse these properties
+%surface-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px var(--color-shadow), 0 4px 16px var(--color-shadow);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+%surface-card--hover {
+  &:hover {
+    box-shadow: 0 4px 12px var(--color-shadow-md), 0 12px 32px var(--color-shadow);
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+}
+
+// ─── Shared Field Block ───────────────────────────────────────────────────────
+%field-block {
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+
+  label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    margin-bottom: 5px;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.45;
+
+    &:empty::after {
+      content: '—';
+      color: var(--color-text-subtle);
+      opacity: 0.6;
+    }
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-glow);
+  }
+}
+
+// ─── Shared Section Label ────────────────────────────────────────────────────
+%section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+// ─── Shared Spinner ──────────────────────────────────────────────────────────
+%spinner {
+  width: 36px;
+  height: 36px;
+  border: 2.5px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: global-spin 0.75s linear infinite;
+}
+
+@keyframes global-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Shared Badge ────────────────────────────────────────────────────────────
+%badge-base {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+%badge-primary {
+  @extend %badge-base;
+  background: var(--color-glow);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+// ─── Shared Active Badge (profile header) ────────────────────────────────────
+%active-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
