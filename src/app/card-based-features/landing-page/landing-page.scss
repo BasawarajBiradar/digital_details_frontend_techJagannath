@@ -391,3 +391,183 @@
     animation: global-spin .75s linear infinite;
   }
 }
+
+// ─── QR Trigger ────────────────────────────────────────────────────────────
+.qr-trigger {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.qr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    box-shadow: 0 0 0 4px var(--color-glow);
+    transform: translateY(-1px);
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+// ─── QR Modal ──────────────────────────────────────────────────────────────
+.qr-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn .15s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.qr-modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 360px;
+  overflow: hidden;
+  animation: modalUp .2s cubic-bezier(.22,.68,0,1.2) both;
+
+  // Top accent stripe
+  &::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 0;
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--color-text);
+      margin: 0;
+    }
+  }
+
+  &__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-inset);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), color var(--transition);
+
+    &:hover {
+      background: var(--color-surface-raised);
+      color: var(--color-text);
+    }
+  }
+
+  &__body {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 160px;
+    align-items: center;
+  }
+
+  &__loader {
+    width: 40px;
+    height: 40px;
+    border: 2.5px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: global-spin .75s linear infinite;
+  }
+
+  &__image-wrap {
+    padding: 12px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: #fff;  // QR codes need white bg regardless of theme
+    display: inline-block;
+  }
+
+  &__image {
+    display: block;
+    width: 220px;
+    height: 220px;
+    image-rendering: pixelated;
+  }
+
+  &__footer {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__hint {
+    font-size: 11.5px;
+    color: var(--color-text-subtle);
+    text-align: center;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__download {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 24px;
+    border-radius: var(--radius-lg);
+    border: none;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition);
+
+    svg { flex-shrink: 0; }
+
+    &:hover { opacity: .88; transform: translateY(-1px); }
+    &:active { transform: translateY(0); }
+  }
+}
+
+@keyframes modalUp {
+  from { opacity: 0; transform: scale(.94) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
