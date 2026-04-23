@@ -218,3 +218,18 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+.toast--success, .toast--success .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+  color: #fff !important;
+}
+
+.toast--error, .toast--error .mdc-snackbar__surface {
+  background-color: #c62828 !important;
+  color: #fff !important;
+}
+
+.toast--info, .toast--info .mdc-snackbar__surface {
+  background-color: #1565c0 !important;
+  color: #fff !important;
+}
