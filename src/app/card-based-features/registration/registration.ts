@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormStateService } from '@core/services/form-state';
 import { ProfileApiService, CommonProfilePayload } from '@core/services/profile-api';
+import { ToastService } from '@core/services/toast-service';
 
 interface CardType {
   id: string;
@@ -48,7 +49,8 @@ export class Registration {
     private fb: FormBuilder,
     private formState: FormStateService,
     private profileApi: ProfileApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: ToastService
   ) {
     this.commonForm = this.fb.group({
       firstName:               ['', Validators.required],
@@ -112,15 +114,20 @@ export class Registration {
       return;
     }
     this.formState.save(this.commonForm.value); 
-    this.formSaved = true;    
-
+    this.isSaving = true;
   const uid = this.route.snapshot.paramMap.get('uid');
   this.profileApi.validateUserDetails(uid, this.commonForm.value).subscribe({
         next: (response) => {
           const userId = response.data.userId;
           this.userId = userId;
+          this.formSaved = true;
+          this.toast.success('Details saved successfully! Please select a card to continue.');
+          this.isSaving = false;
         },
         error: (err) => {
+          const message = err?.error?.message || 'Something went wrong. Please try again.';
+          this.toast.error(message);  
+          this.isSaving = false;
           console.error('user validation failed', err);
         }
       });

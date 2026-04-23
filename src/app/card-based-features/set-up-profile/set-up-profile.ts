@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormStateService } from '@core/services/form-state';
 import { ProfileApiService } from '@core/services/profile-api';
+import { ToastService } from '@core/services/toast-service';
 
 export type AccountType = 'kids' | 'senior' | 'business' | 'vehicle' | 'pets' | 'social';
 
@@ -50,7 +51,9 @@ export class SetUpProfile {
     private route: ActivatedRoute,
     public router: Router,
     private formState: FormStateService,
-  private profileApi: ProfileApiService  
+  private profileApi: ProfileApiService,
+      private toast: ToastService
+    
   ) {}
 
   ngOnInit() {
@@ -233,9 +236,12 @@ export class SetUpProfile {
       next: () => {
         this.isLoading = false;
         this.formState.clear();
+        this.toast.success('Profile saved successfully!');
         this.router.navigate(['/card', this.uid]);
       },
       error: (err) => {
+        const message = err?.error?.message || 'Something went wrong. Please try again.';
+        this.toast.error(message);
         this.isLoading = false;
         console.error('Registration failed', err);
       }
