@@ -32,6 +32,7 @@ export class Registration {
   formSaved = false;
   isSaving = false;
   saveError: string | null = null;
+  userId: number | null = null;
 
   cards: CardType[] = [
     { id: 'kids',     emoji: '👶', title: 'Kids',     description: 'Emergency info for children'  },
@@ -99,9 +100,9 @@ export class Registration {
     }
 
     if (!this.selectedCard) return;
-    this.formState.save(this.commonForm.value);
+    // this.formState.save(this.commonForm.value);
     const uid = this.route.snapshot.paramMap.get('uid');
-    this.router.navigate(['/setup-profile', uid, this.selectedCard]);
+    this.router.navigate(['/setup-profile', uid, this.selectedCard, this.userId]);
   }
 
 
@@ -112,6 +113,17 @@ export class Registration {
     }
     this.formState.save(this.commonForm.value); 
     this.formSaved = true;    
+
+  const uid = this.route.snapshot.paramMap.get('uid');
+  this.profileApi.validateUserDetails(uid, this.commonForm.value).subscribe({
+        next: (response) => {
+          const userId = response.data.userId;
+          this.userId = userId;
+        },
+        error: (err) => {
+          console.error('user validation failed', err);
+        }
+      });
   }
 
     private static passwordMatchValidator(): ValidatorFn {

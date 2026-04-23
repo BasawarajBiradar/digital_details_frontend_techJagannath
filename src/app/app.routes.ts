@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: 'register/:type', component: RegistrationComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'registration/:uid', component: Registration},
-  { path: 'setup-profile/:uid/:type', component: SetUpProfile },
+  { path: 'setup-profile/:uid/:type/:userId', component: SetUpProfile },
   { path: 'card/:uid', component: LandingPage },
   { path: 'home-page', component: HomePage }
 ];

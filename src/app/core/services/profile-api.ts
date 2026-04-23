@@ -86,4 +86,8 @@ export class ProfileApiService {
     );
   }
 
+  validateUserDetails(uid: string | null, payload: CommonProfilePayload): Observable<{ data: { userId: number } }> {
+    return this.http.post<{ data: { userId: number } }>(`${this.baseUrl}/api/register-card/validate/${uid}`, { ...payload });
+  }
+
 }

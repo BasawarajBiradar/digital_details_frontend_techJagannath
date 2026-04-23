@@ -220,14 +220,15 @@ export class SetUpProfile {
       this.form.markAllAsTouched();
       return;
     }
-    const userId = this.formState.getUserId();
+    const userId = this.route.snapshot.paramMap.get('userId');
+
     this.isLoading = true;
-    const commonData = this.formState.commonFields();
     const payload = {
-      ...commonData, 
+      userId: userId,
       ...this.form.value,
       account_type: this.accountType
     };
+
     this.profileApi.saveCardProfileDetails(this.accountType, payload, this.uid).subscribe({
       next: () => {
         this.isLoading = false;
