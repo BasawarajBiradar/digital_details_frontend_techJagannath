@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="white"/>
+  
+  <!-- T in black -->
+  <text x="20" y="70" font-size="60" font-family="Arial" fill="black" font-weight="bold">
+    T
+  </text>
+
+  <!-- X in red -->
+  <text x="55" y="70" font-size="60" font-family="Arial" fill="red" font-weight="bold">
+    X
+  </text>
+</svg>
