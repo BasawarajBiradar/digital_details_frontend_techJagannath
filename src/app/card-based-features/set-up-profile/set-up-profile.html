@@ -12,16 +12,11 @@
       <!-- ── KIDS SPECIFIC ── -->
       @if (accountType === 'kids') {
         <div class="form-section">
-          <h2 class="form-section__title">Child Details</h2>
+          <h2 class="form-section__title">Student Details</h2>
           <div class="form-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Child Name</mat-label>
+              <mat-label>Name</mat-label>
               <input matInput formControlName="childName"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Date of Birth</mat-label>
-              <input matInput type="date" formControlName="dateOfBirth"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -34,12 +29,8 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Blood Group</mat-label>
-              <mat-select formControlName="bloodGroup">
-                @for (bg of ['A+','A-','B+','B-','O+','O-','AB+','AB-']; track bg) {
-                  <mat-option [value]="bg">{{ bg }}</mat-option>
-                }
-              </mat-select>
+              <mat-label>Emergency Contact Number</mat-label>
+              <input matInput formControlName="emergencyContactNumber"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -52,7 +43,12 @@
               <input matInput formControlName="schoolAddress"/>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-span-2">
+            <mat-form-field appearance="outline">
+              <mat-label>School Phone number</mat-label>
+              <input matInput formControlName="schoolPhone"/>
+            </mat-form-field>
+
+            <!-- <mat-form-field appearance="outline" class="col-span-2">
               <mat-label>Allergies</mat-label>
               <textarea matInput formControlName="allergies" rows="2"></textarea>
             </mat-form-field>
@@ -60,12 +56,27 @@
             <mat-form-field appearance="outline" class="col-span-2">
               <mat-label>Medical Conditions</mat-label>
               <textarea matInput formControlName="medicalConditions" rows="2"></textarea>
+            </mat-form-field> 
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput type="date" formControlName="dateOfBirth"/>
             </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Blood Group</mat-label>
+              <mat-select formControlName="bloodGroup">
+                @for (bg of ['A+','A-','B+','B-','O+','O-','AB+','AB-']; track bg) {
+                  <mat-option [value]="bg">{{ bg }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field> -->
+
           </div>
-        </div>
+        </div> 
 
         <!-- Guardians -->
-        <div class="form-section">
+        <!-- <div class="form-section">
           <div class="form-section__row">
             <h2 class="form-section__title">Guardians</h2>
             <button type="button" class="add-btn" (click)="addGuardian()">
@@ -131,7 +142,7 @@
               </div>
             </div>
           }
-        </div>
+        </div> -->
       }
 
       <!-- ── SENIOR SPECIFIC ── -->

@@ -25,23 +25,25 @@
         <h2>Child Details</h2>
         <div class="grid">
           <div><label>Name</label><p>{{ profile()?.childName }}</p></div>
-          <div><label>Date of Birth</label><p>{{ profile()?.dateOfBirth }}</p></div>
+          <!-- <div><label>Date of Birth</label><p>{{ profile()?.dateOfBirth }}</p></div> -->
           <div><label>Gender</label><p>{{ profile()?.gender }}</p></div>
-          <div><label>Blood Group</label><p>{{ profile()?.bloodGroup }}</p></div>
+          <!-- <div><label>Blood Group</label><p>{{ profile()?.bloodGroup }}</p></div> -->
           <div><label>School</label><p>{{ profile()?.schoolName }}</p></div>
           <div><label>School Address</label><p>{{ profile()?.schoolAddress }}</p></div>
+          <div><label>School Phone</label><p>{{ profile()?.schoolPhone }}</p></div>
+          <div><label>Emergency contact number</label><p>{{ profile()?.emergencyContactNumber }}</p></div>
         </div>
-        <div class="full">
+        <!-- <div class="full">
           <label>Allergies</label>
           <p>{{ profile()?.allergies }}</p>
         </div>
         <div class="full">
           <label>Medical Conditions</label>
           <p>{{ profile()?.medicalConditions }}</p>
-        </div>
-      </div>
+        </div> -->
+      </div> 
 
-      <div class="section">
+      <!-- <div class="section">
         <h2>Guardians</h2>
         <div *ngFor="let g of profile()?.guardians; let i = index" class="sub-card">
           <div class="sub-card__header">
@@ -62,7 +64,7 @@
             <p>{{ g.address }}</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
     </ng-container>
 

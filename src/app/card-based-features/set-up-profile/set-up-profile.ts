@@ -82,14 +82,16 @@ export class SetUpProfile {
   private buildKidsForm(): FormGroup {
     return this.fb.group({
       childName:         ['', Validators.required],
-      dateOfBirth:      ['', Validators.required],
+      // dateOfBirth:      ['', Validators.required],
       gender:             ['', Validators.required],
-      bloodGroup:        [''],
+      // bloodGroup:        [''],
       schoolName:        [''],
       schoolAddress:     [''],
-      allergies:          [''],
-      medicalConditions: [''],
-      guardians: this.fb.array([this.newGuardian()])
+      // allergies:          [''],
+      // medicalConditions: [''],
+      emergencyContactNumber: ['', Validators.required],
+      schoolPhone:            [''],
+      // guardians: this.fb.array([this.newGuardian()])
     });
   }
 
@@ -218,11 +220,13 @@ export class SetUpProfile {
   removeCaretaker(i: number) { this.caretakers.removeAt(i); }
 
   onSubmit() {
-    
+    console.log("coming in on submint 1")
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+    console.log("coming in on submint 2")
+
     const userId = this.route.snapshot.paramMap.get('userId');
 
     this.isLoading = true;
