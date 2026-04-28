@@ -38,7 +38,7 @@ export class SetUpProfile {
 
   // Meta config per account type
   readonly typeConfig: Record<AccountType, { title: string; subtitle: string; emoji: string }> = {
-    kids:     { title: 'Child Profile',    subtitle: 'Emergency info for children',   emoji: '👶' },
+    kids:     { title: 'Student Profile',    subtitle: 'Emergency info for children',   emoji: '👨‍🎓' },
     senior:   { title: 'Senior Profile',   subtitle: 'Medical & contact details',     emoji: '👴' },
     business: { title: 'Business Profile', subtitle: 'Card, links & company info',    emoji: '💼' },
     vehicle:  { title: 'Vehicle Profile',  subtitle: 'Car info & owner contact',      emoji: '🚗' },

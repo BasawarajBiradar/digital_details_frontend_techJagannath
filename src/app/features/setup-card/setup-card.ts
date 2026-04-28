@@ -35,7 +35,7 @@ export class SetupCardComponent {
   saveError: string | null = null;
 
   cards: CardType[] = [
-    { id: 'kids',     emoji: '👶', title: 'Kids',     description: 'Emergency info for children'  },
+    { id: 'kids',     emoji: '👨‍🎓', title: 'Student',     description: 'Emergency info for children'  },
     { id: 'senior',   emoji: '👴', title: 'Senior',   description: 'Medical & contact details'    },
     { id: 'pets',     emoji: '🐾', title: 'Pets',     description: 'Pet ID & owner info'          },
     { id: 'business', emoji: '💼', title: 'Business', description: 'Card, links & company'        },
