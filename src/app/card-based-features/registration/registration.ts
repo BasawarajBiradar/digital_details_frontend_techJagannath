@@ -6,7 +6,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormStateService } from '@core/services/form-state';
-import { ProfileApiService, CommonProfilePayload } from '@core/services/profile-api';
+import { ProfileApiService } from '@core/services/profile-api';
 import { ToastService } from '@core/services/toast-service';
 
 interface CardType {

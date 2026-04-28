@@ -48,101 +48,8 @@
               <input matInput formControlName="schoolPhone"/>
             </mat-form-field>
 
-            <!-- <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Allergies</mat-label>
-              <textarea matInput formControlName="allergies" rows="2"></textarea>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Medical Conditions</mat-label>
-              <textarea matInput formControlName="medicalConditions" rows="2"></textarea>
-            </mat-form-field> 
-
-            <mat-form-field appearance="outline">
-              <mat-label>Date of Birth</mat-label>
-              <input matInput type="date" formControlName="dateOfBirth"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Blood Group</mat-label>
-              <mat-select formControlName="bloodGroup">
-                @for (bg of ['A+','A-','B+','B-','O+','O-','AB+','AB-']; track bg) {
-                  <mat-option [value]="bg">{{ bg }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field> -->
-
           </div>
         </div> 
-
-        <!-- Guardians -->
-        <!-- <div class="form-section">
-          <div class="form-section__row">
-            <h2 class="form-section__title">Guardians</h2>
-            <button type="button" class="add-btn" (click)="addGuardian()">
-              <mat-icon>add</mat-icon> Add Guardian
-            </button>
-          </div>
-
-          @for (g of guardians.controls; track $index) {
-            <div class="sub-card">
-              <div class="sub-card__header">
-                <span>Guardian {{ $index + 1 }}</span>
-                @if ($index > 0) {
-                  <button type="button" class="remove-btn" (click)="removeGuardian($index)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                }
-              </div>
-              <div class="form-grid" [formGroup]="$any(g)">
-                <mat-form-field appearance="outline">
-                  <mat-label>Guardian Name</mat-label>
-                  <input matInput formControlName="guardianName"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Relationship</mat-label>
-                  <mat-select formControlName="relationship">
-                    <mat-option value="father">Father</mat-option>
-                    <mat-option value="mother">Mother</mat-option>
-                    <mat-option value="relative">Relative</mat-option>
-                    <mat-option value="caretaker">Caretaker</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Primary Phone</mat-label>
-                  <input matInput formControlName="primaryPhone"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Alternate Phone</mat-label>
-                  <input matInput formControlName="alternatePhone"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Email</mat-label>
-                  <input matInput formControlName="email"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>ID Proof Type</mat-label>
-                  <mat-select formControlName="idProofType">
-                    <mat-option value="aadhar">Aadhar</mat-option>
-                    <mat-option value="pan">PAN</mat-option>
-                    <mat-option value="passport">Passport</mat-option>
-                    <mat-option value="driving_license">Driving License</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-span-2">
-                  <mat-label>ID Proof Number</mat-label>
-                  <input matInput formControlName="idProofNumber"/>
-                </mat-form-field>
-              </div>
-            </div>
-          }
-        </div> -->
       }
 
       <!-- ── SENIOR SPECIFIC ── -->
@@ -153,11 +60,6 @@
             <mat-form-field appearance="outline">
               <mat-label>Full Name</mat-label>
               <input matInput formControlName="fullName"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Date of Birth</mat-label>
-              <input matInput type="date" formControlName="dateOfBirth"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -177,96 +79,23 @@
                 }
               </mat-select>
             </mat-form-field>
-          </div>
-        </div>
 
-        <div class="form-section">
-          <h2 class="form-section__title">Medical Information</h2>
-          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Emergency Phone</mat-label>
+              <input matInput formControlName="contactNumber"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Alternate Phone</mat-label>
+              <input matInput formControlName="alternateNumber"/>
+            </mat-form-field>
+
             <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Medical Conditions</mat-label>
-              <textarea matInput formControlName="medicalConditions" rows="2"></textarea>
+              <mat-label>Medical Condition</mat-label>
+              <textarea matInput formControlName="medicalCondition" rows="2"></textarea>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Current Medications</mat-label>
-              <textarea matInput formControlName="medications" rows="2"></textarea>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Doctor Name</mat-label>
-              <input matInput formControlName="doctorName"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Doctor Contact</mat-label>
-              <input matInput formControlName="doctorContact"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Hospital Preference</mat-label>
-              <input matInput formControlName="hospitalPreference"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Insurance Provider</mat-label>
-              <input matInput formControlName="insuranceProvider"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Insurance Number</mat-label>
-              <input matInput formControlName="insuranceNumber"/>
-            </mat-form-field>
           </div>
-        </div>
-
-        <!-- Caretakers -->
-        <div class="form-section">
-          <div class="form-section__row">
-            <h2 class="form-section__title">Caretakers</h2>
-            <button type="button" class="add-btn" (click)="addCaretaker()">
-              <mat-icon>add</mat-icon> Add Caretaker
-            </button>
-          </div>
-
-          @for (c of caretakers.controls; track $index) {
-            <div class="sub-card">
-              <div class="sub-card__header">
-                <span>Caretaker {{ $index + 1 }}</span>
-                @if ($index > 0) {
-                  <button type="button" class="remove-btn" (click)="removeCaretaker($index)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                }
-              </div>
-              <div class="form-grid" [formGroup]="$any(c)">
-                <mat-form-field appearance="outline">
-                  <mat-label>Caretaker Name</mat-label>
-                  <input matInput formControlName="caretakerName"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Relationship</mat-label>
-                  <input matInput formControlName="relationship"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Phone</mat-label>
-                  <input matInput formControlName="phone"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Alternate Phone</mat-label>
-                  <input matInput formControlName="alternatePhone"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-span-2">
-                  <mat-label>Address</mat-label>
-                  <input matInput formControlName="address"/>
-                </mat-form-field>
-              </div>
-            </div>
-          }
         </div>
       }
 
@@ -281,13 +110,8 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Business Type</mat-label>
-              <input matInput formControlName="businessType"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Registration Number</mat-label>
-              <input matInput formControlName="registrationNumber"/>
+              <mat-label>Owner Name</mat-label>
+              <input matInput formControlName="ownerName"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -305,34 +129,19 @@
               <input matInput formControlName="businessPhone"/>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-span-2">
+            <mat-form-field appearance="outline">
               <mat-label>Website URL</mat-label>
               <input matInput formControlName="websiteUrl" placeholder="https://"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Business Description</mat-label>
+              <input matInput formControlName="businessDescription" placeholder="What does your business do ?"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
               <mat-label>Business Address</mat-label>
               <textarea matInput formControlName="businessAddress" rows="2"></textarea>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2 class="form-section__title">Owner Details</h2>
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Owner Name</mat-label>
-              <input matInput formControlName="ownerName"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Owner Contact</mat-label>
-              <input matInput formControlName="ownerContact"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Owner Email</mat-label>
-              <input matInput formControlName="ownerEmail"/>
             </mat-form-field>
           </div>
         </div>
@@ -370,21 +179,6 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Color</mat-label>
-              <input matInput formControlName="color"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Year of Manufacture</mat-label>
-              <input matInput type="date" formControlName="yearOfManufacture"/>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2 class="form-section__title">Owner Details</h2>
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
               <mat-label>Owner Name</mat-label>
               <input matInput formControlName="ownerName"/>
             </mat-form-field>
@@ -397,31 +191,6 @@
             <mat-form-field appearance="outline">
               <mat-label>Alternate Contact</mat-label>
               <input matInput formControlName="alternateContact"/>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2 class="form-section__title">Legal Documents</h2>
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>RC Number</mat-label>
-              <input matInput formControlName="rcNumber"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Insurance Number</mat-label>
-              <input matInput formControlName="insuranceNumber"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Insurance Expiry</mat-label>
-              <input matInput type="date" formControlName="insuranceExpiry"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Chassis Number</mat-label>
-              <input matInput formControlName="chassisNumber"/>
             </mat-form-field>
           </div>
         </div>
@@ -454,55 +223,12 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Gender</mat-label>
-              <mat-select formControlName="gender">
-                <mat-option value="male">Male</mat-option>
-                <mat-option value="female">Female</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Age</mat-label>
-              <input matInput formControlName="age" placeholder="e.g. 2 years"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Color</mat-label>
-              <input matInput formControlName="color"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Microchip ID</mat-label>
-              <input matInput formControlName="microchipId"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
               <mat-label>Vaccination Status</mat-label>
               <mat-select formControlName="vaccinationStatus">
                 <mat-option value="up_to_date">Up to date</mat-option>
                 <mat-option value="partial">Partial</mat-option>
                 <mat-option value="none">None</mat-option>
               </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2 class="form-section__title">Veterinary & Owner</h2>
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Vet Name</mat-label>
-              <input matInput formControlName="vetName"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Vet Contact</mat-label>
-              <input matInput formControlName="vetContact"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Medical Notes</mat-label>
-              <textarea matInput formControlName="medicalNotes" rows="2"></textarea>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -519,6 +245,11 @@
               <mat-label>Alternate Contact</mat-label>
               <input matInput formControlName="alternateContact"/>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-span-2">
+              <mat-label>Owner Address</mat-label>
+              <input matInput formControlName="ownerAddress"/>
+            </mat-form-field>
           </div>
         </div>
       }
@@ -533,16 +264,6 @@
               <input matInput formControlName="fullName"/>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Nickname</mat-label>
-              <input matInput formControlName="nickname"/>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2 class="form-section__title">Social Handles</h2>
-          <div class="form-grid">
             <mat-form-field appearance="outline">
               <mat-label>Instagram</mat-label>
               <input matInput formControlName="instagramHandle" placeholder="@username"/>
@@ -563,26 +284,15 @@
               <mat-label>Twitter / X</mat-label>
               <input matInput formControlName="twitterHandle" placeholder="@username"/>
             </mat-form-field>
-          </div>
-        </div>
 
-        <div class="form-section">
-          <h2 class="form-section__title">Emergency Contact</h2>
-          <div class="form-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Contact Name</mat-label>
+              <mat-label>Emergency Contact Name</mat-label>
               <input matInput formControlName="emergencyContactName"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Contact Number</mat-label>
+              <mat-label>Emergency Contact Number</mat-label>
               <input matInput formControlName="emergencyContactNumber"/>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="col-span-2">
-              <mat-label>Message to Finder</mat-label>
-              <textarea matInput formControlName="messageToFinder" rows="3"
-                placeholder="e.g. If found, please contact my family immediately."></textarea>
             </mat-form-field>
           </div>
         </div>

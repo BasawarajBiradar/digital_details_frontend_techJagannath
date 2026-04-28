@@ -82,49 +82,36 @@ export class SetUpProfile {
   private buildKidsForm(): FormGroup {
     return this.fb.group({
       childName:         ['', Validators.required],
-      // dateOfBirth:      ['', Validators.required],
       gender:             ['', Validators.required],
-      // bloodGroup:        [''],
       schoolName:        [''],
       schoolAddress:     [''],
-      // allergies:          [''],
-      // medicalConditions: [''],
       emergencyContactNumber: ['', Validators.required],
-      schoolPhone:            [''],
-      // guardians: this.fb.array([this.newGuardian()])
+      schoolPhone:            ['']
     });
   }
 
   private buildSeniorForm(): FormGroup {
     return this.fb.group({
       fullName:            ['', Validators.required],
-      dateOfBirth:        ['', Validators.required],
       gender:               ['', Validators.required],
       bloodGroup:          [''],
       medicalConditions:   [''],
-      medications:          [''],
-      doctorName:          [''],
-      doctorContact:       [''],
-      hospitalPreference:  [''],
-      insuranceProvider:   [''],
-      insuranceNumber:     [''],
-      caretakers: this.fb.array([this.newCaretaker()])
+      contactNumber:         ['', Validators.required],
+      alternateNumber:         [''],
+      medicalCondition:      ['']
     });
   }
 
   private buildBusinessForm(): FormGroup {
     return this.fb.group({
       businessName:        ['', Validators.required],
-      businessType:        ['', Validators.required],
-      registrationNumber:  [''],
+      businessDescription:        [''],
       gstNumber:           [''],
       businessEmail:       ['', Validators.email],
       businessPhone:       [''],
       websiteUrl:          [''],
       businessAddress:     [''],
-      ownerName:           ['', Validators.required],
-      ownerContact:        [''],
-      ownerEmail:          ['', Validators.email],
+      ownerName:           ['', Validators.required]
     });
   }
 
@@ -134,15 +121,9 @@ export class SetUpProfile {
       vehicleType:         ['', Validators.required],
       brand:                [''],
       model:                [''],
-      color:                [''],
-      yearOfManufacture:  [''],
       ownerName:           ['', Validators.required],
       ownerContact:        ['', Validators.required],
-      alternateContact:    [''],
-      rcNumber:            [''],
-      insuranceNumber:     [''],
-      insuranceExpiry:     [''],
-      chassisNumber:       [''],
+      alternateContact:    ['']
     });
   }
 
@@ -151,16 +132,10 @@ export class SetUpProfile {
       petName:             ['', Validators.required],
       species:              ['', Validators.required],
       breed:                [''],
-      gender:               [''],
-      age:                  [''],
-      color:                [''],
-      microchipId:         [''],
       vaccinationStatus:   [''],
-      vetName:             [''],
-      vetContact:          [''],
-      medicalNotes:        [''],
       ownerName:           ['', Validators.required],
       ownerContact:        ['', Validators.required],
+      ownerAddress:        [''],
       alternateContact:    [''],
     });
   }
@@ -168,14 +143,12 @@ export class SetUpProfile {
   private buildSocialForm(): FormGroup {
     return this.fb.group({
       fullName:                  ['', Validators.required],
-      nickname:                   [''],
       instagramHandle:           [''],
       facebookProfile:           [''],
       linkedinProfile:           [''],
       twitterHandle:             [''],
       emergencyContactName:     ['', Validators.required],
-      emergencyContactNumber:   ['', Validators.required],
-      messageToFinder:          [''],
+      emergencyContactNumber:   ['', Validators.required]
     });
   }
 
