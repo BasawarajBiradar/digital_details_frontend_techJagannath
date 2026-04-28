@@ -10,15 +10,6 @@ export interface CommonProfilePayload {
   confirmPassword: string;
   emailId: string;
   phoneNumber: string;
-  alternateNumber: string;
-  addressLineOne: string;
-  addressLineTwo: string;
-  city: string;
-  state: string;
-  country: string;
-  pinCode: string;
-  safetyNote: string;
-  medicalNote: string;
 }
 
 export interface CardData {
@@ -36,15 +27,6 @@ export interface UserDetailsResponse {
   lastName: string;
   emailId: string;
   phoneNumber: string;
-  alternateNumber?: string;
-  addressLineOne: string;
-  addressLineTwo?: string;
-  city: string;
-  state: string;
-  country: string;
-  pinCode: string;
-  safetyNote?: string;
-  medicalNote?: string;
   cards: { id: string; isActive: boolean }[];
 }
 

@@ -36,7 +36,7 @@ export class Registration {
   userId: number | null = null;
 
   cards: CardType[] = [
-    { id: 'kids',     emoji: '👶', title: 'Kids',     description: 'Emergency info for children'  },
+    { id: 'kids',     emoji: '👨‍🎓', title: 'Student',     description: 'Emergency info for children'  },
     { id: 'senior',   emoji: '👴', title: 'Senior',   description: 'Medical & contact details'    },
     { id: 'pets',     emoji: '🐾', title: 'Pets',     description: 'Pet ID & owner info'          },
     { id: 'business', emoji: '💼', title: 'Business', description: 'Card, links & company'        },
@@ -59,15 +59,6 @@ export class Registration {
       confirm_password:         ['', Validators.required],
       emailId:                    ['', [Validators.required, Validators.email]],
       phoneNumber:   ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]],
-      alternateNumber: [''],
-      addressLineOne:            ['', Validators.required],
-      addressLineTwo:            [''],
-      city:                     ['', Validators.required],
-      state:                    ['', Validators.required],
-      country:                  ['', Validators.required],
-      pincode:                  ['', [Validators.required, Validators.pattern(/^[0-9]{4,10}$/)]],
-      safetyNote:           [''],
-      medicalNote:             [''],
     }, { validators: Registration.passwordMatchValidator() });
 
       this.commonForm.valueChanges.subscribe(() => {

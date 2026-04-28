@@ -17,15 +17,6 @@ interface UserProfile {
   lastName: string;
   emailId: string;
   phoneNumber: string;
-  alternateNumber?: string;
-  addressLineOne: string;
-  addressLineTwo?: string;
-  city: string;
-  state: string;
-  country: string;
-  pinCode: string;
-  safetyNote?: string;
-  medicalNote?: string;
   cards: CardType[];
 }
 
@@ -91,7 +82,7 @@ export class HomePage implements OnInit {
   navigateToCard(card: CardType) {
      if (!card.isActive) {
         // No data yet → go to registration
-        this.router.navigate(['/register', card.id]);
+        // this.router.navigate(['/register', card.id]);
       } else {
         // Has data → go to card landing page using uid
         this.router.navigate(['/card', card.uid]);
@@ -104,12 +95,6 @@ export class HomePage implements OnInit {
     if (!p) return '';
 
     return [
-      p.addressLineOne,
-      p.addressLineTwo,
-      p.city,
-      p.state,
-      p.pinCode,
-      p.country,
     ].filter(Boolean).join(', ');
   });
 

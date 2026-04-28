@@ -29,8 +29,6 @@
         <h1 class="profile-name">
           {{ profile()!.firstName }} {{ profile()!.lastName }}
         </h1>
-        <!-- <p class="profile-meta">{{ profile()!.emailId }}</p>
-        <p class="profile-meta">{{ profile()!.phoneNumber }}</p> -->
       </div>
 
       <div class="active-badge">
@@ -54,12 +52,7 @@
             <dt>Primary</dt>
             <dd>{{ profile()!.phoneNumber }}</dd>
           </div>
-          @if (profile()!.alternateNumber) {
-            <div class="info-row">
-              <dt>Alternate</dt>
-              <dd>{{ profile()!.alternateNumber }}</dd>
-            </div>
-          }
+
         </dl>
       </div>
 
@@ -69,29 +62,6 @@
         </h2>
         <p class="info-address">{{ fullAddress() }}</p>
       </div>
-
-      @if (profile()!.safetyNote || profile()!.medicalNote) {
-        <div class="info-card info-card--safety">
-          <h2 class="info-card__title">
-            <span class="info-card__icon">🚨</span> Safety Notes
-          </h2>
-          <dl class="info-list">
-            @if (profile()!.safetyNote) {
-              <div class="info-row info-row--block">
-                <dt>Emergency</dt>
-                <dd>{{ profile()!.safetyNote }}</dd>
-              </div>
-            }
-            @if (profile()!.medicalNote) {
-              <div class="info-row info-row--block">
-                <dt>Medical</dt>
-                <dd>{{ profile()!.medicalNote }}</dd>
-              </div>
-            }
-          </dl>
-        </div>
-      }
-
     </div>
 
     <!-- Cards -->

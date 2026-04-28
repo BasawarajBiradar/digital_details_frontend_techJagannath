@@ -120,16 +120,7 @@ export class SetupCardComponent {
       password:         formValue.password || '',
       confirmPassword:  formValue.confirm_password || '',
       emailId:          formValue.email,
-      phoneNumber:      formValue.primary_contact_number,
-      alternateNumber:  formValue.alternate_contact_number ?? '',
-      addressLineOne:   formValue.address_line1,
-      addressLineTwo:   formValue.address_line2 ?? '',
-      city:             formValue.city,
-      state:            formValue.state,
-      country:          formValue.country,
-      pinCode:          formValue.pincode,
-      safetyNote:       formValue.emergency_note ?? '',
-      medicalNote:      formValue.medical_note ?? '',
+      phoneNumber:      formValue.primary_contact_number
     };
 
     this.profileApi.saveCommonProfile(payload).subscribe({
