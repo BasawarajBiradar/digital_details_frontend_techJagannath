@@ -1,5 +1,5 @@
-<div class="login-page">
-  <div class="login-card">
+<div class="auth-page">
+  <div class="auth-card login-card">
 
     <div class="login-card__header">
       <h1 class="login-card__title">Welcome back</h1>
@@ -51,17 +51,13 @@
       </div>
 
       <button
-        class="login-form__submit"
+        class="btn-submit login-form__submit"
         type="submit"
         [disabled]="isLoading">
         {{ isLoading ? 'Signing in...' : 'Sign in' }}
       </button>
 
     </form>
-
-    <!-- <div class="login-card__footer">
-      <p>Don't have an account? <a routerLink="/setup">Create new account</a></p>
-    </div> -->
 
   </div>
 </div>
