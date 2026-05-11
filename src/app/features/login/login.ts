@@ -49,7 +49,15 @@ export class LoginComponent {
     next: (res) => {
       localStorage.setItem('token', res.data.token);
       this.isLoading = false;
-      this.router.navigate(['/home-page']);
+      switch(res.data.role) {
+      case 'Tapex Admin':
+        break;
+      case 'School Admin':
+        break;
+      case 'Student':
+        this.router.navigate(['student-dashboard']);
+        break;
+      }
     },
     error: (err) => {
       this.isLoading = false;

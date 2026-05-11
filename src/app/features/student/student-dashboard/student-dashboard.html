@@ -1,0 +1,125 @@
+<!-- student-dashboard.html -->
+<div class="dashboard">
+
+  <!-- ─── Loading ─────────────────────────────────────────────────────────── -->
+  @if (isLoading()) {
+    <div class="dashboard__loading">
+      <span class="spinner"></span>
+    </div>
+  }
+
+  <!-- ─── Error ───────────────────────────────────────────────────────────── -->
+  @else if (hasError()) {
+    <div class="surface-card dashboard__error">
+      <mat-icon>error_outline</mat-icon>
+      <p>Could not load student info. Please try again later.</p>
+    </div>
+  }
+
+  <!-- ─── ID Card ─────────────────────────────────────────────────────────── -->
+  @else if (student()) {
+    <div class="id-card">
+
+      <!-- Colour band: school name + optional logo -->
+      <div class="id-card__band">
+        @if (student()!.schoolLogoUrl) {
+          <img class="id-card__band-logo"
+               [src]="student()!.schoolLogoUrl"
+               alt="School logo" />
+        }
+        <div class="id-card__band-text">
+          <span class="id-card__band-title">{{ student()!.schoolName }}</span>
+          <span class="id-card__band-sub">SMART CARD · STUDENT ID</span>
+        </div>
+      </div>
+
+      <!-- Body: photo + details -->
+      <div class="id-card__body">
+
+        <div class="id-card__photo-wrap">
+          @if (student()!.photoUrl) {
+            <img class="id-card__photo"
+                 [src]="student()!.photoUrl"
+                 [alt]="student()!.fullName" />
+          } @else {
+            <div class="id-card__photo-fallback">
+              <mat-icon>person</mat-icon>
+            </div>
+          }
+        </div>
+
+        <div class="id-card__details">
+          <div class="id-card__name">{{ student()!.fullName }}</div>
+          <div class="id-card__class">{{ classDivision() }}</div>
+
+          <div class="id-card__divider"></div>
+
+          <div class="id-card__row">
+            <span class="id-card__row-label">Blood</span>
+            <span class="id-card__row-value id-card__row-value--blood">
+              {{ student()!.bloodGroup }}
+            </span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Alt. No</span>
+            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+          </div>
+
+          <div class="id-card__divider"></div>
+
+          <div class="id-card__row">
+            <span class="id-card__row-label">Emergency</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Relation</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactRelation }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactNumber }}</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  }
+
+  <!-- ─── Today's Taps ─────────────────────────────────────────────────────── -->
+  <div class="surface-card taps-card">
+
+    <h3 class="taps-card__heading">
+      Today's Card Taps
+      <span class="badge badge--primary">{{ todayTaps.length }}</span>
+    </h3>
+
+    @if (todayTaps.length > 0) {
+      <div class="taps-table-wrap">
+        <table class="taps-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tap of todayTaps; track tap.id; let i = $index) {
+              <tr>
+                <td class="taps-table__index">{{ i + 1 }}</td>
+                <td class="taps-table__time">{{ tap.time | date: 'hh:mm a' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="taps-card__empty">
+        <mat-icon>contactless</mat-icon>
+        <p>No taps recorded today</p>
+      </div>
+    }
+
+  </div>
+
+</div>
