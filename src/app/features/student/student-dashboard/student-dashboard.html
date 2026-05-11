@@ -1,14 +1,12 @@
 <!-- student-dashboard.html -->
 <div class="dashboard">
 
-  <!-- ─── Loading ─────────────────────────────────────────────────────────── -->
   @if (isLoading()) {
     <div class="dashboard__loading">
       <span class="spinner"></span>
     </div>
   }
 
-  <!-- ─── Error ───────────────────────────────────────────────────────────── -->
   @else if (hasError()) {
     <div class="surface-card dashboard__error">
       <mat-icon>error_outline</mat-icon>
@@ -16,24 +14,19 @@
     </div>
   }
 
-  <!-- ─── ID Card ─────────────────────────────────────────────────────────── -->
   @else if (student()) {
+    <!-- id card details -->
     <div class="id-card">
 
-      <!-- Colour band: school name + optional logo -->
       <div class="id-card__band">
-        @if (student()!.schoolLogoUrl) {
           <img class="id-card__band-logo"
                [src]="student()!.schoolLogoUrl"
                alt="School logo" />
-        }
         <div class="id-card__band-text">
           <span class="id-card__band-title">{{ student()!.schoolName }}</span>
-          <span class="id-card__band-sub">SMART CARD · STUDENT ID</span>
         </div>
       </div>
 
-      <!-- Body: photo + details -->
       <div class="id-card__body">
 
         <div class="id-card__photo-wrap">
@@ -62,13 +55,29 @@
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+            <span class="id-card__row-value">{{ student()!.contactNumber }}</span>
           </div>
-
-          <div class="id-card__divider"></div>
-
           <div class="id-card__row">
-            <span class="id-card__row-label">Emergency</span>
+            <span class="id-card__row-label">Email</span>
+            <span class="id-card__row-value">{{ student()!.emailId }}</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- emergency details -->
+    <div class="id-card">
+        <div class="id-card__band id-card__band--emergency">
+            <div class="id-card__band-text">
+            <span class="id-card__band-title">Emergency Contact</span>
+            </div>
+        </div>
+      <div class="id-card__body">
+        <div class="id-card__details">
+          <div class="id-card__row">
+            <span class="id-card__row-label">Name</span>
             <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
           </div>
           <div class="id-card__row">
@@ -79,14 +88,15 @@
             <span class="id-card__row-label">Contact</span>
             <span class="id-card__row-value">{{ student()!.emergencyContactNumber }}</span>
           </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Alt. No</span>
+            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+          </div>
         </div>
-
       </div>
-
     </div>
   }
 
-  <!-- ─── Today's Taps ─────────────────────────────────────────────────────── -->
   <div class="surface-card taps-card">
 
     <h3 class="taps-card__heading">
