@@ -20,6 +20,7 @@ export interface InfoCardData {
   emailId:                  string;
   birthDate:                string;
   address:                  string;
+  uid:                      string;
 }
 
 export interface CardTap {
@@ -60,5 +61,12 @@ export class ApiStudent {
     return this.http
       .get<ApiResponse<InfoCardData>>(`${this.base}/api/student/uid/${uid}`)
       .pipe(map(res => res.data));
+  }
+
+  generateQr(url: string): Observable<Blob> {
+    return this.http.get(`${this.base}/api/student/qr-generate`, {
+      params: { url },
+      responseType: 'blob'
+    });
   }
 }

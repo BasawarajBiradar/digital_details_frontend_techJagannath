@@ -193,6 +193,11 @@
     line-height: 1.5;
     word-break: break-word;
   }
+
+  &__actions {
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--color-border);
+  }
 }
 
 .taps-card {
@@ -274,5 +279,36 @@
   &__time {
     font-weight: 500;
     font-variant-numeric: tabular-nums;
+  }
+}
+
+.btn-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.88;
+  }
+
+  &:active {
+    opacity: 0.75;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }

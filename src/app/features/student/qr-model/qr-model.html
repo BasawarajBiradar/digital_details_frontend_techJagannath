@@ -1,0 +1,39 @@
+<div class="qr-modal__backdrop" (click)="onBackdropClick($event)">
+  <div class="qr-modal__panel" role="dialog" aria-modal="true">
+
+    <div class="qr-modal__header">
+      <span class="qr-modal__title">My QR Code</span>
+      <button class="qr-modal__close" (click)="close()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="qr-modal__body">
+
+      @if (isLoading) {
+        <div class="qr-modal__state">
+          <span class="spinner"></span>
+        </div>
+      }
+
+      @else if (hasError) {
+        <div class="qr-modal__state qr-modal__state--error">
+          <mat-icon>error_outline</mat-icon>
+          <p>Could not generate QR code. Please try again.</p>
+        </div>
+      }
+
+      @else if (qrObjectUrl) {
+        <div class="qr-modal__qr-wrap">
+          <img class="qr-modal__qr-img"
+               [src]="qrObjectUrl"
+               [alt]="studentName + ' QR code'" />
+        </div>
+        <p class="qr-modal__name">{{ studentName }}</p>
+        <p class="qr-modal__hint">Scan to view student details</p>
+      }
+
+    </div>
+
+  </div>
+</div>
