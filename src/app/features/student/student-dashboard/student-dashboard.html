@@ -101,23 +101,27 @@
 
     <h3 class="taps-card__heading">
       Today's Card Taps
-      <span class="badge badge--primary">{{ todayTaps.length }}</span>
+      <span class="badge badge--primary">{{ todayTaps().length }}</span>
     </h3>
 
-    @if (todayTaps.length > 0) {
+    @if (todayTaps().length > 0) {
       <div class="taps-table-wrap">
         <table class="taps-table">
           <thead>
             <tr>
               <th>#</th>
+              <th>Date</th>
               <th>Time</th>
+              <th>Device ID</th>
             </tr>
           </thead>
           <tbody>
-            @for (tap of todayTaps; track tap.id; let i = $index) {
+            @for (tap of todayTaps(); track tap.id; let i = $index) {
               <tr>
                 <td class="taps-table__index">{{ i + 1 }}</td>
-                <td class="taps-table__time">{{ tap.time | date: 'hh:mm a' }}</td>
+                <td class="taps-table__date">{{ tap.date | date: 'dd/MM/yyyy' }}</td>
+                <td class="taps-table__time">{{ tap.time }}</td>
+                <td class="taps-table__device">{{ tap.deviceId }}</td>
               </tr>
             }
           </tbody>

@@ -20,6 +20,13 @@ export interface InfoCardData {
   emailId:                   string;
 }
 
+export interface CardTap {
+  id: number;
+  date: string;   
+  time: string;   
+  deviceId: string;
+}
+
 interface ApiResponse<T> {
   success:   boolean;
   message:   string;
@@ -38,6 +45,14 @@ export class ApiStudent {
   getInfoCard(): Observable<InfoCardData> {
     return this.http
       .get<ApiResponse<InfoCardData>>(`${this.base}/api/student/home-page/info-card`)
+      .pipe(map(res => res.data));
+  }
+
+  getTodayEntries(): Observable<CardTap[]> {
+    return this.http
+      .get<ApiResponse<CardTap[]>>(
+        `${this.base}/api/student/home-page/today-entries`
+      )
       .pipe(map(res => res.data));
   }
 }
