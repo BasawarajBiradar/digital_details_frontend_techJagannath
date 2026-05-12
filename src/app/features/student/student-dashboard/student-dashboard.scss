@@ -222,6 +222,26 @@
   }
 }
 
+.id-card__address {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+
+  .id-card__row-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .id-card__address-value {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+}
+
 .taps-table-wrap {
   overflow-x: auto;
 }

@@ -19,9 +19,9 @@
     <div class="id-card">
 
       <div class="id-card__band">
-          <img class="id-card__band-logo"
-               [src]="student()!.schoolLogoUrl"
-               alt="School logo" />
+        <img class="id-card__band-logo"
+             [src]="student()!.schoolLogoUrl"
+             alt="School logo" />
         <div class="id-card__band-text">
           <span class="id-card__band-title">{{ student()!.schoolName }}</span>
         </div>
@@ -54,7 +54,11 @@
             </span>
           </div>
           <div class="id-card__row">
-            <span class="id-card__row-label">Alt. No</span>
+            <span class="id-card__row-label">DOB</span>
+            <span class="id-card__row-value">{{ student()!.birthDate }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
             <span class="id-card__row-value">{{ student()!.contactNumber }}</span>
           </div>
           <div class="id-card__row">
@@ -65,15 +69,21 @@
 
       </div>
 
+      <!-- address spans full width at the bottom of the card -->
+      <div class="id-card__address">
+        <span class="id-card__row-label">Address</span>
+        <span class="id-card__address-value">{{ student()!.address }}</span>
+      </div>
+
     </div>
 
     <!-- emergency details -->
     <div class="id-card">
-        <div class="id-card__band id-card__band--emergency">
-            <div class="id-card__band-text">
-            <span class="id-card__band-title">Emergency Contact</span>
-            </div>
+      <div class="id-card__band id-card__band--emergency">
+        <div class="id-card__band-text">
+          <span class="id-card__band-title">Emergency Contact</span>
         </div>
+      </div>
       <div class="id-card__body">
         <div class="id-card__details">
           <div class="id-card__row">

@@ -16,8 +16,10 @@ export interface InfoCardData {
   emergencyContactNumber:   string;
   emergencyContactRelation: string;
   alternateContactNumber:   string;
-  contactNumber:           string;
-  emailId:                   string;
+  contactNumber:            string;
+  emailId:                  string;
+  birthDate:                string;        
+  address:                  string;        
 }
 
 export interface CardTap {
