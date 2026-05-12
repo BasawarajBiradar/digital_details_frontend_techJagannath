@@ -18,14 +18,14 @@ export interface InfoCardData {
   alternateContactNumber:   string;
   contactNumber:            string;
   emailId:                  string;
-  birthDate:                string;        
-  address:                  string;        
+  birthDate:                string;
+  address:                  string;
 }
 
 export interface CardTap {
-  id: number;
-  date: string;   
-  time: string;   
+  id:       number;
+  date:     string;
+  time:     string;
   deviceId: string;
 }
 
@@ -42,7 +42,7 @@ interface ApiResponse<T> {
 export class ApiStudent {
 
   private readonly http = inject(HttpClient);
-  private base = environment.apiUrl;
+  private readonly base = environment.apiUrl;
 
   getInfoCard(): Observable<InfoCardData> {
     return this.http
@@ -52,9 +52,13 @@ export class ApiStudent {
 
   getTodayEntries(): Observable<CardTap[]> {
     return this.http
-      .get<ApiResponse<CardTap[]>>(
-        `${this.base}/api/student/home-page/today-entries`
-      )
+      .get<ApiResponse<CardTap[]>>(`${this.base}/api/student/home-page/today-entries`)
+      .pipe(map(res => res.data));
+  }
+
+  getLandingPageData(uid: string): Observable<InfoCardData> {
+    return this.http
+      .get<ApiResponse<InfoCardData>>(`${this.base}/api/student/uid/${uid}`)
       .pipe(map(res => res.data));
   }
 }
