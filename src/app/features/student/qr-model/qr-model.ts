@@ -34,6 +34,14 @@ export class QrModel implements OnDestroy {
     }
   }
 
+  downloadQr() {
+    if (!this._qrObjectUrl) return;
+    const a = document.createElement('a');
+    a.href = this._qrObjectUrl;
+    a.download = `${this.studentName.replace(/\s+/g, '_')}_QR.png`;
+    a.click();
+  }
+
   ngOnDestroy() {
     if (this._qrObjectUrl) {
       URL.revokeObjectURL(this._qrObjectUrl);
