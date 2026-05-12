@@ -60,7 +60,7 @@ export class StudentDashboard {
     this.showQr.set(true);
 
     const uid = this.student()?.uid;             
-    const landingUrl = `${environment.apiUrl}/student/${uid}`;
+    const landingUrl = `${window.location.origin}/student/${uid}`;
 
     this.apiStudent.generateQr(landingUrl).subscribe({
       next: (blob) => {
