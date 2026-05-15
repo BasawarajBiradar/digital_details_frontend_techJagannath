@@ -30,6 +30,11 @@ export interface CardTap {
   deviceId: string;
 }
 
+
+export interface VerifyUidResponse {
+  userId: number | null;
+}
+
 interface ApiResponse<T> {
   success:   boolean;
   message:   string;
@@ -57,9 +62,15 @@ export class ApiStudent {
       .pipe(map(res => res.data));
   }
 
-  getLandingPageData(uid: string): Observable<InfoCardData> {
+  getLandingPageData(uid: string, userId: number | null): Observable<InfoCardData> {
     return this.http
-      .get<ApiResponse<InfoCardData>>(`${this.base}/api/student/uid/${uid}`)
+      .post<ApiResponse<InfoCardData>>(`${this.base}/api/student/uid/${uid}`, { userId })
+      .pipe(map(res => res.data));
+  }
+
+  verifyUid(uid: string): Observable<VerifyUidResponse> {
+    return this.http
+      .get<ApiResponse<VerifyUidResponse>>(`${this.base}/api/student/uid/verify/${uid}`)
       .pipe(map(res => res.data));
   }
 
