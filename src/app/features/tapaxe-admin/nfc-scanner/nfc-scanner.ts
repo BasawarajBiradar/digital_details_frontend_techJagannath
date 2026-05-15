@@ -6,13 +6,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-nfc-scanner',
   standalone: true,
   imports: [
     CommonModule, MatButtonModule, MatCardModule,
-    MatProgressSpinnerModule, MatIconModule
+    MatProgressSpinnerModule, MatIconModule, MatTooltipModule
   ],
   templateUrl: './nfc-scanner.html',
   styleUrl: './nfc-scanner.scss',
@@ -22,6 +23,7 @@ export class NfcScanner implements OnDestroy {
   isSupported: boolean;
   errorMessage: string | null = null;
   scanHistory: NfcScanResult[] = [];
+  copiedIndex: number | null = null;
 
   private scanSubscription?: Subscription;
 
@@ -35,8 +37,26 @@ export class NfcScanner implements OnDestroy {
 
     this.scanSubscription = this.nfcService.scanCard().subscribe({
       next: (result: NfcScanResult) => {
-        // Prepend so latest scan appears at the top
-        this.scanHistory = [result, ...this.scanHistory];
+        const entry: NfcScanResult = { ...result, saving: true };
+        this.scanHistory = [entry, ...this.scanHistory];
+
+        // Save to DB
+        this.nfcService.saveUid(result.serialNumber).subscribe({
+          next: (res) => {
+            this.scanHistory = this.scanHistory.map(s =>
+              s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
+                ? { ...s, saving: false, url: res.data?.url }
+                : s
+            );
+          },
+          error: (err) => {
+            this.scanHistory = this.scanHistory.map(s =>
+              s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
+                ? { ...s, saving: false, saveError: err.message || 'Failed to save UID.' }
+                : s
+            );
+          }
+        });
       },
       error: (err) => {
         this.isScanning = false;
@@ -52,6 +72,13 @@ export class NfcScanner implements OnDestroy {
 
   clearHistory(): void {
     this.scanHistory = [];
+  }
+
+  copyUrl(url: string, index: number): void {
+    navigator.clipboard.writeText(url).then(() => {
+      this.copiedIndex = index;
+      setTimeout(() => this.copiedIndex = null, 2000);
+    });
   }
 
   ngOnDestroy(): void {

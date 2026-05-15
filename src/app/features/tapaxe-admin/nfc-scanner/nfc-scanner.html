@@ -1,65 +1,111 @@
-<mat-card style="max-width: 480px; margin: 2rem auto;">
-  <mat-card-header>
-    <mat-card-title>NFC Scanner — Test Mode</mat-card-title>
-    <mat-card-subtitle>Tap a card to display its serial number</mat-card-subtitle>
-  </mat-card-header>
+<div class="scanner-wrap">
 
-  <mat-card-content style="margin-top: 1rem;">
+  <!-- Header -->
+  <div class="scanner-header">
+    <div class="scanner-header__icon">
+      <mat-icon>nfc</mat-icon>
+    </div>
+    <div>
+      <h2 class="scanner-header__title">NFC Scanner</h2>
+      <p class="scanner-header__sub">Tap a card to register and get its link</p>
+    </div>
+    <div class="active-badge" *ngIf="isScanning">
+      <span class="active-badge__dot"></span>
+      Live
+    </div>
+  </div>
 
-    <!-- Not supported warning -->
-    <div *ngIf="!isSupported"
-         style="display:flex; align-items:center; gap:8px; padding:12px;
-                background:#fff3e0; border-radius:8px; color:#e65100;">
-      <mat-icon>warning</mat-icon>
-      <span>Web NFC not supported. Use Chrome on Android over HTTPS.</span>
+  <!-- Not supported -->
+  <div class="alert alert--warn" *ngIf="!isSupported">
+    <mat-icon>warning</mat-icon>
+    <span>Web NFC not supported. Use Chrome on Android over HTTPS.</span>
+  </div>
+
+  <!-- Scanning indicator -->
+  <div class="scan-indicator" *ngIf="isScanning">
+    <mat-spinner diameter="22"></mat-spinner>
+    <span>Ready — tap your NFC card now…</span>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert--error" *ngIf="errorMessage">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Latest scan -->
+  <div class="latest-scan surface-card" *ngIf="scanHistory.length > 0">
+    <p class="section-label">Latest scan</p>
+
+    <div class="field-block">
+      <label>Serial / UID</label>
+      <p>{{ scanHistory[0].serialNumber }}</p>
     </div>
 
-    <!-- Scanning indicator -->
-    <div *ngIf="isScanning"
-         style="display:flex; align-items:center; gap:12px; padding:16px;
-                background:#e3f2fd; border-radius:8px; margin-bottom:1rem;">
-      <mat-spinner diameter="28"></mat-spinner>
-      <span>Ready — tap your NFC card now...</span>
+    <!-- Saving spinner -->
+    <div class="saving-row" *ngIf="scanHistory[0].saving">
+      <div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>
+      <span>Saving to database…</span>
     </div>
 
-    <!-- Error -->
-    <div *ngIf="errorMessage"
-         style="padding:12px; background:#ffebee; border-radius:8px;
-                color:#c62828; margin-bottom:1rem;">
-      <mat-icon style="vertical-align:middle; margin-right:6px;">error</mat-icon>
-      {{ errorMessage }}
+    <!-- Save error -->
+    <div class="alert alert--error" *ngIf="scanHistory[0].saveError" style="margin-top:10px;">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ scanHistory[0].saveError }}</span>
     </div>
 
-    <!-- Latest scan result (prominent display) -->
-    <div *ngIf="scanHistory.length > 0"
-         style="padding:16px; background:#e8f5e9; border-radius:8px;
-                margin-bottom:1rem; text-align:center;">
-      <div style="font-size:12px; color:#388e3c; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">
-        Last scanned
+    <!-- URL result -->
+    <div class="url-result" *ngIf="scanHistory[0].url">
+      <div class="url-result__label">
+        <mat-icon class="url-result__icon">link</mat-icon>
+        Profile URL
       </div>
-      <div style="font-size:22px; font-weight:500; font-family:monospace; letter-spacing:1px; color:#1b5e20;">
-        {{ scanHistory[0].serialNumber }}
-      </div>
-      <div style="font-size:12px; color:#66bb6a; margin-top:4px;">
-        {{ scanHistory[0].scannedAt | date:'medium' }}
-      </div>
-    </div>
-
-    <!-- Scan history list -->
-    <div *ngIf="scanHistory.length > 1" style="margin-top:1rem;">
-      <div style="font-size:13px; color:#666; margin-bottom:8px;">Previous scans</div>
-      <div *ngFor="let scan of scanHistory.slice(1)"
-           style="display:flex; justify-content:space-between; align-items:center;
-                  padding:10px 12px; border:0.5px solid #e0e0e0;
-                  border-radius:6px; margin-bottom:6px; font-size:13px;">
-        <code style="font-size:14px;">{{ scan.serialNumber }}</code>
-        <span style="color:#999; font-size:12px;">{{ scan.scannedAt | date:'HH:mm:ss' }}</span>
+      <div class="url-result__row">
+        <span class="url-result__text">{{ scanHistory[0].url }}</span>
+        <button class="url-result__copy"
+                [class.url-result__copy--copied]="copiedIndex === 0"
+                (click)="copyUrl(scanHistory[0].url!, 0)"
+                matTooltip="Copy URL">
+          <mat-icon>{{ copiedIndex === 0 ? 'check' : 'content_copy' }}</mat-icon>
+          <span>{{ copiedIndex === 0 ? 'Copied!' : 'Copy' }}</span>
+        </button>
       </div>
     </div>
 
-  </mat-card-content>
+    <div class="scan-time">
+      <mat-icon style="font-size:13px;width:13px;height:13px;">schedule</mat-icon>
+      {{ scanHistory[0].scannedAt | date:'medium' }}
+    </div>
+  </div>
 
-  <mat-card-actions style="padding: 8px 16px; gap:8px; display:flex;">
+  <!-- History -->
+  <div *ngIf="scanHistory.length > 1" style="margin-top: 20px;">
+    <p class="section-label">Previous scans</p>
+    <div class="history-item surface-card surface-card--hoverable"
+         *ngFor="let scan of scanHistory.slice(1); let i = index">
+      <div class="history-item__left">
+        <code class="history-item__uid">{{ scan.serialNumber }}</code>
+        <span class="scan-time">
+          <mat-icon style="font-size:12px;width:12px;height:12px;">schedule</mat-icon>
+          {{ scan.scannedAt | date:'HH:mm:ss' }}
+        </span>
+      </div>
+      <div class="history-item__right">
+        <div class="spinner" style="width:16px;height:16px;border-width:2px;" *ngIf="scan.saving"></div>
+        <span class="badge badge--primary" *ngIf="scan.url && !scan.saving">Saved</span>
+        <button class="url-result__copy url-result__copy--sm"
+                *ngIf="scan.url"
+                [class.url-result__copy--copied]="copiedIndex === (i + 1)"
+                (click)="copyUrl(scan.url!, i + 1)"
+                matTooltip="{{ scan.url }}">
+          <mat-icon>{{ copiedIndex === (i + 1) ? 'check' : 'content_copy' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="scanner-actions">
     <button mat-raised-button color="primary"
             *ngIf="!isScanning"
             [disabled]="!isSupported"
@@ -78,5 +124,6 @@
             (click)="clearHistory()">
       <mat-icon>delete_outline</mat-icon> Clear
     </button>
-  </mat-card-actions>
-</mat-card>
+  </div>
+
+</div>

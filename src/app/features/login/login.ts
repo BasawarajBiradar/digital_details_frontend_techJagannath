@@ -51,6 +51,7 @@ export class LoginComponent {
       this.isLoading = false;
       switch(res.data.role) {
       case 'Tapex Admin':
+        this.router.navigate(['nfc-scanner']);
         break;
       case 'School Admin':
         break;

@@ -1,16 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export interface NfcScanResult {
   serialNumber: string;
   scannedAt: string;
+  url?: string;
+  saving?: boolean;
+  saveError?: string;
+}
+
+interface AddNfcUidResponse {
+  success: boolean;
+  message: string;
+  code: string;
+  data: { url: string };
+  errors: null | string;
+  timestamp: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class NfcService {
 
+  private readonly API_URL = '${environment.apiUrl}/api/tapaxe-admin/add-nfc-uid';
+
+  constructor(private http: HttpClient) {}
+
   isSupported(): boolean {
     return 'NDEFReader' in window;
+  }
+
+  saveUid(uid: string): Observable<AddNfcUidResponse> {
+    return this.http.post<AddNfcUidResponse>(this.API_URL, { uid });
   }
 
   scanCard(): Observable<NfcScanResult> {
