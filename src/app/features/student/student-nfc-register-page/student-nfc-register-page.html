@@ -1,1 +1,287 @@
-<p>student-nfc-register-page works!</p>
+<div class="register-page">
+  <div class="register-card">
+
+    <div class="register-card__header">
+      <div class="register-card__header-icon">
+        <mat-icon>badge</mat-icon>
+      </div>
+      <div>
+        <h1 class="register-card__title">Student Registration</h1>
+        <p class="register-card__subtitle">Create your NFC student profile</p>
+      </div>
+    </div>
+
+    @if (isSubmitted()) {
+      <div class="register-success">
+        <div class="register-success__icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <h2>You're registered!</h2>
+        <p>Redirecting to login…</p>
+      </div>
+    } @else {
+
+      <div class="step-indicator">
+        @for (step of steps; track step; let i = $index) {
+          <div class="step-indicator__item"
+               [class.step-indicator__item--active]="currentStep() === i"
+               [class.step-indicator__item--done]="currentStep() > i">
+            <div class="step-indicator__dot">
+              @if (currentStep() > i) {
+                <mat-icon>check</mat-icon>
+              } @else {
+                {{ i + 1 }}
+              }
+            </div>
+            <span class="step-indicator__label">{{ step }}</span>
+          </div>
+          @if (i < steps.length - 1) {
+            <div class="step-indicator__line"
+                 [class.step-indicator__line--done]="currentStep() > i">
+            </div>
+          }
+        }
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        @if (currentStep() === 0) {
+          <div class="form-section" >
+            <p class="section-label">Personal Information</p>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>First Name <span class="req">*</span></label>
+                <input formControlName="firstName" type="text" placeholder="Rahul" />
+                @if (f['firstName'].touched && f['firstName'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Middle Name</label>
+                <input formControlName="middleName" type="text" placeholder="Kumar" />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Last Name <span class="req">*</span></label>
+              <input formControlName="lastName" type="text" placeholder="Sharma" />
+              @if (f['lastName'].touched && f['lastName'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Date of Birth <span class="req">*</span></label>
+                <input formControlName="birthDate" type="date" />
+                @if (f['birthDate'].touched && f['birthDate'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Blood Group</label>
+                <select formControlName="bloodGroup">
+                  <option value="">Select</option>
+                  @for (bg of bloodGroups; track bg) {
+                    <option [value]="bg">{{ bg }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 1) {
+          <div class="form-section">
+            <p class="section-label">Academic Details</p>
+
+            <div class="form-field">
+              <label>School <span class="req">*</span></label>
+              <select formControlName="schoolId">
+                <option [value]="null">Select school</option>
+                @for (s of schools(); track s.id) {
+                  <option [value]="s.id">{{ s.name }}</option>
+                }
+              </select>
+              @if (f['schoolId'].touched && f['schoolId'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Class <span class="req">*</span></label>
+                <select formControlName="classLevel">
+                  <option value="">Select</option>
+                  @for (c of classLevels; track c) {
+                    <option [value]="c">Class {{ c }}</option>
+                  }
+                </select>
+                @if (f['classLevel'].touched && f['classLevel'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Division <span class="req">*</span></label>
+                <select formControlName="division">
+                  <option value="">Select</option>
+                  @for (d of divisions; track d) {
+                    <option [value]="d">{{ d }}</option>
+                  }
+                </select>
+                @if (f['division'].touched && f['division'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 2) {
+          <div class="form-section">
+            <p class="section-label">Contact & Security</p>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Mobile <span class="req">*</span></label>
+                <input formControlName="mobileNumber" type="tel" placeholder="9876543210" />
+                @if (f['mobileNumber'].touched && f['mobileNumber'].errors) {
+                  <span class="form-field__error">Valid 10-digit number required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Alternate Number</label>
+                <input formControlName="alternateNumber" type="tel" placeholder="Optional" />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Email <span class="req">*</span></label>
+              <input formControlName="emailId" type="email" placeholder="rahul@example.com" />
+              @if (f['emailId'].touched && f['emailId'].errors) {
+                <span class="form-field__error">Valid email required</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Password <span class="req">*</span></label>
+              <input formControlName="password" type="password" placeholder="Min. 8 characters" />
+              @if (f['password'].touched && f['password'].errors) {
+                <span class="form-field__error">Minimum 8 characters</span>
+              }
+            </div>
+
+            <p class="section-label" style="margin-top: 20px;">Emergency Contact</p>
+
+            <div class="form-field">
+              <label>Contact Name <span class="req">*</span></label>
+              <input formControlName="emergencyContactName" type="text" placeholder="Parent / Guardian name" />
+              @if (f['emergencyContactName'].touched && f['emergencyContactName'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Contact Number <span class="req">*</span></label>
+                <input formControlName="emergencyContactNumber" type="tel" placeholder="9876543210" />
+                @if (f['emergencyContactNumber'].touched && f['emergencyContactNumber'].errors) {
+                  <span class="form-field__error">Valid 10-digit number</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Relation <span class="req">*</span></label>
+                <select formControlName="emergencyContactRelation">
+                  <option value="">Select</option>
+                  @for (r of relations; track r) {
+                    <option [value]="r">{{ r }}</option>
+                  }
+                </select>
+                @if (f['emergencyContactRelation'].touched && f['emergencyContactRelation'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 3) {
+          <div class="form-section">
+            <p class="section-label">Address</p>
+
+            <div class="form-field">
+              <label>Address Line 1 <span class="req">*</span></label>
+              <input formControlName="addressLineOne" type="text" placeholder="House / Flat / Block No." />
+              @if (f['addressLineOne'].touched && f['addressLineOne'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Address Line 2</label>
+              <input formControlName="addressLineTwo" type="text" placeholder="Street / Area (optional)" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>City <span class="req">*</span></label>
+                <input formControlName="city" type="text" placeholder="Mumbai" />
+                @if (f['city'].touched && f['city'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>PIN Code</label>
+                <input formControlName="pinCode" type="text" placeholder="400001" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>State <span class="req">*</span></label>
+                <input formControlName="state" type="text" placeholder="Maharashtra" />
+                @if (f['state'].touched && f['state'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Country <span class="req">*</span></label>
+                <input formControlName="country" type="text" placeholder="India" />
+                @if (f['country'].touched && f['country'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="form-nav">
+          @if (currentStep() > 0) {
+            <button type="button" class="btn-back" (click)="prevStep()">
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+          } @else {
+            <div></div>
+          }
+
+          @if (currentStep() < steps.length - 1) {
+            <button type="button" class="btn-next" (click)="nextStep()">
+              Next <mat-icon>arrow_forward</mat-icon>
+            </button>
+          } @else {
+            <button type="submit" class="btn-submit" [disabled]="isLoading()">
+              @if (isLoading()) {
+                <span class="spinner spinner--sm"></span> Registering…
+              } @else {
+                <mat-icon>how_to_reg</mat-icon> Register
+              }
+            </button>
+          }
+        </div>
+
+      </form>
+    }
+
+  </div>
+</div>

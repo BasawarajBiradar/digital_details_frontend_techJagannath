@@ -35,6 +35,11 @@ export interface VerifyUidResponse {
   userId: number | null;
 }
 
+export interface School {
+  id:   number;
+  name: string;
+}
+
 interface ApiResponse<T> {
   success:   boolean;
   message:   string;
@@ -79,5 +84,18 @@ export class ApiStudent {
       params: { url },
       responseType: 'blob'
     });
+  }
+
+  getSchoolsList(): Observable<School[]> {
+    return this.http
+      .get<ApiResponse<School[]>>(`${this.base}/api/student/uid/school-list`)
+      .pipe(map(res => res.data));
+  }
+
+  registerStudent(payload: unknown): Observable<VerifyUidResponse> {
+    const uid = (payload as any).uid;
+    return this.http
+      .post<ApiResponse<VerifyUidResponse>>(`${this.base}/api/student/uid/register/${uid}`, payload)
+      .pipe(map(res => res.data));
   }
 }
