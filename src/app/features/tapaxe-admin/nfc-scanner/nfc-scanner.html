@@ -1,0 +1,82 @@
+<mat-card style="max-width: 480px; margin: 2rem auto;">
+  <mat-card-header>
+    <mat-card-title>NFC Scanner — Test Mode</mat-card-title>
+    <mat-card-subtitle>Tap a card to display its serial number</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content style="margin-top: 1rem;">
+
+    <!-- Not supported warning -->
+    <div *ngIf="!isSupported"
+         style="display:flex; align-items:center; gap:8px; padding:12px;
+                background:#fff3e0; border-radius:8px; color:#e65100;">
+      <mat-icon>warning</mat-icon>
+      <span>Web NFC not supported. Use Chrome on Android over HTTPS.</span>
+    </div>
+
+    <!-- Scanning indicator -->
+    <div *ngIf="isScanning"
+         style="display:flex; align-items:center; gap:12px; padding:16px;
+                background:#e3f2fd; border-radius:8px; margin-bottom:1rem;">
+      <mat-spinner diameter="28"></mat-spinner>
+      <span>Ready — tap your NFC card now...</span>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage"
+         style="padding:12px; background:#ffebee; border-radius:8px;
+                color:#c62828; margin-bottom:1rem;">
+      <mat-icon style="vertical-align:middle; margin-right:6px;">error</mat-icon>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Latest scan result (prominent display) -->
+    <div *ngIf="scanHistory.length > 0"
+         style="padding:16px; background:#e8f5e9; border-radius:8px;
+                margin-bottom:1rem; text-align:center;">
+      <div style="font-size:12px; color:#388e3c; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">
+        Last scanned
+      </div>
+      <div style="font-size:22px; font-weight:500; font-family:monospace; letter-spacing:1px; color:#1b5e20;">
+        {{ scanHistory[0].serialNumber }}
+      </div>
+      <div style="font-size:12px; color:#66bb6a; margin-top:4px;">
+        {{ scanHistory[0].scannedAt | date:'medium' }}
+      </div>
+    </div>
+
+    <!-- Scan history list -->
+    <div *ngIf="scanHistory.length > 1" style="margin-top:1rem;">
+      <div style="font-size:13px; color:#666; margin-bottom:8px;">Previous scans</div>
+      <div *ngFor="let scan of scanHistory.slice(1)"
+           style="display:flex; justify-content:space-between; align-items:center;
+                  padding:10px 12px; border:0.5px solid #e0e0e0;
+                  border-radius:6px; margin-bottom:6px; font-size:13px;">
+        <code style="font-size:14px;">{{ scan.serialNumber }}</code>
+        <span style="color:#999; font-size:12px;">{{ scan.scannedAt | date:'HH:mm:ss' }}</span>
+      </div>
+    </div>
+
+  </mat-card-content>
+
+  <mat-card-actions style="padding: 8px 16px; gap:8px; display:flex;">
+    <button mat-raised-button color="primary"
+            *ngIf="!isScanning"
+            [disabled]="!isSupported"
+            (click)="startScan()">
+      <mat-icon>nfc</mat-icon> Start Scan
+    </button>
+
+    <button mat-stroked-button color="warn"
+            *ngIf="isScanning"
+            (click)="stopScan()">
+      <mat-icon>stop</mat-icon> Stop
+    </button>
+
+    <button mat-stroked-button
+            *ngIf="scanHistory.length > 0"
+            (click)="clearHistory()">
+      <mat-icon>delete_outline</mat-icon> Clear
+    </button>
+  </mat-card-actions>
+</mat-card>

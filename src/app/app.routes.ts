@@ -6,6 +6,7 @@ import { Registration } from './card-based-features/registration/registration';
 import { SetUpProfile } from './card-based-features/set-up-profile/set-up-profile';
 import { LandingPage } from './card-based-features/landing-page/landing-page';
 import { HomePage } from '@features/home-page/home-page';
+import { NfcScanner } from '@features/tapaxe-admin/nfc-scanner/nfc-scanner';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'registration/:uid', component: Registration},
   { path: 'setup-profile/:uid/:type/:userId', component: SetUpProfile },
   { path: 'card/:uid', component: LandingPage },
-  { path: 'home-page', component: HomePage }
+  { path: 'home-page', component: HomePage },
+  {path: 'nfc-scanner', component: NfcScanner}
 ];
