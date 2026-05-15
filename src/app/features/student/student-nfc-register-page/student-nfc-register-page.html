@@ -166,9 +166,34 @@
 
             <div class="form-field">
               <label>Password <span class="req">*</span></label>
-              <input formControlName="password" type="password" placeholder="Min. 8 characters" />
+              <div class="input-eye">
+                <input
+                  formControlName="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  placeholder="Min. 8 characters" />
+                <button type="button" class="input-eye__btn" (click)="showPassword.set(!showPassword())">
+                  <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
               @if (f['password'].touched && f['password'].errors) {
                 <span class="form-field__error">Minimum 8 characters</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Confirm Password <span class="req">*</span></label>
+              <div class="input-eye">
+                <input
+                  formControlName="confirmPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  placeholder="Re-enter password" />
+                <button type="button" class="input-eye__btn" (click)="showPassword.set(!showPassword())">
+                  <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              @if (f['confirmPassword'].touched && f['confirmPassword'].value &&
+                  f['confirmPassword'].value !== f['password'].value) {
+                <span class="form-field__error">Passwords do not match</span>
               }
             </div>
 

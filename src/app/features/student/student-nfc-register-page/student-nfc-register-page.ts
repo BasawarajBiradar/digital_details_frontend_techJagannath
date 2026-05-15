@@ -22,6 +22,7 @@ export class StudentNfcRegisterPage implements OnInit {
   readonly schools     = signal<School[]>([]);
   readonly isLoading   = signal(false);
   readonly isSubmitted = signal(false);
+  readonly showPassword = signal(false);
 
   readonly classLevels = ['1','2','3','4','5','6','7','8','9','10','11','12'];
   readonly divisions   = ['A','B','C','D','E'];
@@ -81,6 +82,11 @@ export class StudentNfcRegisterPage implements OnInit {
       return;
     }
 
+    if (this.form.value.password !== this.form.value.confirmPassword) {
+      this.toast.error('Passwords do not match.');
+      return;
+    }
+    
     this.isLoading.set(true);
 
     const payload = { ...this.form.value, uid: this.uid };
@@ -114,6 +120,7 @@ export class StudentNfcRegisterPage implements OnInit {
       mobileNumber:             ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       emailId:                  ['', [Validators.required, Validators.email]],
       password:                 ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
       emergencyContactName:     ['', Validators.required],
       emergencyContactNumber:   ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       emergencyContactRelation: ['', Validators.required],
