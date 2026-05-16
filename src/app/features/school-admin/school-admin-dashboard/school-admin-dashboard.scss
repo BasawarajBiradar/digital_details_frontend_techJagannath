@@ -1,0 +1,156 @@
+// school-admin-dashboard.scss
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(16px, 4vw, 32px);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.dashboard__loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.dashboard__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px;
+  color: var(--color-text-muted);
+  text-align: center;
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: var(--color-primary);
+  }
+
+  p {
+    font-size: var(--font-sm, 0.875rem);
+    margin: 0;
+  }
+}
+
+.dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dashboard__title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.dashboard__subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+// ─── Students Card ────────────────────────────────────────────────────────────
+.students-card {
+  padding: clamp(20px, 4vw, 28px);
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--font-base, 0.95rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 0;
+    color: var(--color-text-subtle);
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+
+    p {
+      font-size: var(--font-sm, 0.85rem);
+      margin: 0;
+    }
+  }
+}
+
+.students-table-wrap {
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-sm, 0.875rem);
+
+  th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 11px 12px;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background: var(--color-surface-inset);
+  }
+
+  &__index {
+    width: 40px;
+    color: var(--color-text-subtle);
+    font-weight: 600;
+  }
+
+  &__name {
+    font-weight: 600;
+  }
+
+  &__class {
+    white-space: nowrap;
+  }
+
+  &__division {
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  &__date {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--color-text-muted);
+  }
+}

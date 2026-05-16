@@ -54,6 +54,7 @@ export class LoginComponent {
         this.router.navigate(['nfc-scanner']);
         break;
       case 'School Admin':
+        this.router.navigate(['school-admin-dashboard']);
         break;
       case 'Student':
         this.router.navigate(['student-dashboard']);

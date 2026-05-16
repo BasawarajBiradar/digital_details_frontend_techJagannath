@@ -1,0 +1,72 @@
+<div class="dashboard">
+
+  @if (isLoading()) {
+    <div class="dashboard__loading">
+      <span class="spinner"></span>
+    </div>
+  }
+
+  @else if (hasError()) {
+    <div class="surface-card dashboard__error">
+      <mat-icon>error_outline</mat-icon>
+      <p>Could not load dashboard. Please try again later.</p>
+    </div>
+  }
+
+  @else {
+    <!-- Header -->
+    <div class="dashboard__header">
+      <div>
+        <h1 class="dashboard__title">School Dashboard</h1>
+        <p class="dashboard__subtitle">Overview of recent student registrations</p>
+      </div>
+      <div class="active-badge">
+        <mat-icon style="font-size:14px;width:14px;height:14px;color:var(--color-primary)">circle</mat-icon>
+        Live
+      </div>
+    </div>
+
+    <!-- Top Students Table -->
+    <div class="surface-card students-card">
+      <h3 class="students-card__heading">
+        Top 10 Recent Registrations
+        <span class="badge badge--primary">{{ students().length }}</span>
+      </h3>
+
+      @if (students().length > 0) {
+        <div class="students-table-wrap">
+          <table class="students-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Division</th>
+                <th>Registration Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (student of students(); track student.id; let i = $index) {
+                <tr>
+                  <td class="students-table__index">{{ i + 1 }}</td>
+                  <td class="students-table__name">{{ student.studentName }}</td>
+                  <td class="students-table__class">
+                    <span class="badge badge--primary">Class {{ student.classLevel }}</span>
+                  </td>
+                  <td class="students-table__division">{{ student.division }}</td>
+                  <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="students-card__empty">
+          <mat-icon>group_off</mat-icon>
+          <p>No student data available</p>
+        </div>
+      }
+    </div>
+  }
+
+</div>
