@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, take} from 'rxjs';
 import { NfcService, NfcScanResult } from '../services/nfc-service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,34 +35,37 @@ export class NfcScanner implements OnDestroy {
     this.errorMessage = null;
     this.isScanning = true;
 
-    this.scanSubscription = this.nfcService.scanCard().subscribe({
-      next: (result: NfcScanResult) => {
-        const entry: NfcScanResult = { ...result, saving: true };
-        this.scanHistory = [entry, ...this.scanHistory];
+    this.scanSubscription = this.nfcService.scanCard()
+      .pipe(take(1))                           // ← auto-cut after first scan
+      .subscribe({
+        next: (result: NfcScanResult) => {
+          this.isScanning = false;             // ← stop the scanning indicator
 
-        // Save to DB
-        this.nfcService.saveUid(result.serialNumber).subscribe({
-          next: (res) => {
-            this.scanHistory = this.scanHistory.map(s =>
-              s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
-                ? { ...s, saving: false, url: res.data?.url }
-                : s
-            );
-          },
-          error: (err) => {
-            this.scanHistory = this.scanHistory.map(s =>
-              s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
-                ? { ...s, saving: false, saveError: err.message || 'Failed to save UID.' }
-                : s
-            );
-          }
-        });
-      },
-      error: (err) => {
-        this.isScanning = false;
-        this.errorMessage = err.message || 'Scan failed.';
-      }
-    });
+          const entry: NfcScanResult = { ...result, saving: true };
+          this.scanHistory = [entry, ...this.scanHistory];
+
+          this.nfcService.saveUid(result.serialNumber).subscribe({
+            next: (res) => {
+              this.scanHistory = this.scanHistory.map(s =>
+                s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
+                  ? { ...s, saving: false, url: res.data?.url }
+                  : s
+              );
+            },
+            error: (err) => {
+              this.scanHistory = this.scanHistory.map(s =>
+                s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
+                  ? { ...s, saving: false, saveError: err.message || 'Failed to save UID.' }
+                  : s
+              );
+            }
+          });
+        },
+        error: (err) => {
+          this.isScanning = false;
+          this.errorMessage = err.message || 'Scan failed.';
+        }
+      });
   }
 
   stopScan(): void {
