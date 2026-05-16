@@ -224,3 +224,18 @@ body {
   background-color: #1565c0 !important;
   color: #fff !important;
 }
+
+// ─── Student Detail Dialog Panel ─────────────────────────────────────────────
+.student-detail-dialog-panel {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+
+    .mdc-dialog__surface {
+      border-radius: 20px !important;
+      background: transparent !important;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18) !important;
+    }
+  }
+}

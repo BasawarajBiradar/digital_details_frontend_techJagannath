@@ -1,0 +1,105 @@
+<div class="sdd">
+
+  <button class="sdd__close" mat-icon-button (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  @if (isLoading()) {
+    <div class="sdd__loading">
+      <span class="spinner"></span>
+    </div>
+  }
+
+  @else if (hasError()) {
+    <div class="surface-card sdd__error">
+      <mat-icon>error_outline</mat-icon>
+      <p>Could not load student info. Please try again later.</p>
+    </div>
+  }
+
+  @else if (student()) {
+
+    <!-- Primary card -->
+    <div class="id-card">
+      <div class="id-card__band">
+        <div class="id-card__band-text">
+          <span class="id-card__band-title">Student Profile</span>
+        </div>
+      </div>
+
+      <div class="id-card__body">
+        <div class="id-card__photo-wrap">
+          @if (student()!.photoUrl) {
+            <img class="id-card__photo"
+                 [src]="student()!.photoUrl"
+                 [alt]="student()!.fullName" />
+          } @else {
+            <div class="id-card__photo-fallback">
+              <mat-icon>person</mat-icon>
+            </div>
+          }
+        </div>
+
+        <div class="id-card__details">
+          <div class="id-card__name">{{ student()!.fullName }}</div>
+          <div class="id-card__class">Class {{ student()!.classLevel }} – Div {{ student()!.div }}</div>
+
+          <div class="id-card__divider"></div>
+
+          <div class="id-card__row">
+            <span class="id-card__row-label">Blood</span>
+            <span class="id-card__row-value id-card__row-value--blood">{{ student()!.bloodGroup }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">DOB</span>
+            <span class="id-card__row-value">{{ student()!.birthDate }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
+            <span class="id-card__row-value">{{ student()!.contactNumber }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Email</span>
+            <span class="id-card__row-value">{{ student()!.emailId }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="id-card__address">
+        <span class="id-card__row-label">Address</span>
+        <span class="id-card__address-value">{{ student()!.address }}</span>
+      </div>
+    </div>
+
+    <!-- Emergency card -->
+    <div class="id-card">
+      <div class="id-card__band id-card__band--emergency">
+        <div class="id-card__band-text">
+          <span class="id-card__band-title">Emergency Contact</span>
+        </div>
+      </div>
+      <div class="id-card__body">
+        <div class="id-card__details">
+          <div class="id-card__row">
+            <span class="id-card__row-label">Name</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Relation</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactRelation }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
+            <span class="id-card__row-value">{{ student()!.emergencyContactNumber }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Alt. No</span>
+            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  }
+
+</div>

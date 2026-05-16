@@ -47,7 +47,7 @@
             </thead>
             <tbody>
               @for (student of students(); track student.id; let i = $index) {
-                <tr>
+                <tr (click)="openStudentDetail(student.id)" style="cursor:pointer;">
                   <td class="students-table__index">{{ i + 1 }}</td>
                   <td class="students-table__name">{{ student.studentName }}</td>
                   <td class="students-table__class">
@@ -55,7 +55,8 @@
                   </td>
                   <td class="students-table__division">{{ student.division }}</td>
                   <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
-                </tr>
+                <tr (click)="openStudentDetail(student.id)" style="cursor:pointer;">
+
               }
             </tbody>
           </table>
