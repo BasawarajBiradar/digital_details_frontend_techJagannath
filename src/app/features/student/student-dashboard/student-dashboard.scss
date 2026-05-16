@@ -129,9 +129,7 @@
     font-weight: 800;
     color: var(--color-text);
     line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
   }
 
   &__class {
@@ -168,9 +166,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--color-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-all;
   }
 
   &__row-value--blood {
