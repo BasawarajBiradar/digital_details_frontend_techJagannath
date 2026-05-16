@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ProfileApiService } from '@core/services/profile-api';
+import { ToastService } from '@core/services/toast-service';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,9 @@ export class LoginComponent {
   hidePassword = true;
   isLoading = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private profileApi: ProfileApiService) {
+  constructor(private fb: FormBuilder, private router: Router, private profileApi: ProfileApiService,
+    private toast: ToastService
+  ) {
     this.loginForm = this.fb.group({
       emailId: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -63,7 +66,11 @@ export class LoginComponent {
     },
     error: (err) => {
       this.isLoading = false;
-      // show error to user
+      const message =
+        err?.error?.message ||
+        err?.error?.data?.message ||
+        'Invalid email or password. Please try again.';
+      this.toast.error(message);
     }
   });
   }
