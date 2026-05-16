@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '@env/environment';
 
 export interface NfcScanResult {
   serialNumber: string;
@@ -22,7 +23,7 @@ interface AddNfcUidResponse {
 @Injectable({ providedIn: 'root' })
 export class NfcService {
 
-  private readonly API_URL = '${environment.apiUrl}/api/tapaxe-admin/add-nfc-uid';
+  private readonly API_URL = `${environment.apiUrl}/api/tapaxe-admin/add-nfc-uid`;
 
   constructor(private http: HttpClient) {}
 
@@ -52,6 +53,8 @@ export class NfcService {
               serialNumber: event.serialNumber,
               scannedAt: new Date().toISOString(),
             });
+            controller.abort();
+            observer.complete();
           });
 
           reader.addEventListener('readingerror', () => {
