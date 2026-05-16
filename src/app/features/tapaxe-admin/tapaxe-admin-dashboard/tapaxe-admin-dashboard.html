@@ -1,0 +1,332 @@
+<div class="tapaxe-dashboard">
+
+  <!-- Top Nav -->
+  <header class="tapaxe-topnav">
+    <div class="tapaxe-topnav__brand">
+      <div class="tapaxe-topnav__brand-icon">
+        <mat-icon>contactless</mat-icon>
+      </div>
+      <span class="tapaxe-topnav__brand-name">Tapaxe Admin</span>
+    </div>
+
+    <nav class="tapaxe-tabs">
+      <button class="tapaxe-tabs__item"
+              [class.tapaxe-tabs__item--active]="activeTab() === 'school'"
+              (click)="setTab('school')">
+        <mat-icon>domain</mat-icon>
+        <span>Add School</span>
+      </button>
+      <button class="tapaxe-tabs__item"
+              [class.tapaxe-tabs__item--active]="activeTab() === 'admin'"
+              (click)="setTab('admin')">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>Add Admin</span>
+      </button>
+      <button class="tapaxe-tabs__item"
+              [class.tapaxe-tabs__item--active]="activeTab() === 'nfc'"
+              (click)="setTab('nfc')">
+        <mat-icon>nfc</mat-icon>
+        <span>NFC Scanner</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="tapaxe-main">
+
+    <!-- Add School -->
+    @if (activeTab() === 'school') {
+      <div class="tapaxe-panel">
+        <div class="tapaxe-panel__header">
+          <div class="tapaxe-panel__header-icon">
+            <mat-icon>domain</mat-icon>
+          </div>
+          <div>
+            <h2 class="tapaxe-panel__title">Add School</h2>
+            <p class="tapaxe-panel__subtitle">Register a new school to the platform</p>
+          </div>
+        </div>
+
+        @if (schoolSuccess()) {
+          <div class="tapaxe-success">
+            <div class="tapaxe-success__icon"><mat-icon>check_circle</mat-icon></div>
+            <div>
+              <strong>School added successfully!</strong>
+              <p>The school has been registered.</p>
+            </div>
+            <button class="tapaxe-success__btn" (click)="schoolSuccess.set(false)">Add Another</button>
+          </div>
+        } @else {
+          <form [formGroup]="schoolForm" (ngSubmit)="submitSchool()" novalidate>
+            <p class="section-label">School Details</p>
+
+            <div class="form-field">
+              <label>School Name <span class="req">*</span></label>
+              <input formControlName="schoolName" type="text" placeholder="e.g. Saraswati English Medium School" />
+              @if (sf['schoolName'].touched && sf['schoolName'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Contact Number <span class="req">*</span></label>
+                <input formControlName="schoolContact" type="tel" placeholder="10-digit number" />
+                @if (sf['schoolContact'].touched && sf['schoolContact'].errors) {
+                  <span class="form-field__error">Valid 10-digit number required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Email ID <span class="req">*</span></label>
+                <input formControlName="schoolEmailId" type="email" placeholder="school@example.com" />
+                @if (sf['schoolEmailId'].touched && sf['schoolEmailId'].errors) {
+                  <span class="form-field__error">Valid email required</span>
+                }
+              </div>
+            </div>
+
+            <p class="section-label" style="margin-top:20px;">Address</p>
+
+            <div class="form-field">
+              <label>Address Line 1 <span class="req">*</span></label>
+              <input formControlName="addressLineOne" type="text" placeholder="House / Building / Area" />
+              @if (sf['addressLineOne'].touched && sf['addressLineOne'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Address Line 2</label>
+              <input formControlName="addressLineTwo" type="text" placeholder="Street / Landmark (optional)" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>City <span class="req">*</span></label>
+                <input formControlName="city" type="text" placeholder="Pune" />
+                @if (sf['city'].touched && sf['city'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>PIN Code <span class="req">*</span></label>
+                <input formControlName="pinCode" type="text" placeholder="411001" />
+                @if (sf['pinCode'].touched && sf['pinCode'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>State <span class="req">*</span></label>
+                <input formControlName="state" type="text" placeholder="Maharashtra" />
+                @if (sf['state'].touched && sf['state'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Country <span class="req">*</span></label>
+                <input formControlName="country" type="text" placeholder="India" />
+                @if (sf['country'].touched && sf['country'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+            </div>
+
+            @if (schoolError()) {
+              <div class="tapaxe-alert tapaxe-alert--error">
+                <mat-icon>error_outline</mat-icon>
+                <span>{{ schoolError() }}</span>
+              </div>
+            }
+
+            <div class="form-submit-row">
+              <button type="submit" class="btn-submit" [disabled]="schoolLoading()">
+                @if (schoolLoading()) {
+                  <span class="spinner spinner--sm"></span> Saving…
+                } @else {
+                  <mat-icon>domain_add</mat-icon> Add School
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    }
+
+    <!-- Add School Admin -->
+    @if (activeTab() === 'admin') {
+      <div class="tapaxe-panel">
+        <div class="tapaxe-panel__header">
+          <div class="tapaxe-panel__header-icon">
+            <mat-icon>manage_accounts</mat-icon>
+          </div>
+          <div>
+            <h2 class="tapaxe-panel__title">Add School Admin</h2>
+            <p class="tapaxe-panel__subtitle">Create a new administrator account for a school</p>
+          </div>
+        </div>
+
+        @if (adminSuccess()) {
+          <div class="tapaxe-success">
+            <div class="tapaxe-success__icon"><mat-icon>check_circle</mat-icon></div>
+            <div>
+              <strong>Admin added successfully!</strong>
+              <p>The school administrator has been created.</p>
+            </div>
+            <button class="tapaxe-success__btn" (click)="adminSuccess.set(false)">Add Another</button>
+          </div>
+        } @else {
+          <form [formGroup]="adminForm" (ngSubmit)="submitAdmin()" novalidate>
+            <p class="section-label">Personal Details</p>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>First Name <span class="req">*</span></label>
+                <input formControlName="firstName" type="text" placeholder="First" />
+                @if (af['firstName'].touched && af['firstName'].errors?.['required']) {
+                  <span class="form-field__error">Required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Middle Name</label>
+                <input formControlName="middleName" type="text" placeholder="Optional" />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Last Name <span class="req">*</span></label>
+              <input formControlName="lastName" type="text" placeholder="Last" />
+              @if (af['lastName'].touched && af['lastName'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Mobile <span class="req">*</span></label>
+                <input formControlName="mobileNo" type="tel" placeholder="9876543210" />
+                @if (af['mobileNo'].touched && af['mobileNo'].errors) {
+                  <span class="form-field__error">Valid 10-digit number required</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Email ID <span class="req">*</span></label>
+                <input formControlName="emailId" type="email" placeholder="admin@school.com" />
+                @if (af['emailId'].touched && af['emailId'].errors) {
+                  <span class="form-field__error">Valid email required</span>
+                }
+              </div>
+            </div>
+
+            <p class="section-label" style="margin-top:20px;">Security & School</p>
+
+            <div class="form-field">
+              <label>Password <span class="req">*</span></label>
+              <div class="input-eye">
+                <input formControlName="password"
+                       [type]="showAdminPassword() ? 'text' : 'password'"
+                       placeholder="Min. 8 characters" />
+                <button type="button" class="input-eye__btn" (click)="showAdminPassword.set(!showAdminPassword())">
+                  <mat-icon>{{ showAdminPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              @if (af['password'].touched && af['password'].errors?.['minlength']) {
+                <span class="form-field__error">Minimum 8 characters</span>
+              }
+              @if (af['password'].touched && af['password'].errors?.['required']) {
+                <span class="form-field__error">Required</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Confirm Password <span class="req">*</span></label>
+              <div class="input-eye">
+                <input formControlName="confirmPassword"
+                       [type]="showAdminPassword() ? 'text' : 'password'"
+                       placeholder="Re-enter password" />
+                <button type="button" class="input-eye__btn" (click)="showAdminPassword.set(!showAdminPassword())">
+                  <mat-icon>{{ showAdminPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              @if (af['confirmPassword'].touched &&
+                   af['confirmPassword'].value &&
+                   af['confirmPassword'].value !== af['password'].value) {
+                <span class="form-field__error">Passwords do not match</span>
+              }
+            </div>
+
+<!-- School field — custom dropdown replacing native select -->
+<div class="form-field">
+  <label>School <span class="req">*</span></label>
+
+  @if (schoolsLoading()) {
+    <div class="schools-loading">
+      <span class="spinner" style="width:16px;height:16px;border-width:2px;"></span>
+      <span>Loading schools…</span>
+    </div>
+  } @else {
+    <div class="custom-select" [class.custom-select--open]="schoolDropdownOpen()"
+         [class.custom-select--error]="af['schoolId'].touched && af['schoolId'].errors?.['required']">
+      <button type="button" class="custom-select__trigger"
+              (click)="toggleSchoolDropdown()">
+        <span [class.custom-select__placeholder]="!af['schoolId'].value">
+          {{ selectedSchoolName() }}
+        </span>
+        <mat-icon class="custom-select__arrow">expand_more</mat-icon>
+      </button>
+
+      @if (schoolDropdownOpen()) {
+        <div class="custom-select__menu">
+          <button type="button" class="custom-select__option custom-select__option--placeholder"
+                  (click)="selectSchool(null)">
+            Select a school
+          </button>
+          @for (s of schools(); track s.id) {
+            <button type="button" class="custom-select__option"
+                    [class.custom-select__option--selected]="af['schoolId'].value === s.id"
+                    (click)="selectSchool(s.id)">
+              {{ s.name }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (af['schoolId'].touched && af['schoolId'].errors?.['required']) {
+    <span class="form-field__error">Please select a school</span>
+  }
+</div>
+
+            @if (adminError()) {
+              <div class="tapaxe-alert tapaxe-alert--error">
+                <mat-icon>error_outline</mat-icon>
+                <span>{{ adminError() }}</span>
+              </div>
+            }
+
+            <div class="form-submit-row">
+              <button type="submit" class="btn-submit" [disabled]="adminLoading()">
+                @if (adminLoading()) {
+                  <span class="spinner spinner--sm"></span> Saving…
+                } @else {
+                  <mat-icon>person_add</mat-icon> Add Admin
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    }
+
+    <!-- NFC Scanner -->
+    @if (activeTab() === 'nfc') {
+      <div class="tapaxe-panel tapaxe-panel--wide">
+        <app-nfc-scanner />
+      </div>
+    }
+
+  </main>
+</div>
