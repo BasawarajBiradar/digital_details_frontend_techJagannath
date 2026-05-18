@@ -19,7 +19,7 @@ export class SchoolAdminDashboard implements OnInit {
   constructor(private api: ApiSchoolAdmin, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.api.getTopStudents(10).subscribe({
+    this.api.getTopStudents(null).subscribe({
       next: (res) => {
         if (res.success) {
           this.students.set(res.data);
