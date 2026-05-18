@@ -28,7 +28,7 @@ export class ApiSchoolAdmin {
 
   constructor(private http: HttpClient) {}
 
-  getTopStudents(size: number | null = 10): Observable<StudentsResponse> {
+  getTopStudents(size: number | null): Observable<StudentsResponse> {
     return this.http.post<StudentsResponse>(`${this.base}/api/school-admin/dashboard/students`, { size });
   }
 }
