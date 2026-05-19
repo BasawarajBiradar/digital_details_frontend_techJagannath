@@ -12,27 +12,42 @@ body {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$red-palette,
-      tertiary: mat.$blue-palette,
+      primary: mat.$blue-palette,
+      tertiary: mat.$cyan-palette,
     )
   ));
 
-  --color-background:     #EDEDED;
-  --color-surface:        #FFFFFF;
-  --color-surface-raised: #F8F8F8;
-  --color-surface-inset:  #F0F0F0;
-  --color-primary:        #E8222A;
-  --color-accent:         #1A44AE;
-  --color-brand-blue:     #4A90D9;   
-  --color-text:           #1A1A1A;
-  --color-text-muted:     #666666;
-  --color-text-subtle:    #999999;
-  --color-border:         #E0E0E0;
-  --color-border-strong:  #C8C8C8;
-  --color-shadow:         rgba(0, 0, 0, 0.08);
-  --color-shadow-md:      rgba(0, 0, 0, 0.12);
-  --color-shadow-lg:      rgba(0, 0, 0, 0.18);
-  --color-glow:           rgba(232, 34, 42, 0.12);
+  // ─── TapAxe Brand Tokens ───────────────────────────────────────────────────
+  --color-background:        #FFFFFF;
+  --color-surface:           #FFFFFF;
+  --color-surface-raised:    #F0F8FF;
+  --color-surface-inset:     #E6F4FF;
+
+  --color-primary:           #2E8FE8;          // Sky Blue — buttons, CTAs
+  --color-primary-dark:      #1A6FD4;          // Darker sky for depth
+
+  --color-accent:            #62C8FF;          // Light cyan — highlights
+  --color-accent-bright:     #90DAFF;          // Soft cyan — secondary emphasis
+
+  --color-text:              #0A0F1E;          // Near-black for body text
+  --color-text-muted:        #4A5568;
+  --color-text-subtle:       #8A96AA;
+  --color-text-on-brand:     #FFFFFF;          // White text on sky-blue bg
+
+  --color-border:            #C0C8D8;          // Steel Silver
+  --color-border-strong:     #8A96AA;
+
+  --color-black:             #000000;          // Deep Black — dark sections
+
+  --color-shadow:            rgba(46, 143, 232, 0.06);
+  --color-shadow-md:         rgba(46, 143, 232, 0.10);
+  --color-shadow-lg:         rgba(46, 143, 232, 0.16);
+  --color-glow:              rgba(46, 143, 232, 0.10);
+  --color-glow-cyan:         rgba(98, 200, 255, 0.12);
+
+  // Signature gradient — sky blue → white, use sparingly
+  --gradient-brand:          linear-gradient(90deg, #2E8FE8, #FFFFFF);
+  --gradient-brand-135:      linear-gradient(135deg, #2E8FE8, #FFFFFF);
 
   background-color: var(--color-background);
   color: var(--color-text);
@@ -49,7 +64,7 @@ body {
 
   &--hoverable:hover {
     box-shadow: 0 4px 12px var(--color-shadow-md), 0 12px 32px var(--color-shadow);
-    border-color: var(--color-border-strong);
+    border-color: var(--color-primary);
     transform: translateY(-2px);
   }
 }
@@ -157,6 +172,12 @@ body {
     color: var(--color-primary);
     border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
   }
+
+  &--accent {
+    background: var(--color-glow-cyan);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
 }
 
 // ─── Active Badge ─────────────────────────────────────────────────────────────
@@ -176,27 +197,30 @@ body {
 }
 
 // ─── Submit Button ────────────────────────────────────────────────────────────
+// NOTE: gradient ends in white — text colour is white since the sky-blue left
+// half carries the visual weight. Consider var(--color-text) if text looks faint.
 .btn-submit {
   width: 100%;
   padding: clamp(12px, 2vw, 16px);
   font-size: var(--font-base);
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: var(--color-text-on-brand);
+  background: var(--gradient-brand-135);
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
 
   &:not(:disabled):hover {
-    opacity: 0.9;
+    opacity: 0.92;
     transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--color-shadow-md);
   }
 }
 
@@ -209,19 +233,19 @@ body {
 // ─── Toast Overrides ─────────────────────────────────────────────────────────
 .toast--success,
 .toast--success .mdc-snackbar__surface {
-  background-color: #2e7d32 !important;
+  background-color: #1a7f45 !important;
   color: #fff !important;
 }
 
 .toast--error,
 .toast--error .mdc-snackbar__surface {
-  background-color: #c62828 !important;
+  background-color: #cc2200 !important;
   color: #fff !important;
 }
 
 .toast--info,
 .toast--info .mdc-snackbar__surface {
-  background-color: #1565c0 !important;
+  background-color: var(--color-primary) !important;
   color: #fff !important;
 }
 
@@ -235,7 +259,32 @@ body {
     .mdc-dialog__surface {
       border-radius: 20px !important;
       background: transparent !important;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18) !important;
+      box-shadow: 0 24px 64px rgba(46, 143, 232, 0.16) !important;
     }
+  }
+}
+
+// ─── Material Form Field Overrides ───────────────────────────────────────────
+.mat-mdc-form-field {
+  // Focused outline colour
+  &.mat-focused .mdc-notched-outline__leading,
+  &.mat-focused .mdc-notched-outline__notch,
+  &.mat-focused .mdc-notched-outline__trailing {
+    border-color: var(--color-primary) !important;
+  }
+
+  // Focused label colour
+  &.mat-focused .mdc-floating-label {
+    color: var(--color-primary) !important;
+  }
+
+  // Focused icon colour (matSuffix)
+  &.mat-focused .mat-mdc-form-field-icon-suffix mat-icon {
+    color: var(--color-primary) !important;
+  }
+
+  // Caret (cursor) colour inside input
+  .mat-mdc-input-element {
+    caret-color: var(--color-primary) !important;
   }
 }

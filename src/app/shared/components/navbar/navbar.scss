@@ -20,17 +20,16 @@
     color: inherit;
   }
 
-  &__logo-icon {
-    width: clamp(22px, 3vw, 28px);
-    height: clamp(22px, 3vw, 28px);
-    color: var(--color-brand-blue);
-    flex-shrink: 0;
-    transition: transform 0.25s ease;
+&__logo-icon {
+  width: clamp(36px, 5vw, 48px);
+  height: clamp(36px, 5vw, 48px);
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
 
-    .navbar__logo:hover & {
-      transform: rotate(-6deg) scale(1.08);
-    }
+  .navbar__logo:hover & {
+    transform: rotate(-6deg) scale(1.08);
   }
+}
 
   &__logo-text {
     display: flex;
@@ -39,18 +38,10 @@
     gap: 1px;
   }
 
-  &__logo-main {
-    font-size: clamp(0.75rem, 2vw, 0.95rem);
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    color: var(--color-brand-blue);
-  }
-
-  &__logo-sub {
-    font-size: clamp(0.5rem, 1.2vw, 0.6rem);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-  }
+&__logo-main {
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--color-primary);
+}
 }
