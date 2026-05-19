@@ -50,7 +50,7 @@
     gap: 12px;
 
     &--emergency {
-     background: var(--gradient-brand);
+      background: var(--gradient-brand);
     }
   }
 
@@ -92,6 +92,22 @@
     overflow: hidden;
     border: 2px solid var(--color-border);
     background: var(--color-surface-inset);
+
+    // Editable variant
+    &--editable {
+      position: relative;
+      cursor: pointer;
+
+      &:hover .id-card__photo-edit-overlay,
+      &:focus-visible .id-card__photo-edit-overlay {
+        opacity: 1;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+    }
   }
 
   &__photo {
@@ -113,6 +129,25 @@
       font-size: 48px;
       width: 48px;
       height: 48px;
+    }
+  }
+
+  &__photo-edit-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity 0.18s;
+
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+      color: #fff;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
     }
   }
 
@@ -294,17 +329,25 @@
   cursor: pointer;
   transition: opacity 0.15s;
 
-  &:hover {
-    opacity: 0.88;
-  }
-
-  &:active {
-    opacity: 0.75;
-  }
+  &:hover  { opacity: 0.88; }
+  &:active { opacity: 0.75; }
 
   mat-icon {
     font-size: 20px;
     width: 20px;
     height: 20px;
   }
+}
+
+// Visually-hidden file input
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

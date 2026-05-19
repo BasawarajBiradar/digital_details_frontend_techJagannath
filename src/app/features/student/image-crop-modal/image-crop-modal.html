@@ -1,0 +1,63 @@
+<div class="crop-backdrop" (click)="cancel()"></div>
+
+<div class="crop-sheet" role="dialog" aria-modal="true" aria-label="Crop photo">
+
+  <div class="crop-sheet__header">
+    <span class="crop-sheet__title">Adjust Photo</span>
+    <button class="crop-sheet__close" (click)="cancel()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="crop-sheet__hint">
+    <mat-icon>pan_tool</mat-icon>
+    <span>Drag to reposition &nbsp;·&nbsp; Scroll or pinch to zoom</span>
+  </div>
+
+  <!-- Canvas -->
+  <div class="crop-canvas-wrap">
+    <canvas
+      #canvas
+      [width]="320"
+      [height]="320"
+      class="crop-canvas"
+      (mousedown)="onMouseDown($event)"
+      (wheel)="onWheel($event)"
+      (touchstart)="onTouchStart($event)"
+    ></canvas>
+  </div>
+
+  <!-- Zoom controls -->
+  <div class="crop-zoom">
+    <button class="crop-zoom__btn" (click)="zoomOut()" aria-label="Zoom out">
+      <mat-icon>remove</mat-icon>
+    </button>
+    <button class="crop-zoom__btn crop-zoom__btn--reset" (click)="reset()" aria-label="Reset zoom">
+      <mat-icon>center_focus_strong</mat-icon>
+    </button>
+    <button class="crop-zoom__btn" (click)="zoomIn()" aria-label="Zoom in">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- Actions -->
+  <div class="crop-sheet__actions">
+    <button class="crop-btn crop-btn--cancel" (click)="cancel()">
+      Cancel
+    </button>
+    <button
+      class="crop-btn crop-btn--confirm"
+      (click)="confirmCrop()"
+      [disabled]="isCropping()"
+    >
+      @if (isCropping()) {
+        <span class="spinner spinner--sm"></span>
+        Cropping…
+      } @else {
+        <mat-icon>check</mat-icon>
+        Use Photo
+      }
+    </button>
+  </div>
+
+</div>

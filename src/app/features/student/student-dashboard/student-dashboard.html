@@ -27,16 +27,34 @@
       </div>
 
       <div class="id-card__body">
-        <div class="id-card__photo-wrap">
-          @if (student()!.photoUrl) {
+
+        <!-- Photo with edit overlay -->
+        <div class="id-card__photo-wrap id-card__photo-wrap--editable"
+             (click)="photoFileInput.click()"
+             role="button"
+             aria-label="Change photo"
+             tabindex="0"
+             (keydown.enter)="photoFileInput.click()">
+
+          @if (displayPhotoUrl()) {
             <img class="id-card__photo"
-                 [src]="student()!.photoUrl"
+                 [src]="displayPhotoUrl()"
                  [alt]="student()!.fullName" />
           } @else {
             <div class="id-card__photo-fallback">
               <mat-icon>person</mat-icon>
             </div>
           }
+
+          <div class="id-card__photo-edit-overlay" aria-hidden="true">
+            <mat-icon>photo_camera</mat-icon>
+          </div>
+
+          <input #photoFileInput
+                 type="file"
+                 accept="image/*"
+                 class="sr-only"
+                 (change)="onPhotoFileSelected($event)" />
         </div>
 
         <div class="id-card__details">
@@ -143,10 +161,10 @@
   <div class="id-card__actions">
     <button class="btn-qr" (click)="openQr()">
       <mat-icon>qr_code_2</mat-icon>
-        Show My QR Code
+      Show My QR Code
     </button>
   </div>
-  
+
   @if (showQr()) {
     <app-qr-model
       [studentName]="student()?.fullName ?? ''"
@@ -154,6 +172,14 @@
       [isLoading]="qrLoading()"
       [hasError]="qrError()"
       (closed)="closeQr()" />
+  }
+
+  <!-- Crop modal -->
+  @if (showCrop() && cropFile()) {
+    <app-image-crop-modal
+      [file]="cropFile()!"
+      (cropped)="onCropDone($event)"
+      (cancelled)="onCropCancelled()" />
   }
 
 </div>

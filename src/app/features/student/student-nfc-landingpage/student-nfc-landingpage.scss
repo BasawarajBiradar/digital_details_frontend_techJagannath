@@ -43,14 +43,14 @@
   overflow: hidden;
 
   &__band {
-    background: var(--color-primary);
+    background: var(--gradient-brand);
     padding: 12px 20px;
     display: flex;
     align-items: center;
     gap: 12px;
 
     &--emergency {
-      background: var(--color-error, #c0392b);
+      background: var(--gradient-brand);
     }
   }
 
