@@ -98,4 +98,13 @@ export class ApiStudent {
       .post<ApiResponse<VerifyUidResponse>>(`${this.base}/api/student/uid/register/${uid}`, payload)
       .pipe(map(res => res.data));
   }
+
+  uploadPhoto(form: FormData): Observable<{ saveSuccessful: boolean }> {
+    return this.http
+      .post<ApiResponse<{ saveSuccessful: boolean }>>(
+        `${this.base}/api/student/upload/profile-photo`,
+        form
+      )
+      .pipe(map(res => res.data));
+  }
 }

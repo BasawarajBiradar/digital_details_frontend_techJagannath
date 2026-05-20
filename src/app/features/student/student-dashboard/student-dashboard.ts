@@ -6,6 +6,7 @@ import { catchError, of } from 'rxjs';
 import { ApiStudent, CardTap } from '../services/api-student';
 import { QrModel } from '../qr-model/qr-model';
 import { ImageCropModal, CropResult } from '../image-crop-modal/image-crop-modal';
+import { ToastService } from '@core/services/toast-service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -23,6 +24,9 @@ export class StudentDashboard {
   readonly qrObjectUrl = signal<string | null>(null);
   readonly qrLoading   = signal(false);
   readonly qrError     = signal(false);
+  readonly photoUploading = signal(false);
+  readonly photoUploadError = signal(false);
+  private readonly toast = inject(ToastService);
 
   // Crop modal state
   readonly showCrop      = signal(false);
@@ -98,14 +102,29 @@ export class StudentDashboard {
     this.showCrop.set(false);
     this.cropFile.set(null);
 
+    // Optimistic preview immediately
     const prev = this.localPhotoUrl();
     if (prev) URL.revokeObjectURL(prev);
     this.localPhotoUrl.set(result.objectUrl);
 
-    // TODO (Phase 2): upload to backend
-    // const form = new FormData();
-    // form.append('photo', result.blob, 'profile.jpg');
-    // this.apiStudent.uploadPhoto(form).subscribe({ ... });
+    // Upload to backend
+    const form = new FormData();
+    form.append('file', result.blob, 'profile.jpg');  // key must be 'file'
+
+    this.photoUploading.set(true);
+    this.photoUploadError.set(false);
+
+    this.apiStudent.uploadPhoto(form).subscribe({
+      next: () => {
+        this.photoUploading.set(false);
+        window.location.reload();
+      },
+      error: () => {
+        this.photoUploading.set(false);
+        this.photoUploadError.set(true);
+        this.toast.error('Failed to upload photo. Please try again.');
+      },
+    });
   }
 
   onCropCancelled(): void {
