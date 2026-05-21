@@ -15,11 +15,12 @@
   </div>
 
   <!-- Canvas -->
+<!-- Canvas -->
   <div class="crop-canvas-wrap">
     <canvas
       #canvas
-      [width]="320"
-      [height]="320"
+      [width]="canvasW"
+      [height]="canvasH"
       class="crop-canvas"
       (mousedown)="onMouseDown($event)"
       (wheel)="onWheel($event)"

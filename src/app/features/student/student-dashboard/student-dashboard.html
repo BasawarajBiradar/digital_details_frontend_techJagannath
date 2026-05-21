@@ -176,10 +176,11 @@
 
   <!-- Crop modal -->
   @if (showCrop() && cropFile()) {
-    <app-image-crop-modal
-      [file]="cropFile()!"
-      (cropped)="onCropDone($event)"
-      (cancelled)="onCropCancelled()" />
+  <app-image-crop-modal
+    [file]="cropFile()!"
+    [cropShape]="'portrait'"
+    (cropped)="onCropDone($event)"
+    (cancelled)="onCropCancelled()" />
   }
 
 </div>

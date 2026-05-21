@@ -67,6 +67,8 @@ export class SchoolAdminDashboard implements OnInit {
         if (res.success) {
           this.schoolLogoUrl.set(res.data.fileUrl);
           this.schoolName.set(res.data.schoolName);
+          window.location.reload();
+
         }
         this.isUploadingLogo.set(false);
       },

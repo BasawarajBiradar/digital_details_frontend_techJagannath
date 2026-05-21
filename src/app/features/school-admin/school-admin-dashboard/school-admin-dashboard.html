@@ -106,12 +106,12 @@
 
   <!-- Crop modal — rendered outside the @else so it can appear over everything -->
   @if (pendingLogoFile()) {
-    <app-image-crop-modal
-      [file]="pendingLogoFile()!"
-      [outputSize]="400"
-      (cropped)="onLogoCropped($event)"
-      (cancelled)="onLogoCropCancelled()"
-    />
+  <app-image-crop-modal
+    [file]="pendingLogoFile()!"
+    [outputSize]="400"
+    [cropShape]="'square'"
+    (cropped)="onLogoCropped($event)"
+    (cancelled)="onLogoCropCancelled()" />
   }
 
 </div>
