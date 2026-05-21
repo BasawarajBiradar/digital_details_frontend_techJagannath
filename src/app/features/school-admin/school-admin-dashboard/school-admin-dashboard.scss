@@ -52,6 +52,23 @@
   line-height: 1.2;
 }
 
+.dashboard__school-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dashboard__school-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
 .dashboard__subtitle {
   font-size: 0.85rem;
   color: var(--color-text-muted);

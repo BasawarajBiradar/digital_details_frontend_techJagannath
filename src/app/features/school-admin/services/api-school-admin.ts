@@ -20,6 +20,19 @@ export interface StudentsResponse {
   timestamp: string;
 }
 
+  export interface SchoolLogoResponse {
+    success: boolean;
+    message: string;
+    code: string;
+    data: {
+      fileName: string;
+      fileUrl: string;
+      schoolName: string;
+    };
+    errors: null | string;
+    timestamp: string;
+  }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -31,4 +44,9 @@ export class ApiSchoolAdmin {
   getTopStudents(size: number | null): Observable<StudentsResponse> {
     return this.http.post<StudentsResponse>(`${this.base}/api/school-admin/dashboard/students`, { size });
   }
+
+  getSchoolLogoName(): Observable<SchoolLogoResponse> {
+    return this.http.get<SchoolLogoResponse>(`${this.base}/api/school-admin/retrieve/school-logo-name`);
+  }
+
 }
