@@ -49,4 +49,13 @@ export class ApiSchoolAdmin {
     return this.http.get<SchoolLogoResponse>(`${this.base}/api/school-admin/retrieve/school-logo-name`);
   }
 
+  uploadSchoolLogo(blob: Blob, fileName: string): Observable<SchoolLogoResponse> {
+    const form = new FormData();
+    form.append('file', blob, fileName);
+    return this.http.post<SchoolLogoResponse>(
+      `${this.base}/api/school-admin/upload/school-logo`,
+      form
+    );
+  }
+
 }

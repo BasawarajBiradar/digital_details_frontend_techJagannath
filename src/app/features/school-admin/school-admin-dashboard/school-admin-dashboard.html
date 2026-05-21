@@ -18,25 +18,50 @@
     <!-- Header -->
     <div class="dashboard__header">
       <div class="dashboard__school-identity">
-        @if (schoolLogoUrl()) {
-          <img
-            class="dashboard__school-logo"
-            [src]="schoolLogoUrl()"
-            [alt]="schoolName() + ' logo'"
+
+        <!-- Logo upload button -->
+        <label class="dashboard__logo-wrap" aria-label="Change school logo">
+          <input
+            type="file"
+            accept="image/*"
+            class="dashboard__logo-input"
+            (change)="onLogoFileSelected($event)"
           />
-        }
+
+          @if (isUploadingLogo()) {
+            <div class="dashboard__school-logo dashboard__school-logo--placeholder">
+              <span class="spinner spinner--sm"></span>
+            </div>
+          } @else if (schoolLogoUrl()) {
+            <img
+              class="dashboard__school-logo"
+              [src]="schoolLogoUrl()"
+              [alt]="schoolName() + ' logo'"
+            />
+          } @else {
+            <div class="dashboard__school-logo dashboard__school-logo--placeholder">
+              <mat-icon>add_a_photo</mat-icon>
+            </div>
+          }
+
+          <!-- Hover overlay -->
+          <div class="dashboard__logo-overlay" aria-hidden="true">
+            <mat-icon>photo_camera</mat-icon>
+          </div>
+        </label>
+
         <div>
           <h1 class="dashboard__title">{{ schoolName() || 'School Dashboard' }}</h1>
           <p class="dashboard__subtitle">Overview of recent student registrations</p>
         </div>
       </div>
+
       <div class="active-badge">
         <mat-icon style="font-size:14px;width:14px;height:14px;color:var(--color-primary)">circle</mat-icon>
         Live
       </div>
     </div>
 
-    <!-- Top Students Table -->
     <div class="surface-card students-card">
       <h3 class="students-card__heading">
         Top 10 Recent Registrations
@@ -66,7 +91,6 @@
                   <td class="students-table__division">{{ student.division }}</td>
                   <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
                 <tr (click)="openStudentDetail(student.id)" style="cursor:pointer;">
-
               }
             </tbody>
           </table>
@@ -78,6 +102,16 @@
         </div>
       }
     </div>
+  }
+
+  <!-- Crop modal — rendered outside the @else so it can appear over everything -->
+  @if (pendingLogoFile()) {
+    <app-image-crop-modal
+      [file]="pendingLogoFile()!"
+      [outputSize]="400"
+      (cropped)="onLogoCropped($event)"
+      (cancelled)="onLogoCropCancelled()"
+    />
   }
 
 </div>

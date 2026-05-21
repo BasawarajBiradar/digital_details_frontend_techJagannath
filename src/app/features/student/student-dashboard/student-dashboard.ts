@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { ApiStudent, CardTap } from '../services/api-student';
 import { QrModel } from '../qr-model/qr-model';
-import { ImageCropModal, CropResult } from '../image-crop-modal/image-crop-modal';
+import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import { ToastService } from '@core/services/toast-service';
 
 @Component({
