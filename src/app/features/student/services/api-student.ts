@@ -24,7 +24,7 @@ export interface InfoCardData {
 }
 
 export interface CardTap {
-  id:       number;
+  id?:       number;
   date:     string;
   time:     string;
   deviceId: string;
@@ -64,7 +64,12 @@ export class ApiStudent {
   getTodayEntries(): Observable<CardTap[]> {
     return this.http
       .get<ApiResponse<CardTap[]>>(`${this.base}/api/student/home-page/today-entries`)
-      .pipe(map(res => res.data));
+      .pipe(
+        map(res => res.data.map(tap => ({
+          ...tap,
+          date: this.parseDdMmYyyy(tap.date)  
+        })))
+      );
   }
 
   getLandingPageData(uid: string, userId: number | null): Observable<InfoCardData> {
@@ -106,5 +111,10 @@ export class ApiStudent {
         form
       )
       .pipe(map(res => res.data));
+  }
+
+  private parseDdMmYyyy(dateStr: string): string {
+    const [dd, mm, yyyy] = dateStr.split('-');
+    return `${yyyy}-${mm}-${dd}`;             
   }
 }
