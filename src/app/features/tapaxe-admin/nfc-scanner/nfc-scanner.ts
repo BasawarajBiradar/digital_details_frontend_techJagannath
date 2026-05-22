@@ -31,42 +31,48 @@ export class NfcScanner implements OnDestroy {
     this.isSupported = this.nfcService.isSupported();
   }
 
-  startScan(): void {
-    this.errorMessage = null;
-    this.isScanning = true;
+startScan(): void {
+  this.errorMessage = null;
+  this.isScanning = true;
 
-    this.scanSubscription = this.nfcService.scanCard()
-      .pipe(take(1))                           // ← auto-cut after first scan
-      .subscribe({
-        next: (result: NfcScanResult) => {
-          this.isScanning = false;             // ← stop the scanning indicator
+  this.scanSubscription = this.nfcService.scanCard()
+    .pipe(take(1))
+    .subscribe({
+      next: (result: NfcScanResult) => {
+        this.isScanning = false;
 
-          const entry: NfcScanResult = { ...result, saving: true };
-          this.scanHistory = [entry, ...this.scanHistory];
+        const normalizedSerial = result.serialNumber
+          .split(':')
+          .map(byte => byte.padStart(2, '0').toUpperCase())
+          .join('');
 
-          this.nfcService.saveUid(result.serialNumber).subscribe({
-            next: (res) => {
-              this.scanHistory = this.scanHistory.map(s =>
-                s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
-                  ? { ...s, saving: false, url: res.data?.url }
-                  : s
-              );
-            },
-            error: (err) => {
-              this.scanHistory = this.scanHistory.map(s =>
-                s.serialNumber === result.serialNumber && s.scannedAt === result.scannedAt
-                  ? { ...s, saving: false, saveError: err.message || 'Failed to save UID.' }
-                  : s
-              );
-            }
-          });
-        },
-        error: (err) => {
-          this.isScanning = false;
-          this.errorMessage = err.message || 'Scan failed.';
-        }
-      });
-  }
+        const normalizedResult = { ...result, serialNumber: normalizedSerial };
+        const entry: NfcScanResult = { ...normalizedResult, saving: true };
+        this.scanHistory = [entry, ...this.scanHistory];
+
+        this.nfcService.saveUid(normalizedSerial).subscribe({
+          next: (res) => {
+            this.scanHistory = this.scanHistory.map(s =>
+              s.serialNumber === normalizedSerial && s.scannedAt === result.scannedAt
+                ? { ...s, saving: false, url: res.data?.url }
+                : s
+            );
+          },
+          error: (err) => {
+            this.scanHistory = this.scanHistory.map(s =>
+              s.serialNumber === normalizedSerial && s.scannedAt === result.scannedAt
+                ? { ...s, saving: false, saveError: err.message || 'Failed to save UID.' }
+                : s
+            );
+          }
+        });
+      },
+      error: (err) => {
+        this.isScanning = false;
+        this.errorMessage = err.message || 'Scan failed.';
+      }
+    });
+}
 
   stopScan(): void {
     this.scanSubscription?.unsubscribe();
