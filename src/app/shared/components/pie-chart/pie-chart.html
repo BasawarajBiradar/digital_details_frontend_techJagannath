@@ -31,24 +31,6 @@
           </path>
         }
 
-        <!-- Donut hole -->
-        <circle cx="0" cy="0" r="0.56" class="pie-chart__hole" />
-
-        <!-- Centre: total value -->
-        <text
-          x="0" y="-0.10"
-          class="pie-chart__centre-value"
-          text-anchor="middle"
-          dominant-baseline="auto"
-        >{{ totalValue | number }}</text>
-
-        <!-- Centre: total label -->
-        <text
-          x="0" y="0.14"
-          class="pie-chart__centre-label"
-          text-anchor="middle"
-          dominant-baseline="auto"
-        >{{ formattedTotalKey }}</text>
       </svg>
     </div>
 
