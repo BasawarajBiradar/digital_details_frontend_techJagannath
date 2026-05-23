@@ -51,16 +51,9 @@ export class SchoolAdminDashboard implements OnInit {
       },
     });
 
-    // this.api.getAttendance().subscribe(res => {
-    //   if (res.success) this.attendanceData.set(res.data);
-    // });
-    this.attendanceData.set(  {
-      totalNumberOfStudents: 1000,          
-      data: [
-        { presentStudents: 800 },          
-        { absentStudents: 200 },          
-      ]
-    })
+    this.api.getStudentAttendancePieChartData().subscribe(res => {
+      this.attendanceData.set(res.data);
+    });
   }
 
   // ── Logo upload ─────────────────────────────────────────────────────────────

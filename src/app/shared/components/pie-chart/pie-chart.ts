@@ -30,7 +30,10 @@ export interface PieChartApiResponse {
 }
 
 /** One item in the data array — a single-entry object: { presentStudents: 800 } */
-export type PieChartDataItem = { [key: string]: number };
+export interface PieChartDataItem {
+  key: string;
+  value: number;
+}
 
 // ─── Internal type ────────────────────────────────────────────────────────────
 
@@ -142,8 +145,10 @@ export class PieChart implements OnChanges {
     this.totalValue        = (this.apiResponse as Record<string, number>)[totalK];
 
     // 2. Flatten data array → [{key, value}]
-    const items: { key: string; value: number }[] = (this.apiResponse.data ?? [])
-      .flatMap(obj => Object.entries(obj).map(([k, v]) => ({ key: k, value: +v })));
+    const items = (this.apiResponse.data ?? []).map((item: PieChartDataItem) => ({
+      key: item.key,
+      value: item.value
+    }));
 
     const sum     = items.reduce((acc, i) => acc + i.value, 0) || 1;
     const palette = this.buildPalette(items.length);
@@ -184,14 +189,31 @@ export class PieChart implements OnChanges {
    * The SVG coordinate space is a 2×2 unit square centred at (0,0).
    */
   private arcPath(startAngle: number, endAngle: number): string {
-    const R  = 0.90; // outer radius
+    const R = 0.90;
+
+    // Full circle case
+    if (Math.abs(endAngle - startAngle) >= (Math.PI * 2) - 0.0001) {
+      return `
+        M 0 ${-R}
+        A ${R} ${R} 0 1 1 0 ${R}
+        A ${R} ${R} 0 1 1 0 ${-R}
+        Z
+      `;
+    }
+
     const x1 = Math.cos(startAngle) * R;
     const y1 = Math.sin(startAngle) * R;
-    const x2 = Math.cos(endAngle)   * R;
-    const y2 = Math.sin(endAngle)   * R;
+    const x2 = Math.cos(endAngle) * R;
+    const y2 = Math.sin(endAngle) * R;
+
     const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
-    // Full filled segment: centre → arc start → arc → close
-    return `M 0 0 L ${x1} ${y1} A ${R} ${R} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+    return `
+      M 0 0
+      L ${x1} ${y1}
+      A ${R} ${R} 0 ${largeArc} 1 ${x2} ${y2}
+      Z
+    `;
   }
 
   /**

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
+import { PieChartApiResponse } from '../../../shared/components/pie-chart/pie-chart'
 
 export interface StudentSummary {
   id: number;
@@ -33,6 +34,15 @@ export interface StudentsResponse {
     timestamp: string;
   }
 
+  export interface PieChartApiResponseActual {
+    success: boolean;
+    message: string;
+    code: string;
+    data: PieChartApiResponse;
+    errors: null | string;
+    timestamp: string;
+  }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -56,6 +66,10 @@ export class ApiSchoolAdmin {
       `${this.base}/api/school-admin/upload/school-logo`,
       form
     );
+  }
+
+  getStudentAttendancePieChartData(): Observable<PieChartApiResponseActual> {
+    return this.http.get<PieChartApiResponseActual>(`${this.base}/api/school-admin/retrieve/pie-chart/student-attendance`);
   }
 
 }
