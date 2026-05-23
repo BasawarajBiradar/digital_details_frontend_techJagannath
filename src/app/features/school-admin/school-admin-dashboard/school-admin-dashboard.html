@@ -102,6 +102,12 @@
         </div>
       }
     </div>
+
+    <app-pie-chart
+      title="Student Attendance"
+      [apiResponse]="attendanceData()"
+      [colors]="['#2E8FE8', '#62C8FF']"
+    />
   }
 
   <!-- Crop modal — rendered outside the @else so it can appear over everything -->

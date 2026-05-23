@@ -1,0 +1,108 @@
+<!-- pie-chart.component.html -->
+<div class="pie-chart">
+
+  @if (title) {
+    <h3 class="pie-chart__title">
+      {{ title }}
+      <span class="badge badge--primary">{{ totalValue | number }}</span>
+    </h3>
+  }
+
+  <div class="pie-chart__body">
+
+    <!-- SVG Donut -->
+    <div class="pie-chart__canvas-wrap" role="img" [attr.aria-label]="title + ' chart'">
+      <svg
+        class="pie-chart__svg"
+        viewBox="-1 -1 2 2"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Slices -->
+        @for (slice of slices; track slice.rawKey) {
+          <path
+            class="pie-chart__slice"
+            [attr.d]="slice.pathD"
+            [attr.fill]="slice.color"
+            [class.pie-chart__slice--hovered]="hoveredKey === slice.rawKey"
+            (mouseenter)="hoveredKey = slice.rawKey"
+            (mouseleave)="hoveredKey = null"
+          >
+            <title>{{ slice.label }}: {{ slice.value | number }} ({{ slice.percentage | number:'1.1-1' }}%)</title>
+          </path>
+        }
+
+        <!-- Donut hole -->
+        <circle cx="0" cy="0" r="0.56" class="pie-chart__hole" />
+
+        <!-- Centre: total value -->
+        <text
+          x="0" y="-0.10"
+          class="pie-chart__centre-value"
+          text-anchor="middle"
+          dominant-baseline="auto"
+        >{{ totalValue | number }}</text>
+
+        <!-- Centre: total label -->
+        <text
+          x="0" y="0.14"
+          class="pie-chart__centre-label"
+          text-anchor="middle"
+          dominant-baseline="auto"
+        >{{ formattedTotalKey }}</text>
+      </svg>
+    </div>
+
+    <!-- Legend -->
+    <div class="pie-chart__legend">
+      @for (slice of slices; track slice.rawKey) {
+        <div
+          class="pie-chart__legend-item"
+          [class.pie-chart__legend-item--hovered]="hoveredKey === slice.rawKey"
+          (mouseenter)="hoveredKey = slice.rawKey"
+          (mouseleave)="hoveredKey = null"
+        >
+          <span
+            class="pie-chart__legend-dot"
+            [style.background]="slice.color"
+          ></span>
+
+          <span class="pie-chart__legend-text">
+            <span class="pie-chart__legend-key">{{ slice.label }}</span>
+            <span class="pie-chart__legend-value">{{ slice.value | number }}</span>
+          </span>
+
+          <span class="pie-chart__legend-pct">
+            {{ slice.percentage | number:'1.1-1' }}%
+          </span>
+        </div>
+      }
+
+      <!-- Total row -->
+      <div class="pie-chart__legend-total">
+        <span class="pie-chart__legend-dot pie-chart__legend-dot--total"></span>
+        <span class="pie-chart__legend-text">
+          <span class="pie-chart__legend-key">{{ formattedTotalKey }}</span>
+          <span class="pie-chart__legend-value">{{ totalValue | number }}</span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tooltip (visible on hover) -->
+  @if (hoveredKey) {
+    @if (hoveredSlice; as s) {
+      <div class="pie-chart__tooltip">
+        <span
+          class="pie-chart__tooltip-dot"
+          [style.background]="s.color"
+        ></span>
+        <span class="pie-chart__tooltip-label">{{ s.label }}</span>
+        <span class="pie-chart__tooltip-sep">·</span>
+        <strong class="pie-chart__tooltip-val">{{ s.value | number }}</strong>
+        <span class="pie-chart__tooltip-pct">({{ s.percentage | number:'1.1-1' }}%)</span>
+      </div>
+    }
+  }
+
+</div>

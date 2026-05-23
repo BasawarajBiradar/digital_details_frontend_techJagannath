@@ -5,10 +5,12 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ApiSchoolAdmin, StudentSummary } from '../services/api-school-admin';
 import { StudentDetailDialog } from '../student-detail-dialog/student-detail-dialog';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
+import { PieChart, PieChartApiResponse } from '../../../shared/components/pie-chart/pie-chart';
+
 
 @Component({
   selector: 'app-school-admin-dashboard',
-  imports: [CommonModule, MatIconModule, MatDialogModule, DatePipe, ImageCropModal],
+  imports: [CommonModule, MatIconModule, MatDialogModule, DatePipe, ImageCropModal, PieChart],
   templateUrl: './school-admin-dashboard.html',
   styleUrl: './school-admin-dashboard.scss',
 })
@@ -18,6 +20,7 @@ export class SchoolAdminDashboard implements OnInit {
   hasError      = signal(false);
   schoolName    = signal<string>('');
   schoolLogoUrl = signal<string>('');
+  attendanceData = signal<PieChartApiResponse | null>(null);
 
   // Logo upload state
   pendingLogoFile  = signal<File | null>(null);
@@ -47,6 +50,17 @@ export class SchoolAdminDashboard implements OnInit {
         this.isLoading.set(false);
       },
     });
+
+    // this.api.getAttendance().subscribe(res => {
+    //   if (res.success) this.attendanceData.set(res.data);
+    // });
+    this.attendanceData.set(  {
+      totalNumberOfStudents: 1000,          
+      data: [
+        { presentStudents: 800 },          
+        { absentStudents: 200 },          
+      ]
+    })
   }
 
   // ── Logo upload ─────────────────────────────────────────────────────────────
