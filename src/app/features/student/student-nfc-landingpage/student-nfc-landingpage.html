@@ -95,13 +95,23 @@
           <div class="id-card__row">
             <span class="id-card__row-label">Contact</span>
             <span class="id-card__row-value">
-              <a href="tel:{{ student()!.emergencyContactNumber }}">{{ student()!.emergencyContactNumber }}</a>
+              <a class="id-card__link" href="tel:{{ student()!.emergencyContactNumber }}">
+              @if (student()!.emergencyContactNumber) {
+                <mat-icon class="id-card__link-icon">phone</mat-icon>
+              }
+                {{ student()!.emergencyContactNumber }}
+              </a>
             </span>
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Alt. No</span>
             <span class="id-card__row-value">
-              <a href="tel:{{ student()!.alternateContactNumber }}">{{ student()!.alternateContactNumber }}</a>
+              <a class="id-card__link" href="tel:{{ student()!.alternateContactNumber }}">
+              @if (student()!.alternateContactNumber) {
+                <mat-icon class="id-card__link-icon">phone</mat-icon>
+              }
+                {{ student()!.alternateContactNumber }}
+              </a>
             </span>
           </div>
         </div>
