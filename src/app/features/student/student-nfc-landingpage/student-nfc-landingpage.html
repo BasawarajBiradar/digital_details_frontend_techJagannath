@@ -57,11 +57,15 @@
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ student()!.contactNumber }}</span>
+            <span class="id-card__row-value">
+              <a href="tel:{{ student()!.contactNumber }}">{{ student()!.contactNumber }}</a>
+            </span>
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Email</span>
-            <span class="id-card__row-value">{{ student()!.emailId }}</span>
+            <span class="id-card__row-value">
+              <a href="mailto:{{ student()!.emailId }}">{{ student()!.emailId }}</a>
+            </span>
           </div>
         </div>
       </div>
@@ -90,11 +94,15 @@
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactNumber }}</span>
+            <span class="id-card__row-value">
+              <a href="tel:{{ student()!.emergencyContactNumber }}">{{ student()!.emergencyContactNumber }}</a>
+            </span>
           </div>
           <div class="id-card__row">
             <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+            <span class="id-card__row-value">
+              <a href="tel:{{ student()!.alternateContactNumber }}">{{ student()!.alternateContactNumber }}</a>
+            </span>
           </div>
         </div>
       </div>
