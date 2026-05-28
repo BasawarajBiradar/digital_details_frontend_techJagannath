@@ -62,14 +62,88 @@
       </div>
     </div>
 
+    <!-- ── Filters ──────────────────────────────────────────────────────── -->
+    <div class="filters-bar surface-card">
+
+      <!-- Role toggle -->
+      <div class="filters-bar__group">
+        <span class="filters-bar__label">Role</span>
+        <div class="filters-bar__toggle-group">
+          <button
+            class="filters-bar__toggle"
+            [class.filters-bar__toggle--active]="selectedRoleId() === null"
+            (click)="setRole(null)">
+            All
+          </button>
+          <button
+            class="filters-bar__toggle"
+            [class.filters-bar__toggle--active]="selectedRoleId() === 3"
+            (click)="setRole(3)">
+            <mat-icon>school</mat-icon>
+            Student
+          </button>
+          <button
+            class="filters-bar__toggle"
+            [class.filters-bar__toggle--active]="selectedRoleId() === 4"
+            (click)="setRole(4)">
+            <mat-icon>person</mat-icon>
+            Teacher
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-filters: only visible when Student is selected -->
+      @if (selectedRoleId() === 3) {
+        <div class="filters-bar__subfilters">
+
+          <!-- Class dropdown -->
+          <div class="filters-bar__field">
+            <label class="filters-bar__field-label">Class</label>
+            <div class="filters-bar__select-wrap">
+              <select
+                class="filters-bar__select"
+                [value]="selectedClass() ?? ''"
+                (change)="setClass($any($event.target).value === '' ? null : $any($event.target).value)">
+                <option value="">All Classes</option>
+                @for (cls of availableClasses; track cls) {
+                  <option [value]="cls">Class {{ cls }}</option>
+                }
+              </select>
+              <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <!-- Division dropdown -->
+          <div class="filters-bar__field">
+            <label class="filters-bar__field-label">Division</label>
+            <div class="filters-bar__select-wrap">
+              <select
+                class="filters-bar__select"
+                [value]="selectedDivision() ?? ''"
+                (change)="setDivision($any($event.target).value === '' ? null : $any($event.target).value)">
+                <option value="">All Divisions</option>
+                @for (div of availableDivisions; track div) {
+                  <option [value]="div">Division {{ div }}</option>
+                }
+              </select>
+              <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
+            </div>
+          </div>
+
+        </div>
+      }
+
+    </div>
+    <!-- ── /Filters ─────────────────────────────────────────────────────── -->
+
     <div class="surface-card students-card">
       <h3 class="students-card__heading">
-        Top 10 Recent Registrations
+        Recent Registrations
         <span class="badge badge--primary">{{ students().length }}</span>
       </h3>
 
       @if (students().length > 0) {
-        <div class="students-table-wrap">
+        <div class="students-table-wrap students-table-wrap--scrollable">
           <table class="students-table">
             <thead>
               <tr>
@@ -90,7 +164,7 @@
                   </td>
                   <td class="students-table__division">{{ student.division }}</td>
                   <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
-                <tr (click)="openStudentDetail(student.id)" style="cursor:pointer;">
+                </tr>
               }
             </tbody>
           </table>

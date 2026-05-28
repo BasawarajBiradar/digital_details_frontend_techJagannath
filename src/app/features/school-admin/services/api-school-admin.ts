@@ -10,6 +10,13 @@ export interface StudentSummary {
   classLevel: string;
   division: string;
   registrationDate: string;
+  roleId: number;
+}
+
+export interface DashboardFilterPayload {
+  roleId: number | null;
+  classLevel:  string | null;
+  division:    string | null;
 }
 
 export interface StudentsResponse {
@@ -51,8 +58,8 @@ export class ApiSchoolAdmin {
 
   constructor(private http: HttpClient) {}
 
-  getTopStudents(size: number | null): Observable<StudentsResponse> {
-    return this.http.post<StudentsResponse>(`${this.base}/api/school-admin/dashboard/students`, { size });
+  getTopStudents(filter: DashboardFilterPayload): Observable<StudentsResponse> {
+    return this.http.post<StudentsResponse>(`${this.base}/api/school-admin/dashboard/students`, filter);
   }
 
   getSchoolLogoName(): Observable<SchoolLogoResponse> {
@@ -68,8 +75,11 @@ export class ApiSchoolAdmin {
     );
   }
 
-  getStudentAttendancePieChartData(): Observable<PieChartApiResponseActual> {
-    return this.http.get<PieChartApiResponseActual>(`${this.base}/api/school-admin/retrieve/pie-chart/student-attendance`);
+  getStudentAttendancePieChartData(filters: DashboardFilterPayload): Observable<PieChartApiResponseActual> {
+    return this.http.post<PieChartApiResponseActual>(
+      `${this.base}/api/school-admin/retrieve/pie-chart/student-attendance`,
+      filters
+    );
   }
 
 }

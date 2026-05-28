@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,16 +15,25 @@ import { PieChart, PieChartApiResponse } from '../../../shared/components/pie-ch
   styleUrl: './school-admin-dashboard.scss',
 })
 export class SchoolAdminDashboard implements OnInit {
-  students      = signal<StudentSummary[]>([]);
-  isLoading     = signal(true);
-  hasError      = signal(false);
-  schoolName    = signal<string>('');
-  schoolLogoUrl = signal<string>('');
+  students       = signal<StudentSummary[]>([]);
+  isLoading      = signal(true);
+  hasError       = signal(false);
+  schoolName     = signal<string>('');
+  schoolLogoUrl  = signal<string>('');
   attendanceData = signal<PieChartApiResponse | null>(null);
 
   // Logo upload state
-  pendingLogoFile  = signal<File | null>(null);
-  isUploadingLogo  = signal(false);
+  pendingLogoFile = signal<File | null>(null);
+  isUploadingLogo = signal(false);
+
+  // ── Filter state ────────────────────────────────────────────────────────────
+  selectedRoleId   = signal<number | null>(null);
+  selectedClass    = signal<string | null>(null);
+  selectedDivision = signal<string | null>(null);
+
+  // ── Static filter options ───────────────────────────────────────────────────
+  readonly availableClasses  = Array.from({ length: 12 }, (_, i) => i + 1);   // [1..12]
+  readonly availableDivisions = ['A', 'B', 'C', 'D', 'E'];
 
   constructor(private api: ApiSchoolAdmin, private dialog: MatDialog) {}
 
@@ -39,7 +48,52 @@ export class SchoolAdminDashboard implements OnInit {
       error: () => {},
     });
 
-    this.api.getTopStudents(null).subscribe({
+    this.fetchTableData();
+    this.fetchChartData();
+  }
+
+  // ── Filter actions ───────────────────────────────────────────────────────────
+
+  setRole(roleId: number | null): void {
+    this.selectedRoleId.set(roleId);
+    // Clear sub-filters when role changes; they're only relevant for students
+    this.selectedClass.set(null);
+    this.selectedDivision.set(null);
+    this.fetchTableData();
+    this.fetchChartData();
+  }
+
+  setClass(cls: string | null): void {
+    this.selectedClass.set(cls);
+    this.fetchTableData();
+    this.fetchChartData();
+  }
+
+  setDivision(div: string | null): void {
+    this.selectedDivision.set(div);
+    this.fetchTableData();
+    this.fetchChartData();
+  }
+
+  // ── Private helpers ─────────────────────────────────────────────────────────
+
+  private buildFilterPayload() {
+    const roleId   = this.selectedRoleId();
+    const classVal = roleId === 3 ? this.selectedClass()    : null;
+    const divVal   = roleId === 3 ? this.selectedDivision() : null;
+
+    return {
+      roleId,
+      classLevel: classVal,
+      division:   divVal,
+    };
+  }
+
+  private fetchTableData(): void {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
+    this.api.getTopStudents(this.buildFilterPayload()).subscribe({
       next: (res) => {
         if (res.success) this.students.set(res.data);
         else this.hasError.set(true);
@@ -50,18 +104,21 @@ export class SchoolAdminDashboard implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
 
-    this.api.getStudentAttendancePieChartData().subscribe(res => {
-      this.attendanceData.set(res.data);
+  private fetchChartData(): void {
+    this.api.getStudentAttendancePieChartData(this.buildFilterPayload()).subscribe({
+      next: (res) => this.attendanceData.set(res.data),
+      error: () => {},
     });
   }
 
-  // ── Logo upload ─────────────────────────────────────────────────────────────
+  // ── Logo upload ──────────────────────────────────────────────────────────────
 
   onLogoFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file  = input.files?.[0];
-    input.value = ''; // reset so same file can be re-selected
+    input.value = '';
     if (file) this.pendingLogoFile.set(file);
   }
 
@@ -75,7 +132,6 @@ export class SchoolAdminDashboard implements OnInit {
           this.schoolLogoUrl.set(res.data.fileUrl);
           this.schoolName.set(res.data.schoolName);
           window.location.reload();
-
         }
         this.isUploadingLogo.set(false);
       },
@@ -89,7 +145,7 @@ export class SchoolAdminDashboard implements OnInit {
     this.pendingLogoFile.set(null);
   }
 
-  // ── Student detail ──────────────────────────────────────────────────────────
+  // ── Student detail ───────────────────────────────────────────────────────────
 
   openStudentDetail(studentId: number): void {
     this.dialog.open(StudentDetailDialog, {
