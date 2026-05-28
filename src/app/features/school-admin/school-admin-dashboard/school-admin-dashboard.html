@@ -152,6 +152,7 @@
                 <th>Class</th>
                 <th>Division</th>
                 <th>Registration Date</th>
+                <th>Status</th> 
               </tr>
             </thead>
             <tbody>
@@ -164,6 +165,14 @@
                   </td>
                   <td class="students-table__division">{{ student.division }}</td>
                   <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
+                  <td class="students-table__status">
+                    <span
+                      class="presence-dot"
+                      [class.presence-dot--present]="student.isPresent"
+                      [class.presence-dot--absent]="!student.isPresent"
+                      [title]="student.isPresent ? 'Present' : 'Absent'"
+                    ></span>
+                  </td>
                 </tr>
               }
             </tbody>

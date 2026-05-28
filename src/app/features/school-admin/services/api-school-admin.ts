@@ -11,6 +11,7 @@ export interface StudentSummary {
   division: string;
   registrationDate: string;
   roleId: number;
+  isPresent: boolean; // ← add this
 }
 
 export interface DashboardFilterPayload {
