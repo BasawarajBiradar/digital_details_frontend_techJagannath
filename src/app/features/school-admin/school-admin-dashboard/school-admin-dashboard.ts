@@ -6,6 +6,8 @@ import { ApiSchoolAdmin, StudentSummary } from '../services/api-school-admin';
 import { StudentDetailDialog } from '../student-detail-dialog/student-detail-dialog';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import { PieChart, PieChartApiResponse } from '../../../shared/components/pie-chart/pie-chart';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -35,7 +37,7 @@ export class SchoolAdminDashboard implements OnInit {
   readonly availableClasses  = Array.from({ length: 12 }, (_, i) => i + 1);   // [1..12]
   readonly availableDivisions = ['A', 'B', 'C', 'D', 'E'];
 
-  constructor(private api: ApiSchoolAdmin, private dialog: MatDialog) {}
+  constructor(private api: ApiSchoolAdmin, private dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
     this.api.getSchoolLogoName().subscribe({
@@ -88,6 +90,10 @@ export class SchoolAdminDashboard implements OnInit {
       division:   divVal,
     };
   }
+
+  goToAttendanceDetails(): void {
+  this.router.navigate(['/school-admin/attendance-details']);
+}
 
   private fetchTableData(): void {
     this.isLoading.set(true);

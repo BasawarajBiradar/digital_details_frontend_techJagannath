@@ -186,11 +186,19 @@
       }
     </div>
 
-    <app-pie-chart
-      title="Student Attendance"
-      [apiResponse]="attendanceData()"
-      [colors]="['#2E8FE8', '#62C8FF']"
-    />
+    <div class="chart-wrapper surface-card">
+      <div class="chart-wrapper__header">
+        <span class="chart-wrapper__title">Student Attendance</span>
+        <button class="btn-details" (click)="goToAttendanceDetails()">
+          <mat-icon>open_in_new</mat-icon>
+          Details
+        </button>
+      </div>
+      <app-pie-chart
+        [apiResponse]="attendanceData()"
+        [colors]="['#2E8FE8', '#62C8FF']"
+      />
+    </div>
   }
 
   <!-- Crop modal — rendered outside the @else so it can appear over everything -->
