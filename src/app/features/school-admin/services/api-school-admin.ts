@@ -4,6 +4,34 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { PieChartApiResponse } from '../../../shared/components/pie-chart/pie-chart'
 
+export interface AttendanceRecord {
+  id: number;
+  studentName: string;
+  classLevel: string;
+  division: string;
+  date: string;
+  isPresent: boolean;
+  roleId: number;
+}
+
+export interface AttendanceFilterPayload {
+  roleId:     number | null;
+  classLevel: string | null;
+  division:   string | null;
+  dateFrom:   string | null;   // ISO date string e.g. "2025-01-15"
+  dateTo:     string | null;
+  isPresent:  boolean | null;
+}
+
+export interface AttendanceResponse {
+  success: boolean;
+  message: string;
+  code: string;
+  data: AttendanceRecord[];
+  errors: null | string;
+  timestamp: string;
+}
+
 export interface StudentSummary {
   id: number;
   studentName: string;
@@ -80,6 +108,13 @@ export class ApiSchoolAdmin {
     return this.http.post<PieChartApiResponseActual>(
       `${this.base}/api/school-admin/retrieve/pie-chart/student-attendance`,
       filters
+    );
+  }
+
+  getAttendanceDetails(filter: AttendanceFilterPayload): Observable<AttendanceResponse> {
+    return this.http.post<AttendanceResponse>(
+      `${this.base}/api/school-admin/retrieve/attendance-details`,
+      filter
     );
   }
 

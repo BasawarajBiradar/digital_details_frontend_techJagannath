@@ -1,0 +1,362 @@
+// ─── Page Layout ──────────────────────────────────────────────────────────────
+.att-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(16px, 4vw, 32px);
+  max-width: 960px;
+  margin: 0 auto;
+
+  &__topbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__heading {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: 48px 0;
+  }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 40px;
+    color: var(--color-text-muted);
+    text-align: center;
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+      color: var(--color-primary);
+    }
+
+    p { font-size: 0.875rem; margin: 0; }
+  }
+}
+
+// ─── Back Button ──────────────────────────────────────────────────────────────
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 16px 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: var(--color-surface-inset);
+  }
+}
+
+// ─── Filters Bar ──────────────────────────────────────────────────────────────
+.filters-bar {
+  padding: clamp(16px, 3vw, 22px) clamp(20px, 4vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+
+  &__toggle-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    mat-icon { font-size: 15px; width: 15px; height: 15px; }
+
+    &:hover:not(&--active) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: var(--color-surface-inset);
+    }
+
+    &--active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--color-shadow-md);
+    }
+
+    // ── Present / Absent tint overrides ────────────────────────────────────
+    &--present {
+      &.filters-bar__toggle--active {
+        background: #16a34a;
+        border-color: #16a34a;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+      }
+      &:hover:not(.filters-bar__toggle--active) {
+        border-color: #16a34a;
+        color: #16a34a;
+        background: var(--color-surface-inset);
+      }
+    }
+
+    &--absent {
+      &.filters-bar__toggle--active {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+      }
+      &:hover:not(.filters-bar__toggle--active) {
+        border-color: #dc2626;
+        color: #dc2626;
+        background: var(--color-surface-inset);
+      }
+    }
+  }
+
+  // ── Sub-filters row ────────────────────────────────────────────────────────
+  &__subfilters {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-border);
+    animation: fade-up 0.2s ease both;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 160px;
+    flex: 1;
+  }
+
+  &__field-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  // ── Dropdown ───────────────────────────────────────────────────────────────
+  &__select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__select {
+    width: 100%;
+    height: 40px;
+    padding: 0 36px 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface-inset);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-glow);
+    }
+
+    option[value=""] { color: var(--color-text-subtle); }
+  }
+
+  &__select-arrow {
+    position: absolute;
+    right: 10px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-subtle);
+    pointer-events: none;
+    transition: color 0.15s ease;
+  }
+
+  &__select-wrap:focus-within &__select-arrow {
+    color: var(--color-primary);
+  }
+
+  // ── Date input ─────────────────────────────────────────────────────────────
+  &__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-subtle);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &__date-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 34px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface-inset);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-glow);
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      opacity: 0.5;
+      cursor: pointer;
+      &:hover { opacity: 0.9; }
+    }
+  }
+}
+
+// ─── Students Card ────────────────────────────────────────────────────────────
+.students-card {
+  padding: clamp(20px, 4vw, 28px);
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--font-base, 0.95rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 0;
+    color: var(--color-text-subtle);
+
+    mat-icon { font-size: 36px; width: 36px; height: 36px; }
+    p { font-size: 0.85rem; margin: 0; }
+  }
+}
+
+// ─── Table ────────────────────────────────────────────────────────────────────
+.students-table-wrap { overflow-x: auto; }
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-sm, 0.875rem);
+
+  th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 11px 12px;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--color-surface-inset); }
+
+  &__index  { width: 40px; color: var(--color-text-subtle); font-weight: 600; }
+  &__name   { font-weight: 600; }
+  &__class  { white-space: nowrap; }
+  &__division { font-weight: 500; color: var(--color-text-muted); }
+  &__date   { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-text-muted); }
+  &__status { width: 60px; text-align: center; }
+}
+
+// ─── Presence Dot ─────────────────────────────────────────────────────────────
+.presence-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--present {
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  }
+
+  &--absent {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+  }
+}

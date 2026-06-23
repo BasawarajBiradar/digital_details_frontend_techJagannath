@@ -1,0 +1,193 @@
+<div class="att-page">
+
+  <!-- Back header -->
+  <div class="att-page__topbar">
+    <button class="btn-back" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Dashboard
+    </button>
+    <h1 class="att-page__heading">Attendance Details</h1>
+  </div>
+
+  <!-- ── Filters card ───────────────────────────────────────────────────── -->
+  <div class="filters-bar surface-card">
+
+    <!-- Role toggle -->
+    <div class="filters-bar__group">
+      <span class="filters-bar__label">Role</span>
+      <div class="filters-bar__toggle-group">
+        <button class="filters-bar__toggle"
+          [class.filters-bar__toggle--active]="selectedRoleId() === null"
+          (click)="setRole(null)">All</button>
+        <button class="filters-bar__toggle"
+          [class.filters-bar__toggle--active]="selectedRoleId() === 3"
+          (click)="setRole(3)">
+          <mat-icon>school</mat-icon>Student
+        </button>
+        <button class="filters-bar__toggle"
+          [class.filters-bar__toggle--active]="selectedRoleId() === 4"
+          (click)="setRole(4)">
+          <mat-icon>person</mat-icon>Teacher
+        </button>
+      </div>
+    </div>
+
+    <!-- Student sub-filters -->
+    @if (selectedRoleId() === 3) {
+      <div class="filters-bar__subfilters">
+
+        <div class="filters-bar__field">
+          <label class="filters-bar__field-label">Class</label>
+          <div class="filters-bar__select-wrap">
+            <select class="filters-bar__select"
+              [value]="selectedClass() ?? ''"
+              (change)="setClass($any($event.target).value || null)">
+              <option value="">All Classes</option>
+              @for (cls of availableClasses; track cls) {
+                <option [value]="cls">Class {{ cls }}</option>
+              }
+            </select>
+            <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="filters-bar__field">
+          <label class="filters-bar__field-label">Division</label>
+          <div class="filters-bar__select-wrap">
+            <select class="filters-bar__select"
+              [value]="selectedDivision() ?? ''"
+              (change)="setDivision($any($event.target).value || null)">
+              <option value="">All Divisions</option>
+              @for (div of availableDivisions; track div) {
+                <option [value]="div">Division {{ div }}</option>
+              }
+            </select>
+            <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- ── Extra filters row: Date range + Status ─────────────────────── -->
+    <div class="filters-bar__subfilters filters-bar__subfilters--extra">
+
+      <!-- Date From -->
+      <div class="filters-bar__field">
+        <label class="filters-bar__field-label">From Date</label>
+        <div class="filters-bar__input-wrap">
+          <mat-icon class="filters-bar__input-icon">calendar_today</mat-icon>
+          <input
+            type="date"
+            class="filters-bar__date-input"
+            [value]="dateFrom() ?? ''"
+            (change)="setDateFrom($any($event.target).value || null)"
+          />
+        </div>
+      </div>
+
+      <!-- Date To -->
+      <div class="filters-bar__field">
+        <label class="filters-bar__field-label">To Date</label>
+        <div class="filters-bar__input-wrap">
+          <mat-icon class="filters-bar__input-icon">calendar_today</mat-icon>
+          <input
+            type="date"
+            class="filters-bar__date-input"
+            [value]="dateTo() ?? ''"
+            (change)="setDateTo($any($event.target).value || null)"
+          />
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="filters-bar__field">
+        <label class="filters-bar__field-label">Status</label>
+        <div class="filters-bar__toggle-group">
+          <button class="filters-bar__toggle"
+            [class.filters-bar__toggle--active]="selectedStatus() === null"
+            (click)="setStatus(null)">All</button>
+          <button class="filters-bar__toggle filters-bar__toggle--present"
+            [class.filters-bar__toggle--active]="selectedStatus() === true"
+            (click)="setStatus(true)">
+            <span class="presence-dot presence-dot--present"></span>
+            Present
+          </button>
+          <button class="filters-bar__toggle filters-bar__toggle--absent"
+            [class.filters-bar__toggle--active]="selectedStatus() === false"
+            (click)="setStatus(false)">
+            <span class="presence-dot presence-dot--absent"></span>
+            Absent
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!-- ── /Filters ───────────────────────────────────────────────────────── -->
+
+  <!-- Table card -->
+  <div class="surface-card students-card">
+
+    <h3 class="students-card__heading">
+      Attendance Records
+      @if (!isLoading()) {
+        <span class="badge badge--primary">{{ records().length }}</span>
+      }
+    </h3>
+
+    @if (isLoading()) {
+      <div class="att-page__loading">
+        <span class="spinner"></span>
+      </div>
+    } @else if (hasError()) {
+      <div class="att-page__error">
+        <mat-icon>error_outline</mat-icon>
+        <p>Could not load records. Please try again.</p>
+      </div>
+    } @else if (records().length > 0) {
+      <div class="students-table-wrap">
+        <table class="students-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Class</th>
+              <th>Division</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rec of records(); track rec.id; let i = $index) {
+              <tr>
+                <td class="students-table__index">{{ i + 1 }}</td>
+                <td class="students-table__name">{{ rec.studentName }}</td>
+                <td class="students-table__class">
+                  <span class="badge badge--primary">Class {{ rec.classLevel }}</span>
+                </td>
+                <td class="students-table__division">{{ rec.division }}</td>
+                <td class="students-table__date">{{ rec.date | date: 'dd/MM/yyyy' }}</td>
+                <td class="students-table__status">
+                  <span
+                    class="presence-dot"
+                    [class.presence-dot--present]="rec.isPresent"
+                    [class.presence-dot--absent]="!rec.isPresent"
+                    [title]="rec.isPresent ? 'Present' : 'Absent'"
+                  ></span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="students-card__empty">
+        <mat-icon>event_busy</mat-icon>
+        <p>No attendance records found</p>
+      </div>
+    }
+
+  </div>
+</div>

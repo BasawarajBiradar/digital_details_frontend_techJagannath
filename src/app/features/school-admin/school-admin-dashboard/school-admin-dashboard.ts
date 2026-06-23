@@ -92,8 +92,14 @@ export class SchoolAdminDashboard implements OnInit {
   }
 
   goToAttendanceDetails(): void {
-  this.router.navigate(['/school-admin/attendance-details']);
-}
+    this.router.navigate(['/school-admin/attendance-details'], {
+      state: {
+        roleId:     this.selectedRoleId(),
+        classLevel: this.selectedClass(),
+        division:   this.selectedDivision(),
+      }
+    });
+  }
 
   private fetchTableData(): void {
     this.isLoading.set(true);
