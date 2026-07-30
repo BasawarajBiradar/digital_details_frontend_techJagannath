@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TAPAXE</string>
+    <string name="title_activity_main">TAPAXE</string>
+    <string name="package_name">com.techjagannath.tapaxe</string>
+    <string name="custom_url_scheme">com.techjagannath.tapaxe</string>
+</resources>
