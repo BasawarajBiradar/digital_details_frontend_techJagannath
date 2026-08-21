@@ -28,6 +28,7 @@ export interface CardTap {
   date:     string;
   time:     string;
   deviceId: string;
+  imageUrl: string | null;
 }
 
 

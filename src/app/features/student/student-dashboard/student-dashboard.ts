@@ -21,6 +21,8 @@ export class StudentDashboard {
 
   readonly hasError    = signal(false);
   readonly showQr      = signal(false);
+  readonly showImage   = signal(false);
+  readonly selectedImageUrl = signal<string | null>(null);
   readonly qrObjectUrl = signal<string | null>(null);
   readonly qrLoading   = signal(false);
   readonly qrError     = signal(false);
@@ -86,6 +88,18 @@ export class StudentDashboard {
   }
 
   closeQr() { this.showQr.set(false); }
+
+  openImage(url?: string | null) {
+    const src = url ?? this.displayPhotoUrl();
+    if (!src) return;
+    this.selectedImageUrl.set(src);
+    this.showImage.set(true);
+  }
+
+  closeImage() {
+    this.showImage.set(false);
+    this.selectedImageUrl.set(null);
+  }
 
   // ── Photo edit ───────────────────────────────────────────────────────────────
 

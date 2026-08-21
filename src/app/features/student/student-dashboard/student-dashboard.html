@@ -135,6 +135,7 @@
               <th>Date</th>
               <th>Time</th>
               <th>Device ID</th>
+              <th>View</th>
             </tr>
           </thead>
           <tbody>
@@ -144,6 +145,12 @@
                 <td class="taps-table__date">{{ tap.date | date: 'dd/MM/yyyy' }}</td>
                 <td class="taps-table__time">{{ tap.time }}</td>
                 <td class="taps-table__device">{{ tap.deviceId }}</td>
+              <td class="taps-table__view">
+                <button class="btn btn--small" (click)="openImage(tap.imageUrl)" [disabled]="!(displayPhotoUrl() || tap.imageUrl)">
+                  <mat-icon>image</mat-icon>
+                  View
+                </button>
+              </td>
               </tr>
             }
           </tbody>
@@ -172,6 +179,21 @@
       [isLoading]="qrLoading()"
       [hasError]="qrError()"
       (closed)="closeQr()" />
+  }
+
+  @if (showImage()) {
+    <div class="image-modal__backdrop" (click)="closeImage()">
+      <div class="image-modal__panel" role="dialog" aria-modal="true">
+        <div class="image-modal__header">
+          <button class="image-modal__close" (click)="closeImage()" aria-label="Close">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="image-modal__body">
+          <img class="image-modal__img" [src]="selectedImageUrl()" [alt]="student()?.fullName" />
+        </div>
+      </div>
+    </div>
   }
 
   <!-- Crop modal -->
