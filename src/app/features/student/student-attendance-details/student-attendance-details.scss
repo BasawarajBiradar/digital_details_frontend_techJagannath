@@ -69,6 +69,7 @@
 
   app-date-picker {
     min-width: 0;
+    width: 100%;
   }
 }
 
@@ -78,15 +79,39 @@
   font-size: var(--font-xs);
 }
 
+// Table needs to scroll horizontally rather than crush its columns
+// on narrow viewports. The negative margin + padding trick lets the
+// scroll area bleed to the card edges on mobile without extra markup.
+.attendance-page__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
 .attendance-page__error {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: $spacing-sm;
   margin: 0;
   color: var(--color-primary-dark);
   font-size: var(--font-sm);
+  line-height: var(--line-height-tight);
+
+  mat-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
 }
 
+// Tablet / small laptop
+@media (max-width: 900px) {
+  .attendance-page {
+    max-width: 100%;
+  }
+}
+
+// Large phones / small tablets (portrait)
 @media (max-width: 640px) {
   .attendance-page {
     gap: $spacing-md;
@@ -104,11 +129,49 @@
     font-size: var(--font-md);
   }
 
+  .attendance-page__back {
+    align-self: flex-start;
+  }
+
   .attendance-page__filters {
     padding: $spacing-md;
   }
 
   .attendance-page__date-fields {
     grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
+
+// Small phones
+@media (max-width: 400px) {
+  .attendance-page {
+    padding: $spacing-sm;
+    gap: $spacing-sm;
+  }
+
+  .attendance-page__filters {
+    padding: $spacing-sm;
+
+    h2 {
+      font-size: var(--font-sm);
+    }
+  }
+
+  .attendance-page__range-note,
+  .attendance-page__error {
+    font-size: var(--font-xs);
+  }
+}
+
+// Landscape phones (short viewport height) — avoid the filter card
+// eating the whole screen above the fold
+@media (max-height: 480px) and (orientation: landscape) {
+  .attendance-page {
+    gap: $spacing-sm;
+  }
+
+  .attendance-page__filters {
+    padding: $spacing-sm $spacing-md;
   }
 }

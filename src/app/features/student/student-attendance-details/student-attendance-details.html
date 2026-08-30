@@ -1,11 +1,4 @@
 <main class="attendance-page">
-  <header class="attendance-page__header">
-    <button class="attendance-page__back" type="button" (click)="goBack()">
-      <mat-icon aria-hidden="true">arrow_back</mat-icon>
-      Dashboard
-    </button>
-    <h1>Attendance Details</h1>
-  </header>
 
   @if (showFilters()) {
     <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
@@ -28,18 +21,14 @@
     </section>
   }
 
-  <app-data-table
-    title="Attendance Records"
-    [columns]="tableColumns"
-    [apiResponse]="tableRows()"
-    [loading]="isLoading()"
-    [headerAction]="null"
-    [action]="null" />
+  <div class="attendance-page__table-wrapper">
+    <app-data-table
+      title="Attendance Records"
+      [columns]="tableColumns"
+      [apiResponse]="tableRows()"
+      [loading]="isLoading()"
+      [headerAction]="null"
+      [action]="null" />
+  </div>
 
-  @if (hasError()) {
-    <p class="attendance-page__error" role="alert">
-      <mat-icon aria-hidden="true">error_outline</mat-icon>
-      Could not load attendance records. Please try again.
-    </p>
-  }
 </main>

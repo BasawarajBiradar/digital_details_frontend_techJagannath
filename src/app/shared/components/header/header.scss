@@ -1,0 +1,136 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: block;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 4px clamp(16px, 4vw, 32px);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.header__leading {
+  position: absolute;
+  left: clamp(16px, 4vw, 32px);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.header__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: $radius-md;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+
+  mat-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 22px;
+  }
+
+  &:hover {
+    background: var(--color-surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-primary);
+  text-decoration: none;
+  outline-offset: 4px;
+}
+
+.header__logo-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.header__logo-name {
+  font-size: var(--font-sm);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.header__title {
+  max-width: 50%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-primary-dark);
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .header {
+    min-height: 44px;
+  }
+
+  .header__leading {
+    gap: 8px;
+  }
+
+  .header__back {
+    width: 32px;
+    height: 32px;
+
+    mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+    }
+  }
+
+  .header__logo {
+    gap: 6px;
+  }
+
+  .header__logo-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .header__logo-name {
+    font-size: var(--font-xs);
+  }
+
+  .header__title {
+    max-width: 48%;
+    font-size: var(--font-sm);
+  }
+}
+
+// Very small screens: logo name takes too much space alongside a back
+// button and title — hide the wordmark, keep the icon
+@media (max-width: 360px) {
+  .header__logo-name {
+    display: none;
+  }
+}

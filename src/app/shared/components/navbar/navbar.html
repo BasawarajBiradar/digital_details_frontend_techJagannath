@@ -1,62 +1,9 @@
 <nav class="navbar" aria-label="Primary navigation">
-  @if (showBack()) {
-    <button
-      class="navbar__back"
-      mat-icon-button
-      type="button"
-      aria-label="Go back"
-      title="Go back"
-      (click)="navigateBack()">
-      <mat-icon aria-hidden="true">arrow_back</mat-icon>
-    </button>
-  }
+  <button class="navbar__back" mat-icon-button type="button" aria-label="Go back" title="Go back" (click)="navigateBack()">
+    <mat-icon aria-hidden="true">arrow_back</mat-icon>
+  </button>
 
-  <div class="navbar__brand">
-    <a class="navbar__logo" routerLink="/" (click)="closeMenu()">
-      <img class="navbar__logo-icon" ngSrc="TAPAXE_logo.svg" width="48" height="48" alt="Tapaxe" />
-      <div class="navbar__logo-text">
-        <span class="navbar__logo-main">TAPAXE</span>
-      </div>
-    </a>
+  <div class="navbar__filters">
+    <ng-content select="[navbar-filters]" />
   </div>
-
-  @if (items().length > 0) {
-    <button
-      class="navbar__menu-toggle"
-      mat-icon-button
-      type="button"
-      [attr.aria-expanded]="menuOpen()"
-      aria-controls="primary-navigation"
-      aria-label="Toggle navigation"
-      (click)="toggleMenu()">
-      <mat-icon aria-hidden="true">{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
-    </button>
-
-    <div id="primary-navigation" class="navbar__content" [class.navbar__content--open]="menuOpen()">
-      <div class="navbar__links">
-        @for (item of items(); track item.label) {
-          @if (item.visible !== false) {
-            <a
-              class="navbar__link"
-              [routerLink]="item.route"
-              routerLinkActive="navbar__link--active"
-              [routerLinkActiveOptions]="{ exact: item.exact === true }"
-              (click)="closeMenu()">
-              @if (item.icon) {
-                <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
-              }
-              <span>{{ item.label }}</span>
-            </a>
-          }
-        }
-      </div>
-      <div class="navbar__actions">
-        <ng-content select="[navbar-actions]" />
-      </div>
-    </div>
-  } @else {
-    <div class="navbar__actions">
-      <ng-content select="[navbar-actions]" />
-    </div>
-  }
 </nav>

@@ -1,0 +1,22 @@
+<header class="header">
+  <div class="header__leading">
+    @if (showBackButton()) {
+      <button
+        type="button"
+        class="header__back"
+        aria-label="Go back"
+        (click)="goBack()">
+        <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      </button>
+    }
+
+    <a class="header__logo" routerLink="/" aria-label="Go to home">
+      <img class="header__logo-icon" ngSrc="TAPAXE_logo.svg" width="40" height="40" alt="Tapaxe" />
+      <span class="header__logo-name">TAPAXE</span>
+    </a>
+  </div>
+
+  @if (title()) {
+    <h1 class="header__title">{{ title() }}</h1>
+  }
+</header>
