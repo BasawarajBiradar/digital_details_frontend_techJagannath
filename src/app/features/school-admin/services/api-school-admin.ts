@@ -18,8 +18,8 @@ export interface AttendanceFilterPayload {
   roleId:     number | null;
   classLevel: string | null;
   division:   string | null;
-  dateFrom:   string | null;   // ISO date string e.g. "2025-01-15"
-  dateTo:     string | null;
+  fromDate:   string | null;   // ISO date string e.g. "2025-01-15"
+  toDate:     string | null;
   isPresent:  boolean | null;
 }
 
@@ -79,6 +79,27 @@ export interface StudentsResponse {
     timestamp: string;
   }
 
+  export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'HOLIDAY' | string;
+
+  export interface StudentAttendanceHistoryRecord {
+    fullName: string;
+    classLevel: string;
+    division: string;
+    date:      string;
+    status:    AttendanceStatus;
+    inTime: string | null;
+    outTime:  string | null;
+  }
+
+  interface ApiResponse<T> {
+  success:   boolean;
+  message:   string;
+  code:      string;
+  data:      T;
+  errors:    unknown | null;
+  timestamp: string;
+  }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -111,11 +132,13 @@ export class ApiSchoolAdmin {
     );
   }
 
-  getAttendanceDetails(filter: AttendanceFilterPayload): Observable<AttendanceResponse> {
-    return this.http.post<AttendanceResponse>(
-      `${this.base}/api/school-admin/retrieve/attendance-details`,
-      filter
-    );
+  getAttendanceHistory(
+    filter: AttendanceFilterPayload,
+  ): Observable<ApiResponse<StudentAttendanceHistoryRecord[]>> {
+      return this.http
+        .post<ApiResponse<StudentAttendanceHistoryRecord[]>>(`${this.base}/api/school-admin/retrieve/attendance-details`, {
+          ...filter,
+        });
   }
 
 }
