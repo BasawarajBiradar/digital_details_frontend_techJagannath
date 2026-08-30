@@ -89,6 +89,7 @@ export class StudentDashboard {
   readonly showDetailsButton = signal(true);
   readonly detailsAction = computed<DataTableAction>(() => ({
     label: 'Details',
+    link: '/student/attendance-details',
     visible: this.showDetailsButton(),
   }));
 

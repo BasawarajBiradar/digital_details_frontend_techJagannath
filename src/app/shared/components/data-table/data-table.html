@@ -6,19 +6,6 @@
       </div>
 
       <div class="data-table__header-actions">
-        @if (searchable()) {
-          <mat-form-field appearance="outline" class="data-table__search">
-            <mat-label>Search table</mat-label>
-            <mat-icon matPrefix aria-hidden="true">search</mat-icon>
-            <input matInput [formControl]="filterControl" type="search" />
-            @if (filter()) {
-              <button mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearFilter()">
-                <mat-icon aria-hidden="true">close</mat-icon>
-              </button>
-            }
-          </mat-form-field>
-        }
-
         @if (headerAction(); as action) {
           @if (action.visible !== false) {
             @if (action.link) {
@@ -90,17 +77,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnKeys()"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnKeys()"></tr>
       <tr class="data-table__empty" *matNoDataRow>
-        <td [attr.colspan]="displayedColumnKeys().length">{{ filter() ? 'No matching records.' : 'No records available.' }}</td>
+        <td [attr.colspan]="displayedColumnKeys().length">No records available.</td>
       </tr>
     </table>
   </div>
-
-  @if (paginated()) {
-    <mat-paginator
-      [pageSizeOptions]="pageSizeOptions()"
-      [pageSize]="pageSizeOptions()[0] ?? 10"
-      showFirstLastButtons
-      aria-label="Table pages">
-    </mat-paginator>
-  }
 </section>

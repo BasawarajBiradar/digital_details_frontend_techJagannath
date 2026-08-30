@@ -1,0 +1,114 @@
+@use '../../../../styles/variables' as *;
+
+.attendance-page {
+  display: grid;
+  gap: $spacing-lg;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(16px, 4vw, 32px);
+}
+
+.attendance-page__header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  min-width: 0;
+  padding: $spacing-md $spacing-lg;
+  border: 1px solid var(--color-primary);
+  border-radius: $radius-lg;
+  background: var(--gradient-brand);
+  box-shadow: 0 2px 8px var(--color-shadow);
+
+  h1 {
+    margin: 0;
+    color: var(--color-text-on-brand);
+    font-size: var(--font-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+  }
+}
+
+.attendance-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-primary);
+  border-radius: $radius-md;
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.attendance-page__filters {
+  min-width: 0;
+  padding: $spacing-lg;
+
+  h2 {
+    margin: 0 0 $spacing-md;
+    color: var(--color-text);
+    font-size: var(--font-md);
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+.attendance-page__date-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-md;
+
+  app-date-picker {
+    min-width: 0;
+  }
+}
+
+.attendance-page__range-note {
+  margin: $spacing-sm 0 0;
+  color: var(--color-text-subtle);
+  font-size: var(--font-xs);
+}
+
+.attendance-page__error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin: 0;
+  color: var(--color-primary-dark);
+  font-size: var(--font-sm);
+}
+
+@media (max-width: 640px) {
+  .attendance-page {
+    gap: $spacing-md;
+    padding: $spacing-md;
+  }
+
+  .attendance-page__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+  }
+
+  .attendance-page__header h1 {
+    font-size: var(--font-md);
+  }
+
+  .attendance-page__filters {
+    padding: $spacing-md;
+  }
+
+  .attendance-page__date-fields {
+    grid-template-columns: 1fr;
+  }
+}

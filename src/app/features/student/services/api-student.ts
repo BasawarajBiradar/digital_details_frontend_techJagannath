@@ -31,6 +31,12 @@ export interface CardTap {
   imageUrl: string | null;
 }
 
+export interface StudentAttendanceRecord {
+  id: number;
+  date: string;
+  isPresent: boolean;
+}
+
 
 export interface VerifyUidResponse {
   userId: number | null;
@@ -71,6 +77,15 @@ export class ApiStudent {
           date: this.parseDdMmYyyy(tap.date)  
         })))
       );
+  }
+
+  getAttendanceDetails(dateFrom: string, dateTo: string): Observable<StudentAttendanceRecord[]> {
+    return this.http
+      .post<ApiResponse<StudentAttendanceRecord[]>>(`${this.base}/api/student/attendance-details`, {
+        dateFrom,
+        dateTo,
+      })
+      .pipe(map(res => res.data));
   }
 
   getLandingPageData(uid: string, userId: number | null): Observable<InfoCardData> {

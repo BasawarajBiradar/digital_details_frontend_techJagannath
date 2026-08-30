@@ -124,8 +124,6 @@
     [title]="'Today\'s Card Taps · ' + todayTaps().length"
     [columns]="tapColumns"
     [apiResponse]="todayTapRows()"
-    [searchable]="false"
-    [paginated]="false"
     [headerAction]="detailsAction()"
     [action]="tapAction"
     (actionTriggered)="onTapAction($event)" />

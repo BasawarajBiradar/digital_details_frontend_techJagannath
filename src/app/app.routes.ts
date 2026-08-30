@@ -3,6 +3,7 @@ import { LoginComponent } from '@features/login/login';
 import { AttendenceDetailsPage } from '@features/school-admin/attendence-details-page/attendence-details-page';
 import { SchoolAdminDashboard } from '@features/school-admin/school-admin-dashboard/school-admin-dashboard';
 import { StudentDashboard } from '@features/student/student-dashboard/student-dashboard';
+import { StudentAttendanceDetailsComponent } from '@features/student/student-attendance-details/student-attendance-details';
 import { StudentNfcLandingpage } from '@features/student/student-nfc-landingpage/student-nfc-landingpage';
 import { StudentNfcRegisterPage } from '@features/student/student-nfc-register-page/student-nfc-register-page';
 
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {path: 'student-dashboard', component: StudentDashboard},
+  {path: 'student/attendance-details', component: StudentAttendanceDetailsComponent},
   {path: 'student/:uid', component: StudentNfcLandingpage},
   {path: 'register/:uid', component: StudentNfcRegisterPage}, 
   {path: 'nfc-scanner', component: NfcScanner},

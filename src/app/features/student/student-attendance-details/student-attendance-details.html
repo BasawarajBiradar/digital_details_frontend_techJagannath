@@ -1,0 +1,43 @@
+<main class="attendance-page">
+  <header class="attendance-page__header">
+    <button class="attendance-page__back" type="button" (click)="goBack()">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      Dashboard
+    </button>
+    <h1>Attendance Details</h1>
+  </header>
+
+  <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
+    <h2 id="attendance-filter-title">Filter by date</h2>
+    <div class="attendance-page__date-fields">
+      <app-date-picker
+        label="From date"
+        [minDate]="earliestDate"
+        [maxDate]="toDate() ?? today"
+        [selectedDate]="fromDate()"
+        (selectedDateChange)="onFromDateChanged($event)" />
+      <app-date-picker
+        label="To date"
+        [minDate]="fromDate() ?? earliestDate"
+        [maxDate]="today"
+        [selectedDate]="toDate()"
+        (selectedDateChange)="onToDateChanged($event)" />
+    </div>
+    <p class="attendance-page__range-note">Dates can be selected for the last two years only.</p>
+  </section>
+
+  <app-data-table
+    title="Attendance Records"
+    [columns]="tableColumns"
+    [apiResponse]="tableRows()"
+    [loading]="isLoading()"
+    [headerAction]="null"
+    [action]="null" />
+
+  @if (hasError()) {
+    <p class="attendance-page__error" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      Could not load attendance records. Please try again.
+    </p>
+  }
+</main>

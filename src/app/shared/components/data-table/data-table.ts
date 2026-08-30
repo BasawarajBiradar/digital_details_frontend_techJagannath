@@ -2,22 +2,15 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
   effect,
-  inject,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
@@ -48,13 +41,9 @@ export interface DataTableApiResponse {
   selector: 'app-data-table',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
-    MatPaginatorModule,
     MatSortModule,
     MatTableModule,
-    ReactiveFormsModule,
     RouterLink,
   ],
   templateUrl: './data-table.html',
@@ -66,52 +55,31 @@ export class DataTableComponent implements AfterViewInit {
   readonly columns = input<readonly DataTableColumn[]>([]);
   readonly apiResponse = input<DataTableApiResponse | readonly DataTableRow[] | null>(null);
   readonly loading = input(false);
-  readonly searchable = input(true);
-  readonly paginated = input(true);
-  readonly pageSizeOptions = input<readonly number[]>([5, 10, 25, 100]);
   readonly headerAction = input<DataTableAction | null>(null);
   readonly headerActionTriggered = output<void>();
   readonly action = input<DataTableAction | null>(null);
   readonly actionTriggered = output<DataTableRow>();
 
-  readonly filterControl = new FormControl('', { nonNullable: true });
   readonly displayedColumnKeys = computed(() => [
     ...this.columns().map((column) => column.key),
     ...(this.action() ? ['actions'] : []),
   ]);
   readonly dataSource = new MatTableDataSource<DataTableRow>([]);
-  readonly paginator = viewChild(MatPaginator);
   readonly sort = viewChild(MatSort);
-  readonly filter = signal('');
-
-  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.filterControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.filter.set(value.trim().toLowerCase()));
-
     effect(() => {
       this.dataSource.data = this.getRows(this.apiResponse());
-      this.dataSource.filterPredicate = (row) => this.matchesFilter(row, this.filter());
       this.dataSource.sortingDataAccessor = (row, columnKey) =>
         this.getCellValue(row, columnKey);
-      this.dataSource.filter = this.filter();
 
-      const paginator = this.paginator();
       const sort = this.sort();
-      if (paginator) this.dataSource.paginator = paginator;
       if (sort) this.dataSource.sort = sort;
     });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator() ?? null;
     this.dataSource.sort = this.sort() ?? null;
-  }
-
-  clearFilter(): void {
-    this.filterControl.setValue('');
   }
 
   displayValue(row: DataTableRow, column: DataTableColumn): string {
@@ -137,10 +105,4 @@ export class DataTableComponent implements AfterViewInit {
     return typeof value === 'number' ? value : String(value ?? '');
   }
 
-  private matchesFilter(row: DataTableRow, value: string): boolean {
-    if (!value) return true;
-    return this.columns()
-      .map((column) => this.displayValue(row, column).toLowerCase())
-      .some((cell) => cell.includes(value));
-  }
 }
