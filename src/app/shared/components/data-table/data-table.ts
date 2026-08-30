@@ -6,10 +6,9 @@ import {
   effect,
   input,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -40,6 +39,7 @@ export interface DataTableApiResponse {
 @Component({
   selector: 'app-data-table',
   imports: [
+    MatAnchor,
     MatButtonModule,
     MatIconModule,
     MatSortModule,
@@ -104,5 +104,4 @@ export class DataTableComponent implements AfterViewInit {
 
     return typeof value === 'number' ? value : String(value ?? '');
   }
-
 }

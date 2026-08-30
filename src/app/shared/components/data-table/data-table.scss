@@ -14,34 +14,63 @@
 
 .data-table__header {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: $spacing-md;
+  gap: $spacing-sm;
   padding: $spacing-lg $spacing-lg $spacing-md;
   background: var(--gradient-brand);
 }
 
+.data-table__title-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
 .data-table__header h2 {
   margin: 0;
+  overflow: hidden;
   color: var(--color-text-on-brand);
-  font-size: var(--font-base, 0.95rem);
+  font-size: var(--font-base);
   font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.data-table__header-actions {
+  flex: 0 0 auto;
+  display: flex;
 }
 
 .data-table__scroll {
   position: relative;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+
+  &::after {
+    content: '';
+    position: sticky;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 0;
+    height: 0;
+  }
 }
 
 table {
   width: 100%;
-  min-width: 34rem;
+  min-width: 30rem;
 }
 
 th.mat-mdc-header-cell {
   color: var(--color-primary-dark);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-bold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   background: var(--color-surface-raised);
@@ -50,6 +79,11 @@ th.mat-mdc-header-cell {
   ::ng-deep .mat-sort-header-arrow {
     color: var(--color-primary);
   }
+}
+
+td.mat-mdc-cell {
+  font-size: var(--font-sm);
+  color: var(--color-text);
 }
 
 td.mat-mdc-cell,
@@ -63,13 +97,25 @@ tr.mat-mdc-row:hover {
   background: var(--color-surface-inset);
 }
 
-button[mat-stroked-button] {
+.data-table__header-action,
+.data-table__row-action {
+  --mdc-outlined-button-label-text-color: var(--color-primary-dark);
+  --mdc-outlined-button-outline-color: var(--color-primary);
+  --mat-mdc-button-persistent-ripple-color: transparent;
+  --mat-mdc-button-ripple-color: transparent;
+  --mat-mdc-button-hover-state-layer-opacity: 0;
+  --mat-mdc-button-focus-state-layer-opacity: 0;
+
   min-height: 32px;
   padding: 0 10px;
   border-color: var(--color-primary);
+  border-radius: $radius-md;
   color: var(--color-primary-dark);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  transition: transform 0.16s ease;
+  transform: scale(1);
 
   mat-icon {
     width: 16px;
@@ -80,7 +126,16 @@ button[mat-stroked-button] {
   }
 
   &:hover:not(:disabled) {
-    background: var(--color-glow);
+    transform: scale(1.06);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    transform: none;
   }
 }
 
@@ -88,6 +143,7 @@ button[mat-stroked-button] {
 .data-table__empty td {
   padding: $spacing-lg $spacing-md;
   color: var(--color-text-muted);
+  font-size: var(--font-sm);
   text-align: center;
 }
 
@@ -100,23 +156,73 @@ button[mat-stroked-button] {
   background: color-mix(in srgb, var(--color-surface) 82%, transparent);
 }
 
+@media (max-width: 768px) {
+  table {
+    min-width: 28rem;
+  }
+}
+
 @media (max-width: 640px) {
   .data-table__header {
-    align-items: stretch;
-    flex-direction: column;
     padding: $spacing-md $spacing-md $spacing-sm;
+    gap: $spacing-xs;
   }
 
-  .data-table__title-group {
-    justify-content: space-between;
+  .data-table__header h2 {
+    font-size: var(--font-sm);
   }
 
-  .data-table__header-actions {
-    width: 100%;
+  .data-table__header-action,
+  .data-table__row-action {
+    min-height: 30px;
+    padding: 0 8px;
+    font-size: 0.7rem;
+
+    mat-icon {
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
+      margin-right: 2px;
+    }
+  }
+
+  table {
+    min-width: 24rem;
   }
 
   td.mat-mdc-cell,
   th.mat-mdc-header-cell {
     padding-inline: $spacing-sm;
+  }
+}
+
+@media (max-width: 380px) {
+  .data-table__header h2 {
+    font-size: var(--font-xs);
+  }
+
+  .data-table__header-action,
+  .data-table__row-action {
+    min-width: 30px;
+    padding: 0 6px;
+
+    mat-icon {
+      margin-right: 0;
+    }
+  }
+
+  .data-table__header-action span,
+  .data-table__row-action span {
+    display: none;
+  }
+
+  table {
+    min-width: 20rem;
+  }
+
+  td.mat-mdc-cell,
+  th.mat-mdc-header-cell {
+    padding: 9px $spacing-xs;
+    font-size: var(--font-xs);
   }
 }
