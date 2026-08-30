@@ -65,6 +65,8 @@ export class DataTableComponent implements AfterViewInit {
   readonly searchable = input(true);
   readonly paginated = input(true);
   readonly pageSizeOptions = input<readonly number[]>([5, 10, 25, 100]);
+  readonly headerAction = input<DataTableAction | null>(null);
+  readonly headerActionTriggered = output<void>();
   readonly action = input<DataTableAction | null>(null);
   readonly actionTriggered = output<DataTableRow>();
 

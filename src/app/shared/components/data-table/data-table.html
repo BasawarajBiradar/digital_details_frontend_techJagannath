@@ -1,20 +1,38 @@
 <section class="data-table" aria-labelledby="data-table-title">
   @if (title()) {
     <div class="data-table__header">
-      <h2 id="data-table-title">{{ title() }}</h2>
+      <div class="data-table__title-group">
+        <h2 id="data-table-title">{{ title() }}</h2>
+      </div>
 
-      @if (searchable()) {
-        <mat-form-field appearance="outline" class="data-table__search">
-          <mat-label>Search table</mat-label>
-          <mat-icon matPrefix aria-hidden="true">search</mat-icon>
-          <input matInput [formControl]="filterControl" type="search" />
-          @if (filter()) {
-            <button mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearFilter()">
-              <mat-icon aria-hidden="true">close</mat-icon>
-            </button>
-          }
-        </mat-form-field>
-      }
+      <div class="data-table__header-actions">
+        @if (searchable()) {
+          <mat-form-field appearance="outline" class="data-table__search">
+            <mat-label>Search table</mat-label>
+            <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+            <input matInput [formControl]="filterControl" type="search" />
+            @if (filter()) {
+              <button mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearFilter()">
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+        }
+
+        @if (headerAction(); as action) {
+          <button
+            mat-stroked-button
+            class="data-table__header-action"
+            type="button"
+            [disabled]="action.disabled?.({}) ?? false"
+            (click)="headerActionTriggered.emit()">
+            @if (action.icon) {
+              <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+            }
+            {{ action.label }}
+          </button>
+        }
+      </div>
     </div>
   }
 
