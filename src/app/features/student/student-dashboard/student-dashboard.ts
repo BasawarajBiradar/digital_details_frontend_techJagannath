@@ -1,5 +1,5 @@
 import { Component, inject, computed, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
@@ -7,11 +7,17 @@ import { ApiStudent, CardTap } from '../services/api-student';
 import { QrModel } from '../qr-model/qr-model';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import { ToastService } from '@core/services/toast-service';
+import {
+  DataTableAction,
+  DataTableColumn,
+  DataTableComponent,
+  DataTableRow,
+} from '../../../shared/components/data-table/data-table';
 
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe, MatIconModule, QrModel, ImageCropModal],
+  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal, DataTableComponent],
   templateUrl: './student-dashboard.html',
   styleUrl:    './student-dashboard.scss',
 })
@@ -67,6 +73,23 @@ export class StudentDashboard {
     () => this.localPhotoUrl() ?? this.student()?.photoUrl ?? null
   );
 
+  readonly tapColumns: readonly DataTableColumn[] = [
+    { key: 'index', header: '#', sortable: false },
+    { key: 'date', header: 'Date', format: (value) => this.formatTapDate(value) },
+    { key: 'time', header: 'Time' },
+    { key: 'deviceId', header: 'Device ID' },
+  ];
+
+  readonly tapAction: DataTableAction = {
+    label: 'View',
+    icon: 'image',
+    disabled: (row) => !(this.displayPhotoUrl() || row['imageUrl']),
+  };
+
+  readonly todayTapRows = computed<readonly DataTableRow[]>(() =>
+    this.todayTaps().map((tap, index) => ({ ...tap, index: index + 1 }))
+  );
+
   // ── QR ──────────────────────────────────────────────────────────────────────
 
   openQr() {
@@ -94,6 +117,16 @@ export class StudentDashboard {
     if (!src) return;
     this.selectedImageUrl.set(src);
     this.showImage.set(true);
+  }
+
+  onTapAction(row: DataTableRow): void {
+    this.openImage(typeof row['imageUrl'] === 'string' ? row['imageUrl'] : null);
+  }
+
+  private formatTapDate(value: unknown): string {
+    if (typeof value !== 'string') return '-';
+    const [year, month, day] = value.split('-');
+    return year && month && day ? `${day}/${month}/${year}` : value;
   }
 
   closeImage() {

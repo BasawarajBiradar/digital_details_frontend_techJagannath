@@ -1,0 +1,74 @@
+<section class="data-table" aria-labelledby="data-table-title">
+  @if (title()) {
+    <div class="data-table__header">
+      <h2 id="data-table-title">{{ title() }}</h2>
+
+      @if (searchable()) {
+        <mat-form-field appearance="outline" class="data-table__search">
+          <mat-label>Search table</mat-label>
+          <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+          <input matInput [formControl]="filterControl" type="search" />
+          @if (filter()) {
+            <button mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearFilter()">
+              <mat-icon aria-hidden="true">close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
+      }
+    </div>
+  }
+
+  <div class="data-table__scroll" [attr.aria-busy]="loading()">
+    @if (loading()) {
+      <div class="data-table__status" role="status">Loading table data...</div>
+    }
+
+    <table mat-table [dataSource]="dataSource" matSort aria-describedby="data-table-title">
+      @for (column of columns(); track column.key) {
+        <ng-container [matColumnDef]="column.key">
+          <th mat-header-cell *matHeaderCellDef>
+            @if (column.sortable !== false) {
+              <span mat-sort-header>{{ column.header }}</span>
+            } @else {
+              {{ column.header }}
+            }
+          </th>
+          <td mat-cell *matCellDef="let row">{{ displayValue(row, column) }}</td>
+        </ng-container>
+      }
+
+      @if (action(); as rowAction) {
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ rowAction.label }}</th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="rowAction.disabled?.(row) ?? false"
+              (click)="actionTriggered.emit(row)">
+              @if (rowAction.icon) {
+                <mat-icon aria-hidden="true">{{ rowAction.icon }}</mat-icon>
+              }
+              {{ rowAction.label }}
+            </button>
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnKeys()"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys()"></tr>
+      <tr class="data-table__empty" *matNoDataRow>
+        <td [attr.colspan]="displayedColumnKeys().length">{{ filter() ? 'No matching records.' : 'No records available.' }}</td>
+      </tr>
+    </table>
+  </div>
+
+  @if (paginated()) {
+    <mat-paginator
+      [pageSizeOptions]="pageSizeOptions()"
+      [pageSize]="pageSizeOptions()[0] ?? 10"
+      showFirstLastButtons
+      aria-label="Table pages">
+    </mat-paginator>
+  }
+</section>

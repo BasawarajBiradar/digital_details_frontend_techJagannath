@@ -120,49 +120,14 @@
     </div>
   }
 
-  <div class="surface-card taps-card">
-    <h3 class="taps-card__heading">
-      Today's Card Taps
-      <span class="badge badge--primary">{{ todayTaps().length }}</span>
-    </h3>
-
-    @if (todayTaps().length > 0) {
-      <div class="taps-table-wrap">
-        <table class="taps-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Device ID</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (tap of todayTaps(); track tap.date + tap.time; let i = $index) {
-              <tr>
-                <td class="taps-table__index">{{ i + 1 }}</td>
-                <td class="taps-table__date">{{ tap.date | date: 'dd/MM/yyyy' }}</td>
-                <td class="taps-table__time">{{ tap.time }}</td>
-                <td class="taps-table__device">{{ tap.deviceId }}</td>
-              <td class="taps-table__view">
-                <button class="btn btn--small" (click)="openImage(tap.imageUrl)" [disabled]="!(displayPhotoUrl() || tap.imageUrl)">
-                  <mat-icon>image</mat-icon>
-                  View
-                </button>
-              </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    } @else {
-      <div class="taps-card__empty">
-        <mat-icon>contactless</mat-icon>
-        <p>No taps recorded today</p>
-      </div>
-    }
-  </div>
+  <app-data-table
+    [title]="'Today\'s Card Taps · ' + todayTaps().length"
+    [columns]="tapColumns"
+    [apiResponse]="todayTapRows()"
+    [searchable]="false"
+    [paginated]="false"
+    [action]="tapAction"
+    (actionTriggered)="onTapAction($event)" />
 
   <!-- QR button -->
   <div class="id-card__actions">
