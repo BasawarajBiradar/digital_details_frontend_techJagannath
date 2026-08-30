@@ -20,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 
 export type DataTableRow = Record<string, unknown>;
 
@@ -34,6 +35,8 @@ export interface DataTableAction {
   label: string;
   icon?: string;
   disabled?: (row: DataTableRow) => boolean;
+  link?: string | readonly string[];
+  visible?: boolean;
 }
 
 export interface DataTableApiResponse {
@@ -52,6 +55,7 @@ export interface DataTableApiResponse {
     MatSortModule,
     MatTableModule,
     ReactiveFormsModule,
+    RouterLink,
   ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',

@@ -86,7 +86,11 @@ export class StudentDashboard {
     disabled: (row) => !(this.displayPhotoUrl() || row['imageUrl']),
   };
 
-  readonly detailsAction: DataTableAction = { label: 'Details' };
+  readonly showDetailsButton = signal(true);
+  readonly detailsAction = computed<DataTableAction>(() => ({
+    label: 'Details',
+    visible: this.showDetailsButton(),
+  }));
 
   readonly todayTapRows = computed<readonly DataTableRow[]>(() =>
     this.todayTaps().map((tap, index) => ({ ...tap, index: index + 1 }))

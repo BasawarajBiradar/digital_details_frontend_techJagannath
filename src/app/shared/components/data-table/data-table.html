@@ -20,17 +20,31 @@
         }
 
         @if (headerAction(); as action) {
-          <button
-            mat-stroked-button
-            class="data-table__header-action"
-            type="button"
-            [disabled]="action.disabled?.({}) ?? false"
-            (click)="headerActionTriggered.emit()">
-            @if (action.icon) {
-              <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+          @if (action.visible !== false) {
+            @if (action.link) {
+              <a
+                mat-stroked-button
+                class="data-table__header-action"
+                [routerLink]="action.link">
+                @if (action.icon) {
+                  <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+                }
+                {{ action.label }}
+              </a>
+            } @else {
+              <button
+                mat-stroked-button
+                class="data-table__header-action"
+                type="button"
+                [disabled]="action.disabled?.({}) ?? false"
+                (click)="headerActionTriggered.emit()">
+                @if (action.icon) {
+                  <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+                }
+                {{ action.label }}
+              </button>
             }
-            {{ action.label }}
-          </button>
+          }
         }
       </div>
     </div>
