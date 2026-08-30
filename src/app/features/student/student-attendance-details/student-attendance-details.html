@@ -7,24 +7,26 @@
     <h1>Attendance Details</h1>
   </header>
 
-  <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
-    <h2 id="attendance-filter-title">Filter by date</h2>
-    <div class="attendance-page__date-fields">
-      <app-date-picker
-        label="From date"
-        [minDate]="earliestDate"
-        [maxDate]="toDate() ?? today"
-        [selectedDate]="fromDate()"
-        (selectedDateChange)="onFromDateChanged($event)" />
-      <app-date-picker
-        label="To date"
-        [minDate]="fromDate() ?? earliestDate"
-        [maxDate]="today"
-        [selectedDate]="toDate()"
-        (selectedDateChange)="onToDateChanged($event)" />
-    </div>
-    <p class="attendance-page__range-note">Dates can be selected for the last two years only.</p>
-  </section>
+  @if (showFilters()) {
+    <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
+      <h2 id="attendance-filter-title">Filter by date</h2>
+      <div class="attendance-page__date-fields">
+        <app-date-picker
+          label="From date"
+          [minDate]="earliestDate"
+          [maxDate]="toDate() ?? today"
+          [selectedDate]="fromDate()"
+          (selectedDateChange)="onFromDateChanged($event)" />
+        <app-date-picker
+          label="To date"
+          [minDate]="fromDate() ?? earliestDate"
+          [maxDate]="today"
+          [selectedDate]="toDate()"
+          (selectedDateChange)="onToDateChanged($event)" />
+      </div>
+      <p class="attendance-page__range-note">Dates can be selected for the last two years only.</p>
+    </section>
+  }
 
   <app-data-table
     title="Attendance Records"

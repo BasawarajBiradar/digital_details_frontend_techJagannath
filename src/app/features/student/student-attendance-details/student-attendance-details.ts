@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { ApiStudent, StudentAttendanceRecord } from '../services/api-student';
@@ -14,6 +14,7 @@ import { DatePickerComponent } from '../../../shared/components/date-picker/date
 })
 export class StudentAttendanceDetailsComponent {
   private readonly apiStudent = inject(ApiStudent);
+  readonly showFilters = input(false);
   private readonly router = inject(Router);
 
   readonly today = this.startOfDay(new Date());
