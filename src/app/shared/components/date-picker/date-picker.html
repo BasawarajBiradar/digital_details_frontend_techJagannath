@@ -1,0 +1,14 @@
+<mat-form-field appearance="outline" class="date-picker">
+  <mat-label>{{ label() }}</mat-label>
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [min]="minDate()"
+    [max]="maxDate()"
+    [disabled]="disabled()"
+    [placeholder]="placeholder()"
+    [value]="selectedDate()"
+    (dateChange)="onDateChanged($event.value)" />
+  <mat-datepicker-toggle matIconSuffix [for]="picker" />
+  <mat-datepicker #picker />
+</mat-form-field>
