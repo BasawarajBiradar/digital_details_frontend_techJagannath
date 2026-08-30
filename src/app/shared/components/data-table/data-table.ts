@@ -14,6 +14,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
+import * as XLSX from 'xlsx';
 
 export type DataTableRow = Record<string, unknown>;
 
@@ -63,6 +64,9 @@ export class DataTableComponent implements AfterViewInit {
   readonly actionTriggered = output<DataTableRow>();
   readonly rowClassName = input<((row: DataTableRow) => string | undefined) | null>(null);
 
+  readonly exportable = input(false);
+  readonly exportFileName = input('export');
+
   readonly displayedColumnKeys = computed(() => [
     ...this.columns().map((column) => column.key),
     ...(this.action() ? ['actions'] : []),
@@ -106,5 +110,29 @@ export class DataTableComponent implements AfterViewInit {
     }, row);
 
     return typeof value === 'number' ? value : String(value ?? '');
+  }
+
+    exportToExcel(): void {
+    const columns = this.columns();
+    const rows = this.dataSource.filteredData.length
+      ? this.dataSource.filteredData
+      : this.dataSource.data;
+
+    if (!rows.length) return;
+
+    const exportRows = rows.map((row) => {
+      const record: Record<string, string> = {};
+      for (const column of columns) {
+        record[column.header] = this.displayValue(row, column);
+      }
+      return record;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    const timestamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `${this.exportFileName()}-${timestamp}.xlsx`);
   }
 }

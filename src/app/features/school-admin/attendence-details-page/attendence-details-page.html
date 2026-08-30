@@ -35,7 +35,9 @@
       [loading]="isLoading()"
       [headerAction]="null"
       [action]="null"
-      [rowClassName]="rowClassName" />
+      [rowClassName]="rowClassName"
+      [exportable]="true"
+      [exportFileName]="'attendance-report'"/>
   </div>
 
   @if (hasError()) {

@@ -1,11 +1,25 @@
 <section class="data-table" aria-labelledby="data-table-title">
-  @if (title()) {
+  @if (title() || headerAction() || exportable()) {
     <div class="data-table__header">
       <div class="data-table__title-group">
-        <h2 id="data-table-title">{{ title() }}</h2>
+        @if (title()) {
+          <h2 id="data-table-title">{{ title() }}</h2>
+        }
       </div>
 
       <div class="data-table__header-actions">
+        @if (exportable()) {
+          <button
+            mat-stroked-button
+            class="data-table__header-action"
+            type="button"
+            [disabled]="dataSource.data.length === 0"
+            (click)="exportToExcel()">
+            <mat-icon aria-hidden="true">download</mat-icon>
+            Export
+          </button>
+        }
+
         @if (headerAction(); as action) {
           @if (action.visible !== false) {
             @if (action.link) {
