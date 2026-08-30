@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 export type DataTableRow = Record<string, unknown>;
 
@@ -45,6 +46,7 @@ export interface DataTableApiResponse {
     MatSortModule,
     MatTableModule,
     RouterLink,
+    NgClass,
   ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
@@ -59,6 +61,7 @@ export class DataTableComponent implements AfterViewInit {
   readonly headerActionTriggered = output<void>();
   readonly action = input<DataTableAction | null>(null);
   readonly actionTriggered = output<DataTableRow>();
+  readonly rowClassName = input<((row: DataTableRow) => string | undefined) | null>(null);
 
   readonly displayedColumnKeys = computed(() => [
     ...this.columns().map((column) => column.key),

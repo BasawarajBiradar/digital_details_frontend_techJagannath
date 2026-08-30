@@ -97,6 +97,33 @@ tr.mat-mdc-row:hover {
   background: var(--color-surface-inset);
 }
 
+// ─── Status row colours ─────────────────────────────────────────────────────
+// Subtle tint per row rather than a solid fill, so text stays readable and
+// it doesn't fight visually with the header hover state.
+tr.mat-mdc-row.data-table__row--present {
+  background: color-mix(in srgb, #1a7f45 10%, var(--color-surface));
+
+  &:hover {
+    background: color-mix(in srgb, #1a7f45 16%, var(--color-surface));
+  }
+}
+
+tr.mat-mdc-row.data-table__row--absent {
+  background: color-mix(in srgb, #cc2200 9%, var(--color-surface));
+
+  &:hover {
+    background: color-mix(in srgb, #cc2200 15%, var(--color-surface));
+  }
+}
+
+tr.mat-mdc-row.data-table__row--holiday {
+  background: color-mix(in srgb, var(--color-text-subtle) 14%, var(--color-surface));
+
+  &:hover {
+    background: color-mix(in srgb, var(--color-text-subtle) 20%, var(--color-surface));
+  }
+}
+
 .data-table__header-action,
 .data-table__row-action {
   --mdc-outlined-button-label-text-color: var(--color-primary-dark);

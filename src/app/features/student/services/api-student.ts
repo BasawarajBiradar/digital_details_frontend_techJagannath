@@ -37,6 +37,14 @@ export interface StudentAttendanceRecord {
   isPresent: boolean;
 }
 
+export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'HOLIDAY' | string;
+
+export interface StudentAttendanceHistoryRecord {
+  date:      string;
+  status:    AttendanceStatus;
+  entryTime: string | null;
+  exitTime:  string | null;
+}
 
 export interface VerifyUidResponse {
   userId: number | null;
@@ -84,6 +92,15 @@ export class ApiStudent {
       .post<ApiResponse<StudentAttendanceRecord[]>>(`${this.base}/api/student/attendance-details`, {
         dateFrom,
         dateTo,
+      })
+      .pipe(map(res => res.data));
+  }
+
+  getAttendanceHistory(fromDate: string, toDate: string): Observable<StudentAttendanceHistoryRecord[]> {
+    return this.http
+      .post<ApiResponse<StudentAttendanceHistoryRecord[]>>(`${this.base}/api/student/attendance-history`, {
+        fromDate,
+        toDate,
       })
       .pipe(map(res => res.data));
   }

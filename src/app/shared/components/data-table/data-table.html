@@ -76,7 +76,10 @@
       }
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnKeys()"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys()"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnKeys()"
+        [ngClass]="rowClassName()?.(row)"></tr>
       <tr class="data-table__empty" *matNoDataRow>
         <td [attr.colspan]="displayedColumnKeys().length">No records available.</td>
       </tr>
