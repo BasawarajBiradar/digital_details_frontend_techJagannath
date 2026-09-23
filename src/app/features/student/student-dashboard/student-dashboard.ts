@@ -6,6 +6,7 @@ import { catchError, of } from 'rxjs';
 import { ApiStudent, CardTap, TodaysUpdateCards } from '../services/api-student';
 import { QrModel } from '../qr-model/qr-model';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
+import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 import { ToastService } from '@core/services/toast-service';
 import {
   DataTableAction,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal],
+  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal, DashboardFooter],
   templateUrl: './student-dashboard.html',
   styleUrl:    './student-dashboard.scss',
 })

@@ -6,13 +6,14 @@ import { ApiSchoolAdmin, StudentSummary } from '../services/api-school-admin';
 import { StudentDetailDialog } from '../student-detail-dialog/student-detail-dialog';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import { PieChart, PieChartApiResponse } from '../../../shared/components/pie-chart/pie-chart';
+import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 import { Router } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-school-admin-dashboard',
-  imports: [CommonModule, MatIconModule, MatDialogModule, DatePipe, ImageCropModal, PieChart],
+  imports: [CommonModule, MatIconModule, MatDialogModule, DatePipe, ImageCropModal, PieChart, DashboardFooter],
   templateUrl: './school-admin-dashboard.html',
   styleUrl: './school-admin-dashboard.scss',
 })
