@@ -64,6 +64,17 @@ interface ApiResponse<T> {
   timestamp: string;
 }
 
+export interface TodaysUpdateCards {
+  attendanceStatus: string | null;
+  entryTime: string | null;
+  tapPhotoCount: number | null;
+  pendingHomeWorkCount: number | null;
+  noticeCount: number | null;
+  teacherFeedBack: string | null;
+  weeklyPerformanceGrade: string | null;
+  percentage: number | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -149,5 +160,11 @@ export class ApiStudent {
   private parseDdMmYyyy(dateStr: string): string {
     const [dd, mm, yyyy] = dateStr.split('-');
     return `${yyyy}-${mm}-${dd}`;             
+  }
+
+  getTodaysUpdateCards(): Observable<TodaysUpdateCards> {
+    return this.http
+      .get<ApiResponse<TodaysUpdateCards>>(`${this.base}/api/student/home-page/today-updates`)
+      .pipe(map(res => res.data));
   }
 }

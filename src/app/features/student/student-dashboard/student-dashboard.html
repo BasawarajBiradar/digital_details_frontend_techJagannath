@@ -89,14 +89,6 @@
         <span class="id-card__address-value">{{ student()!.address }}</span>
       </div>
 
-    </div>
-
-    <div class="id-card">
-      <div class="id-card__band id-card__band--emergency">
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">Emergency Contact</span>
-        </div>
-      </div>
       <div class="id-card__body">
         <div class="id-card__details">
           <div class="id-card__row">
@@ -117,17 +109,36 @@
           </div>
         </div>
       </div>
+
     </div>
+
+    @if (todaysUpdateItems().length) {
+      <section class="todays-updates" aria-labelledby="todays-updates-title">
+        <div class="todays-updates__header">
+          <h2 id="todays-updates-title">Today's updates</h2>
+          <mat-icon aria-hidden="true">today</mat-icon>
+        </div>
+
+        <div class="todays-updates__grid">
+          @for (item of todaysUpdateItems(); track item.label) {
+            <article class="update-card">
+              <span class="update-card__label">{{ item.label }}</span>
+              <strong class="update-card__value">{{ item.value }}</strong>
+            </article>
+          }
+        </div>
+      </section>
+    }
   }
 
-  <app-data-table
+  <!-- <app-data-table
     [title]="'Today\'s Card Taps · ' + todayTaps().length"
     [columns]="tapColumns"
     [apiResponse]="todayTapRows()"
     [headerAction]="detailsAction()"
     [action]="tapAction"
     [exportable]="true"
-    (actionTriggered)="onTapAction($event)" />
+    (actionTriggered)="onTapAction($event)" /> -->
 
   <!-- QR button -->
   <div class="id-card__actions">

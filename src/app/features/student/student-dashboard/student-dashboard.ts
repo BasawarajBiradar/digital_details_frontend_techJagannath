@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
-import { ApiStudent, CardTap } from '../services/api-student';
+import { ApiStudent, CardTap, TodaysUpdateCards } from '../services/api-student';
 import { QrModel } from '../qr-model/qr-model';
 import { ImageCropModal, CropResult } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import { ToastService } from '@core/services/toast-service';
@@ -17,7 +17,7 @@ import {
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal, DataTableComponent],
+  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal],
   templateUrl: './student-dashboard.html',
   styleUrl:    './student-dashboard.scss',
 })
@@ -67,6 +67,29 @@ export class StudentDashboard {
     ),
     { initialValue: [] as CardTap[] }
   );
+
+  readonly todaysUpdates = toSignal(
+    this.apiStudent.getTodaysUpdateCards().pipe(
+      catchError(() => of(null as TodaysUpdateCards | null))
+    ),
+    { initialValue: null }
+  );
+
+  readonly todaysUpdateItems = computed(() => {
+    const updates = this.todaysUpdates();
+    if (!updates) return [];
+
+    return [
+      { label: 'Attendance', value: updates.attendanceStatus ?? '-' },
+      { label: 'Entry time', value: updates.entryTime ?? '-' },
+      { label: 'Photo taps', value: updates.tapPhotoCount ?? 0 },
+      { label: 'Homework', value: updates.pendingHomeWorkCount ?? 0 },
+      { label: 'Notices', value: updates.noticeCount ?? 0 },
+      { label: 'Teacher feedback', value: updates.teacherFeedBack ?? '-' },
+      { label: 'Weekly grade', value: updates.weeklyPerformanceGrade ?? '-' },
+      { label: 'Percentage', value: updates.percentage === null ? '-' : `${updates.percentage}%` },
+    ];
+  });
 
   // Optimistic preview: local crop wins over server URL
   readonly displayPhotoUrl = computed(
