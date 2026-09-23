@@ -1,12 +1,15 @@
-<nav class="dashboard-footer" aria-label="Dashboard navigation">
-  @for (option of options(); track option.route) {
-    <a
-      class="dashboard-footer__item"
-      [routerLink]="option.route"
-      routerLinkActive="dashboard-footer__item--active"
-      [routerLinkActiveOptions]="{ exact: true }">
-      <mat-icon aria-hidden="true">{{ option.icon }}</mat-icon>
-      <span>{{ option.label }}</span>
-    </a>
-  }
-</nav>
+<footer class="dashboard-footer">
+  <nav class="dashboard-footer__nav" aria-label="Dashboard navigation">
+    @for (option of options(); track option.route) {
+      <a
+        class="dashboard-footer__item"
+        [routerLink]="option.route"
+        routerLinkActive="dashboard-footer__item--active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon aria-hidden="true">{{ option.icon }}</mat-icon>
+        <span>{{ option.label }}</span>
+      </a>
+    }
+  </nav>
+  <p class="dashboard-footer__copyright">© 2026 Tech Jagannath. All rights reserved.</p>
+</footer>
