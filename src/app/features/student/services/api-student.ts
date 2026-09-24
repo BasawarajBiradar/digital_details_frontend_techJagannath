@@ -75,6 +75,13 @@ export interface TodaysUpdateCards {
   percentage: number | null;
 }
 
+export interface StudentAttendanceOverview {
+  attendancePercentage: number;
+  presentDays: number;
+  absentDays: number;
+  lateDays: number | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -165,6 +172,18 @@ export class ApiStudent {
   getTodaysUpdateCards(): Observable<TodaysUpdateCards> {
     return this.http
       .get<ApiResponse<TodaysUpdateCards>>(`${this.base}/api/student/home-page/today-updates`)
+      .pipe(map(res => res.data));
+  }
+
+  getAttendancePageOverview(
+    fromDate: string,
+    toDate: string,
+  ): Observable<StudentAttendanceOverview> {
+    return this.http
+      .post<ApiResponse<StudentAttendanceOverview>>(
+        `${this.base}/api/student/attendance-page/-overview`,
+        { fromDate, toDate },
+      )
       .pipe(map(res => res.data));
   }
 }

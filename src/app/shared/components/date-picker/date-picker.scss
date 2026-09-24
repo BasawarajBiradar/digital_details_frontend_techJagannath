@@ -8,24 +8,23 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  min-width: 0;
+  min-width: max-content;
 }
 
 .compact-date-picker__values {
   display: flex;
-  min-width: 0;
+  min-width: max-content;
   flex-direction: column;
   gap: 2px;
   color: var(--color-primary);
-  font-size: 0.58rem;
+  font-size: 0.56rem;
   font-weight: 700;
   line-height: 1.15;
   text-align: right;
   white-space: nowrap;
 
   span {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: block;
   }
 
   b {

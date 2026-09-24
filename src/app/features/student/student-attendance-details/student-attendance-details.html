@@ -1,18 +1,77 @@
 <main class="attendance-page">
 
-      <section class="todays-updates" aria-labelledby="todays-updates-title">
-        <div class="todays-updates__header">
-          <h2 id="todays-updates-title">Attendance Details</h2>
-          <app-date-picker
-            [compact]="true"
-            [startDate]="fromDate()"
-            (startDateChange)="fromDate.set($event)"
-            [endDate]="toDate()"
-            (endDateChange)="toDate.set($event)" />
+  <section class="attendance-page__filter" aria-labelledby="attendance-filter-title">
+    <div>
+      <span class="attendance-page__section-kicker">Filter period</span>
+    </div>
+    <app-date-picker
+      [compact]="true"
+      [startDate]="fromDate()"
+      (startDateChange)="onFromDateChanged($event)"
+      [endDate]="toDate()"
+      (endDateChange)="onToDateChanged($event)" />
+  </section>
+
+  <!-- <section class="attendance-overview surface-card" aria-labelledby="attendance-overview-title"> -->
+    <div class="attendance-overview__header">
+      <div>
+        <h2 id="attendance-overview-title">Attendance overview</h2>
+      </div>
+      
+    </div>
+
+    @if (overviewLoading()) {
+      <div class="attendance-overview__loading" aria-live="polite">
+        <span class="attendance-overview__spinner" aria-hidden="true"></span>
+        Loading attendance summary...
+      </div>
+    } @else if (overviewError()) {
+      <div class="attendance-overview__error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <div>
+          <strong>Unable to load attendance</strong>
+          <span>Please check the selected dates and try again.</span>
         </div>
-      </section>
+        <button type="button" (click)="retryOverview()">Retry</button>
+      </div>
+    } @else if (overview(); as data) {
+      <div class="attendance-overview__content">
+        <div
+          class="attendance-overview__donut"
+          [style.--attendance-percent]="attendancePercentage() + '%'"
+          role="img"
+          [attr.aria-label]="attendancePercentage() + '% attendance'">
+          <div class="attendance-overview__donut-label">
+            <strong>{{ attendancePercentage() | number: '1.1-1' }}%</strong>
+            <span>attendance</span>
+          </div>
+        </div>
 
+        <div class="attendance-overview__stats" aria-label="Attendance day counts">
+          <div class="attendance-overview__stat attendance-overview__stat--present">
+            <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">check_circle</mat-icon></span>
+            <span class="attendance-overview__stat-copy"><b>Present days</b><small>Days attended</small></span>
+            <strong>{{ data.presentDays }}</strong>
+          </div>
+          <div class="attendance-overview__stat attendance-overview__stat--absent">
+            <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">cancel</mat-icon></span>
+            <span class="attendance-overview__stat-copy"><b>Absent days</b><small>Days missed</small></span>
+            <strong>{{ data.absentDays }}</strong>
+          </div>
+          <div class="attendance-overview__stat attendance-overview__stat--late">
+            <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">schedule</mat-icon></span>
+            <span class="attendance-overview__stat-copy"><b>Late days</b><small>Late arrivals</small></span>
+            <strong>{{ data.lateDays ?? 0 }}</strong>
+          </div>
+        </div>
+      </div>
+      <p class="attendance-overview__footnote">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        Summary reflects the selected date range.
+      </p>
+    }
+  <!-- </section> -->
 
-        <app-dashboard-footer role="student" />
+  <app-dashboard-footer role="student" />
 
 </main>
