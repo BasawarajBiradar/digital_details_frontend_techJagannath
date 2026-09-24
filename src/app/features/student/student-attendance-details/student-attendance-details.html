@@ -1,36 +1,18 @@
 <main class="attendance-page">
 
-  @if (showFilters()) {
-    <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
-      <h2 id="attendance-filter-title">Filter by date</h2>
-      <div class="attendance-page__date-fields">
-        <app-date-picker
-          label="From date"
-          [minDate]="earliestDate"
-          [maxDate]="toDate() ?? today"
-          [selectedDate]="fromDate()"
-          (selectedDateChange)="onFromDateChanged($event)" />
-        <app-date-picker
-          label="To date"
-          [minDate]="fromDate() ?? earliestDate"
-          [maxDate]="today"
-          [selectedDate]="toDate()"
-          (selectedDateChange)="onToDateChanged($event)" />
-      </div>
-      <p class="attendance-page__range-note">Dates can be selected for the last two years only.</p>
-    </section>
-  }
+      <section class="todays-updates" aria-labelledby="todays-updates-title">
+        <div class="todays-updates__header">
+          <h2 id="todays-updates-title">Attendance Details</h2>
+          <app-date-picker
+            [compact]="true"
+            [startDate]="fromDate()"
+            (startDateChange)="fromDate.set($event)"
+            [endDate]="toDate()"
+            (endDateChange)="toDate.set($event)" />
+        </div>
+      </section>
 
-  <div class="attendance-page__table-wrapper">
-    <app-data-table
-      title="Attendance Records"
-      [columns]="tableColumns"
-      [apiResponse]="tableRows()"
-      [loading]="isLoading()"
-      [headerAction]="null"
-      [action]="null"
-      [exportable]="true"
-      [exportFileName]="'attendance-report'"/>
-  </div>
+
+        <app-dashboard-footer role="student" />
 
 </main>

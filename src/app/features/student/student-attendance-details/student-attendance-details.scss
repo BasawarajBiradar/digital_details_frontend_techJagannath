@@ -1,177 +1,25 @@
 @use '../../../../styles/variables' as *;
 
-.attendance-page {
-  display: grid;
-  gap: $spacing-lg;
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: clamp(16px, 4vw, 32px);
+.todays-updates {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px var(--color-shadow), 0 8px 24px var(--color-shadow);
+  padding: 16px;
 }
 
-.attendance-page__header {
+.todays-updates__header {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  min-width: 0;
-  padding: $spacing-md $spacing-lg;
-  border: 1px solid var(--color-primary);
-  border-radius: $radius-lg;
-  background: var(--gradient-brand);
-  box-shadow: 0 2px 8px var(--color-shadow);
-
-  h1 {
-    margin: 0;
-    color: var(--color-text-on-brand);
-    font-size: var(--font-lg);
-    font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-tight);
-  }
-}
-
-.attendance-page__back {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xs;
-  min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--color-primary);
-  border-radius: $radius-md;
-  background: var(--color-surface);
-  color: var(--color-primary-dark);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-
-  mat-icon {
-    width: 18px;
-    height: 18px;
-    font-size: 18px;
-  }
-}
-
-.attendance-page__filters {
-  min-width: 0;
-  padding: $spacing-lg;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
 
   h2 {
-    margin: 0 0 $spacing-md;
+    margin: 0;
     color: var(--color-text);
-    font-size: var(--font-md);
-    font-weight: var(--font-weight-bold);
-  }
-}
-
-.attendance-page__date-fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: $spacing-md;
-
-  app-date-picker {
-    min-width: 0;
-    width: 100%;
-  }
-}
-
-.attendance-page__range-note {
-  margin: $spacing-sm 0 0;
-  color: var(--color-text-subtle);
-  font-size: var(--font-xs);
-}
-
-// Table needs to scroll horizontally rather than crush its columns
-// on narrow viewports. The negative margin + padding trick lets the
-// scroll area bleed to the card edges on mobile without extra markup.
-.attendance-page__table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-.attendance-page__error {
-  display: flex;
-  align-items: flex-start;
-  gap: $spacing-sm;
-  margin: 0;
-  color: var(--color-primary-dark);
-  font-size: var(--font-sm);
-  line-height: var(--line-height-tight);
-
-  mat-icon {
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-}
-
-// Tablet / small laptop
-@media (max-width: 900px) {
-  .attendance-page {
-    max-width: 100%;
-  }
-}
-
-// Large phones / small tablets (portrait)
-@media (max-width: 640px) {
-  .attendance-page {
-    gap: $spacing-md;
-    padding: $spacing-md;
+    font-size: 1rem;
+    font-weight: 800;
   }
 
-  .attendance-page__header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: $spacing-sm;
-    padding: $spacing-md;
-  }
-
-  .attendance-page__header h1 {
-    font-size: var(--font-md);
-  }
-
-  .attendance-page__back {
-    align-self: flex-start;
-  }
-
-  .attendance-page__filters {
-    padding: $spacing-md;
-  }
-
-  .attendance-page__date-fields {
-    grid-template-columns: 1fr;
-    gap: $spacing-sm;
-  }
-}
-
-// Small phones
-@media (max-width: 400px) {
-  .attendance-page {
-    padding: $spacing-sm;
-    gap: $spacing-sm;
-  }
-
-  .attendance-page__filters {
-    padding: $spacing-sm;
-
-    h2 {
-      font-size: var(--font-sm);
-    }
-  }
-
-  .attendance-page__range-note,
-  .attendance-page__error {
-    font-size: var(--font-xs);
-  }
-}
-
-// Landscape phones (short viewport height) — avoid the filter card
-// eating the whole screen above the fold
-@media (max-height: 480px) and (orientation: landscape) {
-  .attendance-page {
-    gap: $spacing-sm;
-  }
-
-  .attendance-page__filters {
-    padding: $spacing-sm $spacing-md;
-  }
 }

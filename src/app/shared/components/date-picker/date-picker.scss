@@ -4,6 +4,74 @@
   display: block;
 }
 
+.compact-date-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.compact-date-picker__values {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-primary);
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: right;
+  white-space: nowrap;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  b {
+    margin-right: 3px;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+  }
+}
+
+.compact-date-picker__control {
+  width: 28px;
+  height: 28px;
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+
+  ::ng-deep .mat-mdc-form-field-flex,
+  ::ng-deep .mat-mdc-form-field-icon-suffix {
+    height: 28px;
+    padding: 0;
+  }
+
+  ::ng-deep .mat-mdc-form-field-infix,
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mat-mdc-form-field-icon-suffix button {
+    width: 28px;
+    height: 28px;
+    color: var(--color-primary);
+  }
+
+  ::ng-deep .mat-mdc-form-field-icon-suffix mat-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--color-primary);
+    font-size: 22px;
+  }
+}
+
 .date-picker {
   width: 100%;
   min-width: 0;

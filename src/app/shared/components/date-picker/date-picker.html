@@ -1,14 +1,32 @@
-<mat-form-field appearance="outline" class="date-picker" floatLabel="always">
-  <mat-label>{{ label() }}</mat-label>
-  <input
-    matInput
-    [matDatepicker]="picker"
-    [min]="minDate()"
-    [max]="maxDate()"
-    [disabled]="disabled()"
-    [placeholder]="placeholder()"
-    [value]="selectedDate()"
-    (dateChange)="onDateChanged($event.value)" />
-  <mat-datepicker-toggle matIconSuffix [for]="picker" />
-  <mat-datepicker #picker />
-</mat-form-field>
+@if (compact()) {
+  <div class="compact-date-picker">
+    <div class="compact-date-picker__values" aria-live="polite">
+      <span><b>{{ startLabel() }}</b> {{ formatDate(startDate()) }}</span>
+      <span><b>{{ endLabel() }}</b> {{ formatDate(endDate()) }}</span>
+    </div>
+
+    <mat-form-field class="compact-date-picker__control" appearance="outline">
+      <mat-date-range-input [rangePicker]="rangePicker">
+        <input matStartDate [min]="minDate()" [max]="maxDate()" [disabled]="disabled()"
+          [value]="startDate()" (dateChange)="onStartDateChanged($event.value)"
+          [attr.aria-label]="startLabel() + ' date'" />
+        <input matEndDate [min]="minDate()" [max]="maxDate()" [disabled]="disabled()"
+          [value]="endDate()" (dateChange)="onEndDateChanged($event.value)"
+          [attr.aria-label]="endLabel() + ' date'" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="rangePicker">
+        <mat-icon matDatepickerToggleIcon aria-hidden="true">calendar_month</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker />
+    </mat-form-field>
+  </div>
+} @else {
+  <mat-form-field appearance="outline" class="date-picker" floatLabel="always">
+    <mat-label>{{ label() }}</mat-label>
+    <input matInput [matDatepicker]="picker" [min]="minDate()" [max]="maxDate()"
+      [disabled]="disabled()" [placeholder]="placeholder()" [value]="selectedDate()"
+      (dateChange)="onDateChanged($event.value)" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+  </mat-form-field>
+}
