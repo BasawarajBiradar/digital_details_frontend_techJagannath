@@ -10,7 +10,6 @@ import {
   StudentAttendanceOverview,
 } from '../services/api-student';
 import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
-import { DatePickerComponent } from '../../../shared/components/date-picker/date-picker';
 
 interface CalendarCell {
   date: string;
@@ -22,7 +21,6 @@ interface CalendarCell {
 @Component({
   selector: 'app-student-attendance-details',
   imports: [
-    DatePickerComponent,
     DecimalPipe,
     MatIconModule,
     DashboardFooter,
@@ -37,8 +35,6 @@ export class StudentAttendanceDetailsComponent {
   private readonly router = inject(Router);
 
   readonly today = this.startOfDay(new Date());
-  readonly fromDate = signal<Date | null>(this.addDays(this.today, -7));
-  readonly toDate = signal<Date | null>(this.today);
   readonly overview = signal<StudentAttendanceOverview | null>(null);
   readonly overviewLoading = signal(true);
   readonly overviewError = signal(false);
@@ -79,18 +75,7 @@ export class StudentAttendanceDetailsComponent {
   );
 
   constructor() {
-    this.fetchOverview();
     this.fetchCalendar();
-  }
-
-  onFromDateChanged(date: Date | null): void {
-    this.fromDate.set(date);
-    this.fetchOverview();
-  }
-
-  onToDateChanged(date: Date | null): void {
-    this.toDate.set(date);
-    this.fetchOverview();
   }
 
   goBack(): void {
@@ -98,7 +83,8 @@ export class StudentAttendanceDetailsComponent {
   }
 
   retryOverview(): void {
-    this.fetchOverview();
+    const range = this.calendarRange();
+    this.fetchOverview(range.fromDate, range.toDate);
   }
 
   previousMonth(): void {
@@ -125,22 +111,12 @@ export class StudentAttendanceDetailsComponent {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-  private addDays(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
-  private fetchOverview(): void {
-    const fromDate = this.fromDate();
-    const toDate = this.toDate();
-    if (!fromDate || !toDate || fromDate > toDate) return;
-
+  private fetchOverview(fromDate: string, toDate: string): void {
     this.overviewLoading.set(true);
     this.overviewError.set(false);
     this.apiStudent.getAttendancePageOverview(
-      this.toApiDate(fromDate),
-      this.toApiDate(toDate),
+      fromDate,
+      toDate,
     ).pipe(
       catchError(() => {
         this.overviewError.set(true);
@@ -153,11 +129,10 @@ export class StudentAttendanceDetailsComponent {
   }
 
   private fetchCalendar(): void {
-    const month = this.calendarMonth();
-    const fromDate = this.toApiDate(month);
-    const toDate = this.toApiDate(new Date(month.getFullYear(), month.getMonth() + 1, 0));
+    const { fromDate, toDate } = this.calendarRange();
     this.calendarLoading.set(true);
     this.calendarError.set(false);
+    this.fetchOverview(fromDate, toDate);
     this.apiStudent.getAttendancePageCalendar(fromDate, toDate).pipe(
       catchError(() => {
         this.calendarError.set(true);
@@ -167,6 +142,14 @@ export class StudentAttendanceDetailsComponent {
       this.calendarRecords.set(records);
       this.calendarLoading.set(false);
     });
+  }
+
+  private calendarRange(): { fromDate: string; toDate: string } {
+    const month = this.calendarMonth();
+    return {
+      fromDate: this.toApiDate(month),
+      toDate: this.toApiDate(new Date(month.getFullYear(), month.getMonth() + 1, 0)),
+    };
   }
 
   private toApiDate(date: Date): string {

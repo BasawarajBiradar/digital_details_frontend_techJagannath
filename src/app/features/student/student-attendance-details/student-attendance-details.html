@@ -1,17 +1,5 @@
 <main class="attendance-page">
 
-  <section class="attendance-page__filter" aria-labelledby="attendance-filter-title">
-    <div>
-      <span class="attendance-page__section-kicker">Filter period</span>
-    </div>
-    <app-date-picker
-      [compact]="true"
-      [startDate]="fromDate()"
-      (startDateChange)="onFromDateChanged($event)"
-      [endDate]="toDate()"
-      (endDateChange)="onToDateChanged($event)" />
-  </section>
-
   <!-- <section class="attendance-overview surface-card" aria-labelledby="attendance-overview-title"> -->
     <div class="attendance-overview__header">
       <div>
@@ -67,7 +55,7 @@
       </div>
       <p class="attendance-overview__footnote">
         <mat-icon aria-hidden="true">info</mat-icon>
-        Summary reflects the selected date range.
+        Summary reflects the daily view month.
       </p>
     }
 
