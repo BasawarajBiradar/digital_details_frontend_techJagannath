@@ -93,6 +93,11 @@ export interface StudentTapPhotoRecord {
   photoUrl: string | null;
 }
 
+export interface StudentHomeworkOverview {
+  pendingHomework: number | null;
+  completedHomework: number | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -218,6 +223,14 @@ export class ApiStudent {
       .post<ApiResponse<StudentTapPhotoRecord[]>>(
         `${this.base}/api/student/tap-photo-page/overview`,
         { fromDate, toDate },
+      )
+      .pipe(map(res => res.data));
+  }
+
+  getHomeworkOverview(): Observable<StudentHomeworkOverview> {
+    return this.http
+      .get<ApiResponse<StudentHomeworkOverview>>(
+        `${this.base}/api/student/homework-page/overview`,
       )
       .pipe(map(res => res.data));
   }

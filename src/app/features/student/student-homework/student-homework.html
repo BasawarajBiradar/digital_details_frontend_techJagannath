@@ -1,3 +1,40 @@
 <main class="student-homework">
+  <section class="student-homework__summary" aria-labelledby="student-homework-title">
+    <div class="student-homework__heading">
+      <div>
+        <span class="student-homework__kicker">Student workspace</span>
+        <h1 id="student-homework-title">Homework</h1>
+      </div>
+      <mat-icon aria-hidden="true">assignment</mat-icon>
+    </div>
+
+    @if (loading()) {
+      <div class="student-homework__state" aria-live="polite">
+        <span class="student-homework__spinner" aria-hidden="true"></span>
+        Loading homework summary...
+      </div>
+    } @else if (error()) {
+      <div class="student-homework__state student-homework__state--error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>Unable to load homework summary.</span>
+        <button type="button" (click)="retry()">Retry</button>
+      </div>
+    } @else if (overview(); as data) {
+      <div class="student-homework__cards">
+        <article class="student-homework__card student-homework__card--pending">
+          <mat-icon aria-hidden="true">pending_actions</mat-icon>
+          <span>Pending assignments</span>
+          <strong>{{ data.pendingHomework ?? 0 }}</strong>
+        </article>
+        <article class="student-homework__card student-homework__card--completed">
+          <mat-icon aria-hidden="true">task_alt</mat-icon>
+          <span>Completed assignments</span>
+          <strong>{{ data.completedHomework ?? 0 }}</strong>
+        </article>
+      </div>
+    }
+  </section>
+
+
   <app-dashboard-footer role="student" />
 </main>
