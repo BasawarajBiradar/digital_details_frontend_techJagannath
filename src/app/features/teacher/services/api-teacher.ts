@@ -14,6 +14,13 @@ export interface TeacherInfoCard {
   employeeId: string | null;
   emailId: string;
   contactNumber: string;
+  bloodGroup?: string | null;
+  birthDate?: string | null;
+  address?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactNumber?: string | null;
+  emergencyContactRelation?: string | null;
+  alternateContactNumber?: string | null;
 }
 
 export interface TeacherUpdateCards {
@@ -71,6 +78,15 @@ export class ApiTeacher {
   getTodayUpdates(): Observable<TeacherUpdateCards> {
     return this.http
       .get<ApiResponse<TeacherUpdateCards>>(`${this.base}/api/teacher/home-page/today-updates`)
+      .pipe(map(response => response.data));
+  }
+
+  uploadPhoto(form: FormData): Observable<{ saveSuccessful: boolean }> {
+    return this.http
+      .post<ApiResponse<{ saveSuccessful: boolean }>>(
+        `${this.base}/api/teacher/upload/profile-photo`,
+        form,
+      )
       .pipe(map(response => response.data));
   }
 

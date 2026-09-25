@@ -1,48 +1,113 @@
-<main class="teacher-dashboard">
+<div class="dashboard">
   @if (isLoading()) {
-    <div class="teacher-dashboard__state" aria-live="polite">Loading teacher dashboard...</div>
+    <div class="dashboard__loading" aria-live="polite"><span class="spinner"></span></div>
+  } @else if (hasError()) {
+    <div class="surface-card dashboard__error" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <p>Could not load teacher info. Please try again later.</p>
+    </div>
   } @else if (teacher(); as profile) {
-    <section class="teacher-card" aria-labelledby="teacher-name">
-      <div class="teacher-card__band">
+    <div class="id-card">
+      <div class="id-card__band">
         @if (profile.schoolLogoUrl) {
-          <img class="teacher-card__logo" [src]="profile.schoolLogoUrl" alt="School logo" />
+          <img class="id-card__band-logo" [src]="profile.schoolLogoUrl" alt="School logo" />
         }
-        <span>{{ profile.schoolName }}</span>
+        <div class="id-card__band-text">
+          <span class="id-card__band-title">{{ profile.schoolName }}</span>
+        </div>
       </div>
-      <div class="teacher-card__body">
-        <div class="teacher-card__photo">
-          @if (profile.photoUrl) {
-            <img [src]="profile.photoUrl" [alt]="profile.fullName" />
+
+      <div class="id-card__body">
+           <div class="id-card__photo-wrap id-card__photo-wrap--editable"
+             (click)="openImage()"
+             role="button"
+             aria-label="View profile photo"
+             tabindex="0"
+             (keydown.enter)="openImage()">
+          @if (displayPhotoUrl()) {
+            <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="profile.fullName" />
           } @else {
-            <mat-icon aria-hidden="true">person</mat-icon>
+            <div class="id-card__photo-fallback"><mat-icon aria-hidden="true">person</mat-icon></div>
           }
+          <label class="id-card__photo-edit-overlay" (click)="$event.stopPropagation()" aria-label="Change photo">
+            <mat-icon aria-hidden="true">photo_camera</mat-icon>
+            <input #photoFileInput
+                   type="file"
+                   accept="image/*"
+                   class="sr-only"
+                   (change)="onPhotoFileSelected($event)" />
+          </label>
         </div>
-        <div class="teacher-card__details">
-          <h1 id="teacher-name">{{ profile.fullName }}</h1>
-          <p>{{ profile.designation ?? 'Teacher' }}{{ profile.department ? ' · ' + profile.department : '' }}</p>
-          <span>{{ profile.employeeId ?? profile.emailId }}</span>
-          <span>{{ profile.contactNumber }}</span>
+        <div class="id-card__details">
+          <div class="id-card__name">{{ profile.fullName }}</div>
+          <div class="id-card__class">
+            {{ profile.designation ?? 'Teacher' }}{{ profile.department ? ' · ' + profile.department : '' }}
+          </div>
+          <div class="id-card__divider"></div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Blood</span>
+            <span class="id-card__row-value id-card__row-value--blood">{{ profile.bloodGroup ?? '-' }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">DOB</span>
+            <span class="id-card__row-value">{{ profile.birthDate ?? '-' }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
+            <span class="id-card__row-value">{{ profile.contactNumber }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Email</span>
+            <span class="id-card__row-value">{{ profile.emailId }}</span>
+          </div>
         </div>
       </div>
-    </section>
+
+      <div class="id-card__address">
+        <span class="id-card__row-label">Address</span>
+        <span class="id-card__address-value">{{ profile.address ?? '-' }}</span>
+      </div>
+
+      <div class="id-card__body">
+        <div class="id-card__details">
+          <div class="id-card__row">
+            <span class="id-card__row-label">Name</span>
+            <span class="id-card__row-value">{{ profile.emergencyContactName ?? '-' }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Relation</span>
+            <span class="id-card__row-value">{{ profile.emergencyContactRelation ?? '-' }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Contact</span>
+            <span class="id-card__row-value">{{ profile.emergencyContactNumber ?? '-' }}</span>
+          </div>
+          <div class="id-card__row">
+            <span class="id-card__row-label">Alt. No</span>
+            <span class="id-card__row-value">{{ profile.alternateContactNumber ?? '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     @if (updateItems().length) {
-      <section class="teacher-updates" aria-labelledby="teacher-updates-title">
-        <div class="teacher-updates__heading">
-          <h2 id="teacher-updates-title">Today's updates</h2>
+      <section class="todays-updates" aria-labelledby="todays-updates-title">
+        <div class="todays-updates__header">
+          <h2 id="todays-updates-title">Today's updates</h2>
           <mat-icon aria-hidden="true">today</mat-icon>
         </div>
-        <div class="teacher-updates__grid">
+        <div class="todays-updates__grid">
           @for (item of updateItems(); track item.label) {
             @if (item.link; as link) {
-              <a class="teacher-update" [routerLink]="link">
-                <span>{{ item.label }}</span>
-                <strong>{{ item.value }}</strong>
+              <a class="update-card update-card--link" [routerLink]="link" [attr.aria-label]="item.label">
+                <mat-icon class="update-card__icon" aria-hidden="true">photo_camera</mat-icon>
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value">{{ item.value }}</strong>
               </a>
             } @else {
-              <article class="teacher-update">
-                <span>{{ item.label }}</span>
-                <strong>{{ item.value }}</strong>
+              <article class="update-card">
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value">{{ item.value }}</strong>
               </article>
             }
           }
@@ -50,8 +115,31 @@
       </section>
     }
   } @else {
-    <div class="teacher-dashboard__state" role="alert">Could not load teacher information.</div>
+    <div class="surface-card dashboard__error" role="alert">Could not load teacher information.</div>
+  }
+
+  @if (showImage()) {
+    <div class="image-modal__backdrop" (click)="closeImage()">
+      <div class="image-modal__panel" role="dialog" aria-modal="true" aria-label="Teacher profile photo" (click)="$event.stopPropagation()">
+        <div class="image-modal__header">
+          <button class="image-modal__close" type="button" (click)="closeImage()" aria-label="Close">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="image-modal__body">
+          <img class="image-modal__img" [src]="selectedImageUrl()" alt="Teacher profile" />
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showCrop() && cropFile()) {
+    <app-image-crop-modal
+      [file]="cropFile()!"
+      [cropShape]="'portrait'"
+      (cropped)="onCropDone($event)"
+      (cancelled)="onCropCancelled()" />
   }
 
   <app-dashboard-footer role="teacher" />
-</main>
+</div>
