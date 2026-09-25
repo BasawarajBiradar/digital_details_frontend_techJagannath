@@ -98,6 +98,15 @@ export interface StudentHomeworkOverview {
   completedHomework: number | null;
 }
 
+export interface StudentHomeworkRecord {
+  homeworkId: number;
+  homeworkTitle: string;
+  dateOfAssignment: string;
+  deadlineDate: string;
+  status: string | null;
+  subjectName: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -231,6 +240,14 @@ export class ApiStudent {
     return this.http
       .get<ApiResponse<StudentHomeworkOverview>>(
         `${this.base}/api/student/homework-page/overview`,
+      )
+      .pipe(map(res => res.data));
+  }
+
+  getHomeworkTable(): Observable<StudentHomeworkRecord[]> {
+    return this.http
+      .get<ApiResponse<StudentHomeworkRecord[]>>(
+        `${this.base}/api/student/homework-page/table`,
       )
       .pipe(map(res => res.data));
   }

@@ -36,5 +36,85 @@
   </section>
 
 
+  <section class="student-homework__table-section" aria-labelledby="student-homework-table-title">
+    <h2 id="student-homework-table-title">Assignments</h2>
+    @if (tableLoading()) {
+      <div class="student-homework__table-state" aria-live="polite">Loading assignments...</div>
+    } @else if (tableError()) {
+      <div class="student-homework__table-state student-homework__table-state--error" role="alert">
+        <span>Unable to load assignments.</span>
+        <button type="button" (click)="retry()">Retry</button>
+      </div>
+    } @else if (homework().length === 0) {
+      <div class="student-homework__table-state">No assignments found.</div>
+    } @else {
+      <div class="student-homework__table-wrap">
+        <table class="student-homework__table">
+          <colgroup>
+            <col class="student-homework__column student-homework__column--title" />
+            <col class="student-homework__column student-homework__column--subject" />
+            <col class="student-homework__column student-homework__column--date" />
+            <col class="student-homework__column student-homework__column--date" />
+            <col class="student-homework__column student-homework__column--status" />
+            <col class="student-homework__column student-homework__column--details" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Assignment</th>
+              <th scope="col">Subject</th>
+              <th scope="col">Assigned</th>
+              <th scope="col">Deadline</th>
+              <th scope="col">Status</th>
+              <th scope="col">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of homework(); track item.homeworkId) {
+              <tr>
+                <td data-label="Assignment">{{ item.homeworkTitle }}</td>
+                <td data-label="Subject">{{ item.subjectName }}</td>
+                <td data-label="Assigned">{{ formatDate(item.dateOfAssignment) }}</td>
+                <td data-label="Deadline">{{ formatDate(item.deadlineDate) }}</td>
+                <td data-label="Status">
+                  <span class="student-homework__status" [class.student-homework__status--completed]="item.status === 'COMPLETED'" [class.student-homework__status--pending]="item.status === 'PENDING'">
+                    {{ item.status ?? '-' }}
+                  </span>
+                </td>
+                <td data-label="Details">
+                  <button class="student-homework__details-button" type="button" (click)="openDetails(item)">
+                    <mat-icon aria-hidden="true">visibility</mat-icon>
+                    Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+
   <app-dashboard-footer role="student" />
+
+  @if (selectedHomework(); as item) {
+    <div class="student-homework__modal-backdrop" role="presentation" (click)="closeDetails()">
+      <div class="student-homework__modal" role="dialog" aria-modal="true" aria-labelledby="homework-details-title" (click)="$event.stopPropagation()">
+        <div class="student-homework__modal-header">
+          <h2 id="homework-details-title">Homework details</h2>
+          <button type="button" aria-label="Close homework details" (click)="closeDetails()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+        <dl class="student-homework__details-list">
+          <div><dt>Homework ID</dt><dd>{{ item.homeworkId }}</dd></div>
+          <div><dt>Assignment</dt><dd>{{ item.homeworkTitle }}</dd></div>
+          <div><dt>Subject</dt><dd>{{ item.subjectName }}</dd></div>
+          <div><dt>Status</dt><dd>{{ item.status ?? '-' }}</dd></div>
+          <div><dt>Assigned date</dt><dd>{{ formatDate(item.dateOfAssignment) }}</dd></div>
+          <div><dt>Deadline</dt><dd>{{ formatDate(item.deadlineDate) }}</dd></div>
+        </dl>
+      </div>
+    </div>
+  }
 </main>
