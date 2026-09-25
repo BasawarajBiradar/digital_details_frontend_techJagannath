@@ -1,0 +1,79 @@
+<main class="tap-photos">
+  <section class="tap-photos__filter" aria-labelledby="tap-photos-filter-title">
+    <div>
+      <span id="tap-photos-filter-title" class="tap-photos__kicker">Filter period</span>
+    </div>
+    <app-date-picker
+      [compact]="true"
+      [startDate]="fromDate()"
+      (startDateChange)="onFromDateChanged($event)"
+      [endDate]="toDate()"
+      (endDateChange)="onToDateChanged($event)" />
+  </section>
+
+  <section class="tap-photos__content" aria-labelledby="tap-photos-title">
+
+    @if (loading()) {
+      <div class="tap-photos__message" aria-live="polite">
+        <span class="tap-photos__spinner" aria-hidden="true"></span>
+        Loading tap photos...
+      </div>
+    } @else if (error()) {
+      <div class="tap-photos__message tap-photos__message--error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>Unable to load tap photos.</span>
+        <button type="button" (click)="retry()">Retry</button>
+      </div>
+    } @else if (tapPhotos().length === 0) {
+      <div class="tap-photos__message">
+        <mat-icon aria-hidden="true">photo_camera</mat-icon>
+        <span>No tap photos for this period.</span>
+      </div>
+    } @else {
+      <div class="tap-photos__table-wrap">
+        <table class="tap-photos__table">
+          <caption class="visually-hidden">Tap photos between the selected dates</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Photo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (photo of tapPhotos(); track photo.date + photo.time) {
+              <tr>
+                <td data-label="Date">{{ formatDate(photo.date) }}</td>
+                <td data-label="Time">{{ formatTime(photo.time) }}</td>
+                <td data-label="Photo">
+                  @if (photo.photoUrl) {
+                    <button class="tap-photos__view-link" type="button" (click)="openPhoto(photo.photoUrl!)">
+                      <mat-icon aria-hidden="true">visibility</mat-icon>
+                      View photo
+                    </button>
+                  } @else {
+                    <span class="tap-photos__unavailable">Unavailable</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <app-dashboard-footer role="student" />
+
+  @if (showPhoto() && selectedPhotoUrl(); as photoUrl) {
+    <div class="tap-photos__modal-backdrop" role="presentation" (click)="closePhoto()">
+      <div class="tap-photos__modal" role="dialog" aria-modal="true" aria-label="Tap photo" (click)="$event.stopPropagation()">
+        <button class="tap-photos__modal-close" type="button" aria-label="Close photo" (click)="closePhoto()">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+        <img class="tap-photos__modal-image" [src]="photoUrl" alt="Student tap photo" />
+      </div>
+    </div>
+  }
+
+</main>

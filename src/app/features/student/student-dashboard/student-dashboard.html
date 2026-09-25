@@ -121,10 +121,18 @@
 
         <div class="todays-updates__grid">
           @for (item of todaysUpdateItems(); track item.label) {
-            <article class="update-card">
-              <span class="update-card__label">{{ item.label }}</span>
-              <strong class="update-card__value">{{ item.value }}</strong>
-            </article>
+            @if (item.label === tapPhotosAction.label) {
+              <a class="update-card update-card--link" [routerLink]="tapPhotosAction.link" [attr.aria-label]="tapPhotosAction.label">
+                <mat-icon class="update-card__icon" aria-hidden="true">{{ tapPhotosAction.icon }}</mat-icon>
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value">{{ item.value }}</strong>
+              </a>
+            } @else {
+              <article class="update-card">
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value">{{ item.value }}</strong>
+              </article>
+            }
           }
         </div>
       </section>

@@ -26,11 +26,14 @@ export class DashboardFooter {
       ? '/student/attendance-details'
       : '/school-admin/attendance-details';
     const prefix = this.role() === 'student' ? '/student' : '/school-admin';
+    const photosRoute = this.role() === 'student'
+      ? '/student/tap-photos'
+      : `${prefix}/photos`;
 
     return [
       { label: 'Home', icon: 'home', route: homeRoute },
       { label: 'Attendance', icon: 'event_available', route: attendanceRoute },
-      { label: 'Photos', icon: 'photo_library', route: `${prefix}/photos` },
+      { label: 'Photos', icon: 'photo_library', route: photosRoute },
       { label: 'Homework', icon: 'assignment', route: `${prefix}/homework` },
       { label: 'Notice', icon: 'campaign', route: `${prefix}/notice` },
     ];

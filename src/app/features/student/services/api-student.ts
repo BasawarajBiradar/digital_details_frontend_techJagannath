@@ -87,6 +87,12 @@ export interface StudentAttendanceCalendarRecord {
   status: AttendanceStatus | null;
 }
 
+export interface StudentTapPhotoRecord {
+  date: string;
+  time: string;
+  photoUrl: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -204,146 +210,15 @@ export class ApiStudent {
       .pipe(map(res => res.data));
   }
 
-  /***
-   api : http://localhost:8080/api/student/attendance-page/calendar-view
-   request body : {
-    "fromDate": "2026-08-01", // start of month
-    "toDate": "2026-08-31" // end of the month
-    }
-    response
-    {
-    "success": true,
-    "message": "Success",
-    "code": "SUCCESS",
-    "data": [
-        {
-            "date": "2026-08-01",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-02",
-            "status": "HOLIDAY"
-        },
-        {
-            "date": "2026-08-03",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-04",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-05",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-06",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-07",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-08",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-09",
-            "status": "HOLIDAY"
-        },
-        {
-            "date": "2026-08-10",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-11",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-12",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-13",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-14",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-15",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-16",
-            "status": null
-        },
-        {
-            "date": "2026-08-17",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-18",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-19",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-20",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-21",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-22",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-23",
-            "status": "HOLIDAY"
-        },
-        {
-            "date": "2026-08-24",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-25",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-26",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-27",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-28",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-29",
-            "status": "ABSENT"
-        },
-        {
-            "date": "2026-08-30",
-            "status": null
-        },
-        {
-            "date": "2026-08-31",
-            "status": null
-        }
-    ],
-    "errors": null,
-    "timestamp": "2026-09-25T09:51:44.089624"
-}
-
-   */
+  getTapPhotoOverview(
+    fromDate: string,
+    toDate: string,
+  ): Observable<StudentTapPhotoRecord[]> {
+    return this.http
+      .post<ApiResponse<StudentTapPhotoRecord[]>>(
+        `${this.base}/api/student/tap-photo-page/overview`,
+        { fromDate, toDate },
+      )
+      .pipe(map(res => res.data));
+  }
 }

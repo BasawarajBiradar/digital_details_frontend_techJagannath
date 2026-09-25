@@ -1,6 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { ApiStudent, CardTap, TodaysUpdateCards } from '../services/api-student';
@@ -18,7 +19,7 @@ import {
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, QrModel, ImageCropModal, DashboardFooter],
+  imports: [CommonModule, MatIconModule, RouterLink, QrModel, ImageCropModal, DashboardFooter],
   templateUrl: './student-dashboard.html',
   styleUrl:    './student-dashboard.scss',
 })
@@ -116,6 +117,12 @@ export class StudentDashboard {
     link: '/student/attendance-details',
     visible: this.showDetailsButton(),
   }));
+
+  readonly tapPhotosAction: DataTableAction = {
+    label: 'Tap photos',
+    icon: 'photo_camera',
+    link: '/student/tap-photos',
+  };
 
   readonly todayTapRows = computed<readonly DataTableRow[]>(() =>
     this.todayTaps().map((tap, index) => ({ ...tap, index: index + 1 }))
