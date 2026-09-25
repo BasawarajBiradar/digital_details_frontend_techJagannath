@@ -131,7 +131,7 @@ export class ApiTeacher {
 
   getSchoolsList(): Observable<TeacherSchool[]> {
     return this.http
-      .get<ApiResponse<TeacherSchool[]>>(`${this.base}/api/teacher/uid/school-list`)
+      .get<ApiResponse<TeacherSchool[]>>(`${this.base}/api/student/uid/school-list`)
       .pipe(map(response => response.data));
   }
 

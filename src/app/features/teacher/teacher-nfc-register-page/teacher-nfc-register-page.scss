@@ -1,4 +1,6 @@
-.teacher-register { display: grid; min-height: 100vh; box-sizing: border-box; padding: 24px 16px; background: var(--color-background); place-items: start center; }
+@use '../../student/student-nfc-register-page/student-nfc-register-page.scss';
+
+.teacher-register { display: none; }
 .teacher-register__card { width: min(100%, 520px); border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: 0 2px 8px var(--color-shadow); overflow: hidden; }
 .teacher-register__header { display: flex; align-items: center; gap: 12px; padding: 18px; background: var(--gradient-brand); color: #fff; }
 .teacher-register__header mat-icon { width: 30px; height: 30px; font-size: 30px; }
