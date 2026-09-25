@@ -70,6 +70,56 @@
         Summary reflects the selected date range.
       </p>
     }
+
+
+    <section class="attendance-calendar" aria-labelledby="attendance-calendar-title">
+      <div class="attendance-calendar__header">
+        <div>
+          <span class="attendance-page__section-kicker">Daily view</span>
+          <h2 id="attendance-calendar-title">{{ calendarMonthLabel() }}</h2>
+        </div>
+        <div class="attendance-calendar__navigation">
+          <button type="button" aria-label="Previous month" (click)="previousMonth()">
+            <mat-icon aria-hidden="true">chevron_left</mat-icon>
+          </button>
+          <button type="button" aria-label="Next month" [disabled]="isCurrentMonth()" (click)="nextMonth()">
+            <mat-icon aria-hidden="true">chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      @if (calendarLoading()) {
+        <div class="attendance-calendar__loading" aria-live="polite">Loading daily attendance...</div>
+      } @else if (calendarError()) {
+        <div class="attendance-calendar__error" role="alert">Unable to load daily attendance.</div>
+      } @else {
+        <div class="attendance-calendar__weekdays" aria-hidden="true">
+          @for (weekday of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track weekday) {
+            <span>{{ weekday }}</span>
+          }
+        </div>
+        <div class="attendance-calendar__grid" aria-label="Daily attendance calendar">
+          @for (cell of calendarCells(); track cell?.date ?? $index) {
+            @if (cell; as day) {
+              <div class="attendance-calendar__day"
+                [class.attendance-calendar__day--present]="day.status === 'PRESENT'"
+                [class.attendance-calendar__day--absent]="day.status === 'ABSENT'"
+                [class.attendance-calendar__day--holiday]="day.status === 'HOLIDAY'"
+                [attr.aria-label]="day.ariaLabel">
+                <span>{{ day.dayNumber }}</span>
+              </div>
+            } @else {
+              <div class="attendance-calendar__day attendance-calendar__day--empty" aria-hidden="true"></div>
+            }
+          }
+        </div>
+        <div class="attendance-calendar__legend" aria-label="Attendance status legend">
+          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--present"><i></i>Present</span>
+          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--absent"><i></i>Absent</span>
+          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--holiday"><i></i>Holiday</span>
+        </div>
+      }
+    </section>
   <!-- </section> -->
 
   <app-dashboard-footer role="student" />
