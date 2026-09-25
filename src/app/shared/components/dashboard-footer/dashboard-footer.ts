@@ -8,6 +8,15 @@ interface FooterOption {
   label: string;
   icon: string;
   route: string;
+  disabled?: boolean;
+}
+
+interface DashboardRoutes {
+  home: string;
+  attendance: string;
+  photos: string;
+  homework: string;
+  notice: string;
 }
 
 @Component({
@@ -21,25 +30,37 @@ export class DashboardFooter {
   readonly role = input<DashboardRole>('student');
 
   readonly options = computed<FooterOption[]>(() => {
-    const homeRoute = this.role() === 'student'
-      ? '/student-dashboard'
-      : this.role() === 'teacher' ? '/teacher-dashboard' : '/school-admin-dashboard';
-    const attendanceRoute = this.role() === 'student'
-      ? '/student/attendance-details'
-      : this.role() === 'teacher' ? '/teacher/attendance-details' : '/school-admin/attendance-details';
-    const prefix = this.role() === 'student'
-      ? '/student'
-      : this.role() === 'teacher' ? '/teacher' : '/school-admin';
-    const photosRoute = this.role() === 'student'
-      ? '/student/tap-photos'
-      : this.role() === 'teacher' ? '/teacher/tap-photos' : `${prefix}/photos`;
+    const routes: Record<DashboardRole, DashboardRoutes> = {
+      student: {
+        home: '/student-dashboard',
+        attendance: '/student/attendance-details',
+        photos: '/student/tap-photos',
+        homework: '/student/homework',
+        notice: '/student/notice',
+      },
+      teacher: {
+        home: '/teacher-dashboard',
+        attendance: '/teacher/attendance-details',
+        photos: '/teacher/tap-photos',
+        homework: '/teacher/homework',
+        notice: '/teacher/notice',
+      },
+      'school-admin': {
+        home: '/school-admin-dashboard',
+        attendance: '/school-admin/attendance-details',
+        photos: '/school-admin/photos',
+        homework: '/school-admin/homework',
+        notice: '/school-admin/notice',
+      },
+    };
+    const roleRoutes = routes[this.role()];
 
     return [
-      { label: 'Home', icon: 'home', route: homeRoute },
-      { label: 'Attendance', icon: 'event_available', route: attendanceRoute },
-      { label: 'Photos', icon: 'photo_library', route: photosRoute },
-      { label: 'Homework', icon: 'assignment', route: `${prefix}/homework` },
-      { label: 'Notice', icon: 'campaign', route: `${prefix}/notice` },
+      { label: 'Home', icon: 'home', route: roleRoutes.home },
+      { label: 'Attendance', icon: 'event_available', route: roleRoutes.attendance },
+      { label: 'Photos', icon: 'photo_library', route: roleRoutes.photos },
+      { label: 'Homework', icon: 'assignment', route: roleRoutes.homework },
+      { label: 'Notice', icon: 'campaign', route: roleRoutes.notice, disabled: true },
     ];
   });
 }
