@@ -52,16 +52,21 @@ export class LoginComponent {
     next: (res) => {
       localStorage.setItem('token', res.data.token);
       this.isLoading = false;
-      switch(res.data.role) {
-      case 'Tapex Admin':
+      switch (res.data.role.trim().toLowerCase()) {
+      case 'tapex admin':
         this.router.navigate(['tapaxe-admin-dashboard']);
         break;
-      case 'School Admin':
+      case 'school admin':
         this.router.navigate(['school-admin-dashboard']);
         break;
-      case 'Student':
+      case 'student':
         this.router.navigate(['student-dashboard']);
         break;
+      case 'teacher':
+        this.router.navigate(['teacher-dashboard']);
+        break;
+      default:
+        this.toast.error('Your account role is not supported.');
       }
     },
     error: (err) => {

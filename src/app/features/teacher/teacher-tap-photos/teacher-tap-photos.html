@@ -1,0 +1,47 @@
+<main class="teacher-photos">
+  <section class="teacher-photos__filter" aria-labelledby="teacher-photos-filter-title">
+    <span id="teacher-photos-filter-title">Filter period</span>
+    <app-date-picker [compact]="true" [startDate]="fromDate()" (startDateChange)="onFromDateChanged($event)" [endDate]="toDate()" (endDateChange)="onToDateChanged($event)" />
+  </section>
+
+  <section class="teacher-photos__results" aria-labelledby="teacher-photos-title">
+    <h1 id="teacher-photos-title">Tap photos</h1>
+    @if (loading()) {
+      <p aria-live="polite">Loading tap photos...</p>
+    } @else if (error()) {
+      <div role="alert">Unable to load tap photos. <button type="button" (click)="retry()">Retry</button></div>
+    } @else if (records().length === 0) {
+      <p>No tap photos for this period.</p>
+    } @else {
+      <div class="teacher-photos__table-wrap">
+        <table>
+          <caption class="visually-hidden">Teacher tap photos</caption>
+          <thead><tr><th scope="col">Date</th><th scope="col">Time</th><th scope="col">Photo</th></tr></thead>
+          <tbody>
+            @for (record of records(); track record.date + record.time) {
+              <tr>
+                <td>{{ formatDate(record.date) }}</td>
+                <td>{{ formatTime(record.time) }}</td>
+                <td>
+                  @if (record.photoUrl) {
+                    <button type="button" (click)="openPhoto(record.photoUrl!)"><mat-icon>visibility</mat-icon> View photo</button>
+                  } @else { <span>Unavailable</span> }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <app-dashboard-footer role="teacher" />
+  @if (selectedPhotoUrl(); as photoUrl) {
+    <div class="teacher-photos__modal-backdrop" role="presentation" (click)="closePhoto()">
+      <div class="teacher-photos__modal" role="dialog" aria-modal="true" aria-label="Teacher tap photo" (click)="$event.stopPropagation()">
+        <button type="button" aria-label="Close photo" (click)="closePhoto()"><mat-icon>close</mat-icon></button>
+        <img [src]="photoUrl" alt="Teacher tap photo" />
+      </div>
+    </div>
+  }
+</main>

@@ -1,0 +1,19 @@
+.teacher-register { display: grid; min-height: 100vh; box-sizing: border-box; padding: 24px 16px; background: var(--color-background); place-items: start center; }
+.teacher-register__card { width: min(100%, 520px); border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: 0 2px 8px var(--color-shadow); overflow: hidden; }
+.teacher-register__header { display: flex; align-items: center; gap: 12px; padding: 18px; background: var(--gradient-brand); color: #fff; }
+.teacher-register__header mat-icon { width: 30px; height: 30px; font-size: 30px; }
+.teacher-register__header h1 { margin: 0; font-size: 1.1rem; }
+.teacher-register__header p { margin: 4px 0 0; font-size: 0.72rem; opacity: 0.86; }
+.teacher-register form { display: grid; gap: 12px; padding: 18px; }
+.teacher-register label { display: grid; gap: 5px; color: var(--color-text-muted); font-size: 0.72rem; font-weight: 700; }
+.teacher-register input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-surface); color: var(--color-text); font: inherit; }
+.teacher-register input:focus { border-color: var(--color-primary); outline: 2px solid rgba(44, 156, 104, 0.16); }
+.teacher-register__password { display: flex; gap: 6px; }
+.teacher-register__password input { min-width: 0; }
+.teacher-register__password button { display: grid; width: 38px; flex-shrink: 0; place-items: center; border: 1px solid var(--color-border); border-radius: 7px; background: transparent; color: var(--color-text-muted); }
+.teacher-register__submit { padding: 11px; border: 0; border-radius: 8px; background: var(--gradient-brand); color: #fff; font-weight: 800; cursor: pointer; }
+.teacher-register__submit:disabled { cursor: wait; opacity: 0.6; }
+.teacher-register__success { padding: 40px 18px; text-align: center; }
+.teacher-register__success mat-icon { color: var(--color-primary); font-size: 42px; width: 42px; height: 42px; }
+.teacher-register__success h2 { margin: 12px 0 4px; color: var(--color-text); font-size: 1rem; }
+.teacher-register__success p { margin: 0; color: var(--color-text-muted); font-size: 0.76rem; }

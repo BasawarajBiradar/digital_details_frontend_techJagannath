@@ -1,0 +1,57 @@
+<main class="teacher-dashboard">
+  @if (isLoading()) {
+    <div class="teacher-dashboard__state" aria-live="polite">Loading teacher dashboard...</div>
+  } @else if (teacher(); as profile) {
+    <section class="teacher-card" aria-labelledby="teacher-name">
+      <div class="teacher-card__band">
+        @if (profile.schoolLogoUrl) {
+          <img class="teacher-card__logo" [src]="profile.schoolLogoUrl" alt="School logo" />
+        }
+        <span>{{ profile.schoolName }}</span>
+      </div>
+      <div class="teacher-card__body">
+        <div class="teacher-card__photo">
+          @if (profile.photoUrl) {
+            <img [src]="profile.photoUrl" [alt]="profile.fullName" />
+          } @else {
+            <mat-icon aria-hidden="true">person</mat-icon>
+          }
+        </div>
+        <div class="teacher-card__details">
+          <h1 id="teacher-name">{{ profile.fullName }}</h1>
+          <p>{{ profile.designation ?? 'Teacher' }}{{ profile.department ? ' · ' + profile.department : '' }}</p>
+          <span>{{ profile.employeeId ?? profile.emailId }}</span>
+          <span>{{ profile.contactNumber }}</span>
+        </div>
+      </div>
+    </section>
+
+    @if (updateItems().length) {
+      <section class="teacher-updates" aria-labelledby="teacher-updates-title">
+        <div class="teacher-updates__heading">
+          <h2 id="teacher-updates-title">Today's updates</h2>
+          <mat-icon aria-hidden="true">today</mat-icon>
+        </div>
+        <div class="teacher-updates__grid">
+          @for (item of updateItems(); track item.label) {
+            @if (item.link; as link) {
+              <a class="teacher-update" [routerLink]="link">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </a>
+            } @else {
+              <article class="teacher-update">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </article>
+            }
+          }
+        </div>
+      </section>
+    }
+  } @else {
+    <div class="teacher-dashboard__state" role="alert">Could not load teacher information.</div>
+  }
+
+  <app-dashboard-footer role="teacher" />
+</main>

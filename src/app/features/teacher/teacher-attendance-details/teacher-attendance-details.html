@@ -1,0 +1,39 @@
+<main class="teacher-attendance">
+  <section class="teacher-attendance__filter" aria-labelledby="teacher-attendance-filter-title">
+    <span id="teacher-attendance-filter-title">Filter period</span>
+    <app-date-picker [compact]="true" [startDate]="fromDate()" (startDateChange)="onFromDateChanged($event)" [endDate]="toDate()" (endDateChange)="onToDateChanged($event)" />
+  </section>
+
+  <section class="teacher-attendance__summary" aria-labelledby="teacher-attendance-title">
+    <h1 id="teacher-attendance-title">Attendance overview</h1>
+    @if (loading()) {
+      <p aria-live="polite">Loading attendance...</p>
+    } @else if (error()) {
+      <div role="alert">Unable to load attendance. <button type="button" (click)="retry()">Retry</button></div>
+    } @else if (overview(); as data) {
+      <div class="teacher-attendance__stats">
+        <strong>{{ percentage() | number: '1.1-1' }}%</strong>
+        <span>{{ data.presentDays }} present · {{ data.absentDays }} absent · {{ data.lateDays ?? 0 }} late</span>
+      </div>
+    }
+
+    <div class="teacher-attendance__calendar-heading">
+      <h2>{{ monthLabel() }}</h2>
+      <div>
+        <button type="button" aria-label="Previous month" (click)="previousMonth()"><mat-icon>chevron_left</mat-icon></button>
+        <button type="button" aria-label="Next month" [disabled]="isCurrentMonth()" (click)="nextMonth()"><mat-icon>chevron_right</mat-icon></button>
+      </div>
+    </div>
+    <div class="teacher-attendance__weekdays" aria-hidden="true">
+      @for (weekday of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track weekday) { <span>{{ weekday }}</span> }
+    </div>
+    <div class="teacher-attendance__grid" aria-label="Teacher attendance calendar">
+      @for (cell of calendarCells(); track cell?.date ?? $index) {
+        @if (cell; as day) {
+          <div class="teacher-attendance__day" [class.teacher-attendance__day--present]="day.status === 'PRESENT'" [class.teacher-attendance__day--absent]="day.status === 'ABSENT'" [class.teacher-attendance__day--holiday]="day.status === 'HOLIDAY'" [attr.aria-label]="day.ariaLabel">{{ day.dayNumber }}</div>
+        } @else { <div class="teacher-attendance__day teacher-attendance__day--empty" aria-hidden="true"></div> }
+      }
+    </div>
+  </section>
+  <app-dashboard-footer role="teacher" />
+</main>

@@ -1,0 +1,56 @@
+.teacher-attendance {
+  display: flex;
+  width: min(100%, 760px);
+  min-height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 auto;
+  padding: clamp(16px, 4vw, 32px) clamp(16px, 4vw, 32px) 148px;
+  background: var(--color-background);
+}
+
+.teacher-attendance__filter {
+  display: flex;
+  height: 28px;
+  min-height: 28px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary-dark);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  app-date-picker { width: max-content; min-width: max-content; flex-shrink: 0; }
+}
+
+.teacher-attendance__summary { padding: 26px 2px 0; }
+.teacher-attendance__summary h1 { margin: 0 0 18px; color: var(--color-text); font-size: 1.05rem; }
+.teacher-attendance__summary p, .teacher-attendance__summary > div[role='alert'] { color: var(--color-text-muted); font-size: 0.76rem; }
+.teacher-attendance__summary button { border: 1px solid var(--color-primary); border-radius: 6px; background: transparent; color: var(--color-primary-dark); cursor: pointer; }
+.teacher-attendance__stats { display: flex; align-items: baseline; gap: 10px; margin-bottom: 24px; }
+.teacher-attendance__stats strong { color: var(--color-primary-dark); font-size: 1.7rem; }
+.teacher-attendance__stats span { color: var(--color-text-muted); font-size: 0.72rem; }
+
+.teacher-attendance__calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.teacher-attendance__calendar-heading h2 { margin: 0 0 12px; color: var(--color-text); font-size: 0.95rem; }
+.teacher-attendance__calendar-heading button { display: inline-grid; width: 30px; height: 30px; margin-left: 4px; place-items: center; }
+.teacher-attendance__calendar-heading mat-icon { width: 18px; height: 18px; font-size: 18px; }
+.teacher-attendance__weekdays, .teacher-attendance__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.teacher-attendance__weekdays { margin-bottom: 5px; }
+.teacher-attendance__weekdays span { color: var(--color-text-subtle); font-size: 0.6rem; font-weight: 800; text-align: center; }
+.teacher-attendance__day { display: grid; aspect-ratio: 1; place-items: center; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-surface-inset); color: var(--color-text); font-size: 0.7rem; font-weight: 800; }
+.teacher-attendance__day--empty { visibility: hidden; }
+.teacher-attendance__day--present { border-color: #2c9c68; background: #e2f5ea; color: #17643e; }
+.teacher-attendance__day--absent { border-color: #d94a56; background: #fde7e9; color: #922a34; }
+.teacher-attendance__day--holiday { border-color: #398dcc; background: #e4f1fb; color: #1e5f91; }
+
+@media (max-width: 520px) {
+  .teacher-attendance { padding-inline: 16px; }
+  .teacher-attendance__summary { padding-top: 22px; }
+  .teacher-attendance__weekdays, .teacher-attendance__grid { gap: 3px; }
+}

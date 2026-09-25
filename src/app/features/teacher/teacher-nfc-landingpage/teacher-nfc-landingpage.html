@@ -1,0 +1,26 @@
+<main class="teacher-landing">
+  @if (loading()) {
+    <div class="teacher-landing__state" aria-live="polite">Loading teacher profile...</div>
+  } @else if (error()) {
+    <div class="teacher-landing__state" role="alert">Unable to load this profile.</div>
+  } @else if (teacher(); as profile) {
+    <section class="teacher-landing__card" aria-labelledby="teacher-landing-name">
+      <div class="teacher-landing__band">
+        @if (profile.schoolLogoUrl) { <img [src]="profile.schoolLogoUrl" alt="School logo" /> }
+        <span>{{ profile.schoolName }}</span>
+      </div>
+      <div class="teacher-landing__body">
+        <div class="teacher-landing__photo">
+          @if (profile.photoUrl) { <img [src]="profile.photoUrl" [alt]="profile.fullName" /> }
+          @else { <mat-icon aria-hidden="true">person</mat-icon> }
+        </div>
+        <div>
+          <h1 id="teacher-landing-name">{{ profile.fullName }}</h1>
+          <p>{{ profile.designation ?? 'Teacher' }}</p>
+          <span>{{ profile.department ?? profile.emailId }}</span>
+          <span>{{ profile.contactNumber }}</span>
+        </div>
+      </div>
+    </section>
+  }
+</main>

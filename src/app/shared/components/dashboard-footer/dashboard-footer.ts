@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-type DashboardRole = 'student' | 'school-admin';
+type DashboardRole = 'student' | 'teacher' | 'school-admin';
 
 interface FooterOption {
   label: string;
@@ -21,14 +21,18 @@ export class DashboardFooter {
   readonly role = input<DashboardRole>('student');
 
   readonly options = computed<FooterOption[]>(() => {
-    const homeRoute = this.role() === 'student' ? '/student-dashboard' : '/school-admin-dashboard';
+    const homeRoute = this.role() === 'student'
+      ? '/student-dashboard'
+      : this.role() === 'teacher' ? '/teacher-dashboard' : '/school-admin-dashboard';
     const attendanceRoute = this.role() === 'student'
       ? '/student/attendance-details'
-      : '/school-admin/attendance-details';
-    const prefix = this.role() === 'student' ? '/student' : '/school-admin';
+      : this.role() === 'teacher' ? '/teacher/attendance-details' : '/school-admin/attendance-details';
+    const prefix = this.role() === 'student'
+      ? '/student'
+      : this.role() === 'teacher' ? '/teacher' : '/school-admin';
     const photosRoute = this.role() === 'student'
       ? '/student/tap-photos'
-      : `${prefix}/photos`;
+      : this.role() === 'teacher' ? '/teacher/tap-photos' : `${prefix}/photos`;
 
     return [
       { label: 'Home', icon: 'home', route: homeRoute },
