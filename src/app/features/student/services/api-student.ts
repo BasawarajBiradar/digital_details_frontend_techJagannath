@@ -252,4 +252,13 @@ export class ApiStudent {
       )
       .pipe(map(res => res.data));
   }
+
+  updateHomeworkStatus(status: number, homeworkId: number): Observable<{ isUpdated: boolean }> {
+    return this.http
+      .post<ApiResponse<{ isUpdated: boolean }>>(
+        `${this.base}/api/student/homework-page/update-status`,
+        { status, homeworkId },
+      )
+      .pipe(map(res => res.data));
+  }
 }

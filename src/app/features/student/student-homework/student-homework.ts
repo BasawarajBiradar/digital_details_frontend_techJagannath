@@ -20,6 +20,9 @@ export class StudentHomework {
   readonly tableLoading = signal(true);
   readonly tableError = signal(false);
   readonly selectedHomework = signal<StudentHomeworkRecord | null>(null);
+  readonly selectedStatus = signal<number | null>(null);
+  readonly statusUpdating = signal(false);
+  readonly statusError = signal(false);
 
   constructor() {
     this.fetchOverview();
@@ -33,10 +36,44 @@ export class StudentHomework {
 
   openDetails(homework: StudentHomeworkRecord): void {
     this.selectedHomework.set(homework);
+    this.selectedStatus.set(homework.status === 'UNDER REVIEW' ? 3 : 1);
+    this.statusError.set(false);
   }
 
   closeDetails(): void {
     this.selectedHomework.set(null);
+    this.selectedStatus.set(null);
+    this.statusError.set(false);
+  }
+
+  updateStatus(homework: StudentHomeworkRecord, event: Event): void {
+    const status = Number((event.target as HTMLSelectElement).value);
+    if (status === this.selectedStatus() || this.statusUpdating() || homework.status === 'COMPLETED') {
+      return;
+    }
+
+    this.selectedStatus.set(status);
+    this.statusUpdating.set(true);
+    this.statusError.set(false);
+    this.apiStudent.updateHomeworkStatus(status, homework.homeworkId).pipe(
+      catchError(() => {
+        this.statusError.set(true);
+        return of(null);
+      })
+    ).subscribe(result => {
+      this.statusUpdating.set(false);
+      if (!result?.isUpdated) {
+        this.statusError.set(true);
+        return;
+      }
+
+      this.fetchOverview();
+      this.fetchHomework();
+      this.selectedHomework.update(item => item ? {
+        ...item,
+        status: status === 3 ? 'UNDER REVIEW' : 'PENDING',
+      } : null);
+    });
   }
 
   formatDate(value: string): string {

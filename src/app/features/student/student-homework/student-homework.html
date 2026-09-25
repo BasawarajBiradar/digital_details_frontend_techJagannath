@@ -97,7 +97,8 @@
 
   <app-dashboard-footer role="student" />
 
-  @if (selectedHomework(); as item) {
+    @if (selectedHomework(); as item) {
+
     <div class="student-homework__modal-backdrop" role="presentation" (click)="closeDetails()">
       <div class="student-homework__modal" role="dialog" aria-modal="true" aria-labelledby="homework-details-title" (click)="$event.stopPropagation()">
         <div class="student-homework__modal-header">
@@ -110,7 +111,21 @@
           <div><dt>Homework ID</dt><dd>{{ item.homeworkId }}</dd></div>
           <div><dt>Assignment</dt><dd>{{ item.homeworkTitle }}</dd></div>
           <div><dt>Subject</dt><dd>{{ item.subjectName }}</dd></div>
-          <div><dt>Status</dt><dd>{{ item.status ?? '-' }}</dd></div>
+          <div>
+            <dt>Status</dt>
+            <dd>
+              @if (item.status === 'COMPLETED') {
+                {{ item.status }}
+              } @else {
+                <select [value]="selectedStatus()" [disabled]="statusUpdating()" (change)="updateStatus(item, $event)" aria-label="Homework status">
+                  <option value="1">PENDING</option>
+                  <option value="3">UNDER REVIEW</option>
+                </select>
+                @if (statusUpdating()) { <span>Updating...</span> }
+                @if (statusError()) { <span role="alert">Update failed.</span> }
+              }
+            </dd>
+          </div>
           <div><dt>Assigned date</dt><dd>{{ formatDate(item.dateOfAssignment) }}</dd></div>
           <div><dt>Deadline</dt><dd>{{ formatDate(item.deadlineDate) }}</dd></div>
           <div><dt>Description</dt><dd>{{ item.description ?? '-' }}</dd></div>
