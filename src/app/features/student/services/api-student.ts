@@ -105,6 +105,7 @@ export interface StudentHomeworkRecord {
   deadlineDate: string;
   status: string | null;
   subjectName: string;
+  description: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
