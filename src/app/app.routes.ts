@@ -5,6 +5,7 @@ import { SchoolAdminDashboard } from '@features/school-admin/school-admin-dashbo
 import { StudentDashboard } from '@features/student/student-dashboard/student-dashboard';
 import { StudentAttendanceDetailsComponent } from '@features/student/student-attendance-details/student-attendance-details';
 import { StudentTapPhotos } from '@features/student/student-tap-photos/student-tap-photos';
+import { StudentHomework } from '@features/student/student-homework/student-homework';
 import { TeacherDashboard } from '@features/teacher/teacher-dashboard/teacher-dashboard';
 import { TeacherAttendanceDetails } from '@features/teacher/teacher-attendance-details/teacher-attendance-details';
 import { TeacherTapPhotos } from '@features/teacher/teacher-tap-photos/teacher-tap-photos';
@@ -22,11 +23,13 @@ export const routes: Routes = [
   {path: 'student-dashboard', component: StudentDashboard},
   {path: 'student/attendance-details', component: StudentAttendanceDetailsComponent},
   {path: 'student/tap-photos', component: StudentTapPhotos},
+  {path: 'student/homework', component: StudentHomework},
   {path: 'teacher-dashboard', component: TeacherDashboard},
   {path: 'teacher/attendance-details', component: TeacherAttendanceDetails},
   {path: 'teacher/tap-photos', component: TeacherTapPhotos},
   {path: 'teacher/:uid', component: TeacherNfcLandingPage},
   {path: 'teacher-register/:uid', component: TeacherNfcRegisterPage},
+  {path: 'student/uid/:uid', component: StudentNfcLandingpage},
   {path: 'student/:uid', component: StudentNfcLandingpage},
   {path: 'register/:uid', component: StudentNfcRegisterPage}, 
   {path: 'nfc-scanner', component: NfcScanner},

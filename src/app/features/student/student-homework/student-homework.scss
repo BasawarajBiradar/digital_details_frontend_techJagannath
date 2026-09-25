@@ -1,0 +1,10 @@
+.student-homework {
+  display: flex;
+  width: min(100%, 760px);
+  min-height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  margin: 0 auto;
+  padding-bottom: 148px;
+  background: var(--color-background);
+}
