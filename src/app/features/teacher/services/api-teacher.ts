@@ -162,11 +162,17 @@ export class ApiTeacher {
       .pipe(map(response => response.data));
   }
 
-  addHomework(payload: AddTeacherHomeworkPayload): Observable<AddTeacherHomeworkResponse> {
+  addHomework(payload: AddTeacherHomeworkPayload, files: Blob[]): Observable<AddTeacherHomeworkResponse> {
+    const formData = new FormData();
+    Object.entries(payload).forEach(([key, value]) => formData.append(key, String(value)));
+    files.forEach((file, index) => {
+      formData.append('files', file, `homework-image-${index + 1}.jpg`);
+    });
+
     return this.http
       .post<ApiResponse<AddTeacherHomeworkResponse>>(
         `${this.base}/api/teacher/add/homework`,
-        payload,
+        formData,
       )
       .pipe(map(response => response.data));
   }

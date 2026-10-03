@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
+import { CropResult, ImageCropModal } from '../../../shared/components/image-crop-modal/image-crop-modal';
 import {
   ApiTeacher,
   AddTeacherHomeworkPayload,
@@ -12,12 +13,12 @@ import { DashboardFooter } from '../../../shared/components/dashboard-footer/das
 
 @Component({
   selector: 'app-teacher-homework',
-  imports: [MatIconModule, ReactiveFormsModule, DashboardFooter],
+  imports: [MatIconModule, ReactiveFormsModule, ImageCropModal, DashboardFooter],
   templateUrl: './teacher-homework.html',
   styleUrl: './teacher-homework.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeacherHomework {
+export class TeacherHomework implements OnDestroy {
   private readonly apiTeacher = inject(ApiTeacher);
   private readonly formBuilder = inject(FormBuilder);
   readonly classLevels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
@@ -35,6 +36,10 @@ export class TeacherHomework {
   readonly addHomeworkSaving = signal(false);
   readonly addHomeworkError = signal(false);
   readonly addHomeworkSuccess = signal('');
+  readonly cropFile = signal<File | null>(null);
+  readonly cropQueue = signal<File[]>([]);
+  readonly croppedImages = signal<Array<CropResult & { fileName: string }>>([]);
+  readonly imageSelectionError = signal('');
   readonly overview = signal<TeacherHomeworkOverview | null>(null);
   readonly overviewLoading = signal(true);
   readonly overviewError = signal(false);
@@ -48,6 +53,10 @@ export class TeacherHomework {
 
   constructor() {
     this.fetchOverview();
+  }
+
+  ngOnDestroy(): void {
+    this.croppedImages().forEach(image => URL.revokeObjectURL(image.objectUrl));
   }
 
   retryOverview(): void {
@@ -67,8 +76,46 @@ export class TeacherHomework {
     this.fetchReviewRequests();
   }
 
+  onHomeworkImagesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    this.imageSelectionError.set(imageFiles.length === files.length ? '' : 'Choose image files only.');
+    if (!imageFiles.length) return;
+
+    this.cropQueue.update(queue => [...queue, ...imageFiles]);
+    this.openNextCrop();
+  }
+
+  onHomeworkImageCropped(result: CropResult): void {
+    const file = this.cropFile();
+    if (!file) return;
+
+    const baseName = file.name.replace(/\.[^.]+$/, '') || 'homework-image';
+    this.croppedImages.update(images => [...images, { ...result, fileName: `${baseName}.jpg` }]);
+    this.cropQueue.update(queue => queue.slice(1));
+    this.cropFile.set(null);
+    this.openNextCrop();
+  }
+
+  onHomeworkImageCropCancelled(): void {
+    this.cropQueue.update(queue => queue.slice(1));
+    this.cropFile.set(null);
+    this.openNextCrop();
+  }
+
+  removeHomeworkImage(index: number): void {
+    this.croppedImages.update(images => {
+      const image = images[index];
+      if (image) URL.revokeObjectURL(image.objectUrl);
+      return images.filter((_, imageIndex) => imageIndex !== index);
+    });
+  }
+
   submitHomework(): void {
-    if (this.addHomeworkSaving()) return;
+    if (this.addHomeworkSaving() || this.cropFile() || this.cropQueue().length) return;
     if (this.addHomeworkForm.invalid) {
       this.addHomeworkForm.markAllAsTouched();
       return;
@@ -87,7 +134,7 @@ export class TeacherHomework {
     this.addHomeworkSaving.set(true);
     this.addHomeworkError.set(false);
     this.addHomeworkSuccess.set('');
-    this.apiTeacher.addHomework(payload).pipe(
+    this.apiTeacher.addHomework(payload, this.croppedImages().map(image => image.blob)).pipe(
       catchError(() => of(null)),
     ).subscribe(result => {
       this.addHomeworkSaving.set(false);
@@ -97,6 +144,8 @@ export class TeacherHomework {
       }
 
       this.addHomeworkSuccess.set(`Homework "${result.savedHomeworkTitle}" added.`);
+      this.clearHomeworkImages();
+      this.imageSelectionError.set('');
       this.addHomeworkForm.reset({
         subjectMasterId: this.subjects[0].id,
         deadlineDate: '',
@@ -145,6 +194,17 @@ export class TeacherHomework {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  private openNextCrop(): void {
+    if (this.cropFile()) return;
+    const nextFile = this.cropQueue()[0];
+    if (nextFile) this.cropFile.set(nextFile);
+  }
+
+  private clearHomeworkImages(): void {
+    this.croppedImages().forEach(image => URL.revokeObjectURL(image.objectUrl));
+    this.croppedImages.set([]);
   }
 
   private fetchOverview(): void {

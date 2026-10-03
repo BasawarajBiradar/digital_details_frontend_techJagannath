@@ -98,10 +98,35 @@
           <small role="alert">Enter homework instructions.</small>
         }
       </label>
-      <div class="teacher-homework__form-footer">
-        <button class="teacher-homework__update-button" type="submit" [disabled]="addHomeworkSaving()">
+      <div class="teacher-homework__form-actions teacher-homework__field--wide">
+        <div class="teacher-homework__images">
+          <span class="teacher-homework__images-label">Images</span>
+          <label class="teacher-homework__image-picker" [class.teacher-homework__image-picker--disabled]="addHomeworkSaving()">
+            <mat-icon aria-hidden="true">add_photo_alternate</mat-icon>
+            <span>Add images</span>
+            <input type="file" accept="image/*" multiple [disabled]="addHomeworkSaving()" (change)="onHomeworkImagesSelected($event)" />
+          </label>
+        </div>
+        <button class="teacher-homework__update-button" type="submit" [disabled]="addHomeworkSaving() || cropFile() !== null || cropQueue().length > 0">
           @if (addHomeworkSaving()) { Adding... } @else { Add homework }
         </button>
+      </div>
+      @if (imageSelectionError()) {
+        <small class="teacher-homework__image-error teacher-homework__field--wide" role="alert">{{ imageSelectionError() }}</small>
+      }
+      @if (croppedImages().length) {
+        <div class="teacher-homework__image-list teacher-homework__field--wide">
+          @for (image of croppedImages(); track image.objectUrl; let index = $index) {
+            <div class="teacher-homework__image-preview">
+              <img [src]="image.objectUrl" [alt]="image.fileName" />
+              <button type="button" [attr.aria-label]="'Remove ' + image.fileName" (click)="removeHomeworkImage(index)">
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+      <div class="teacher-homework__form-footer">
         @if (addHomeworkSuccess()) {
           <span class="teacher-homework__form-success" role="status">{{ addHomeworkSuccess() }}</span>
         }
@@ -111,6 +136,16 @@
       </div>
     </form>
   </section>
+
+  @if (cropFile(); as file) {
+    @for (activeFile of [file]; track activeFile) {
+      <app-image-crop-modal
+        [file]="activeFile"
+        [cropShape]="'square'"
+        (cropped)="onHomeworkImageCropped($event)"
+        (cancelled)="onHomeworkImageCropCancelled()" />
+    }
+  }
 
   @if (detailsVisible()) {
     <div class="teacher-homework__modal-backdrop" role="presentation" (click)="closeReviewRequests()" (keydown.escape)="closeReviewRequests()">
