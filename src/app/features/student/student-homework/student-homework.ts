@@ -22,6 +22,7 @@ export class StudentHomework {
   readonly selectedHomework = signal<StudentHomeworkRecord | null>(null);
   readonly imageGallery = signal<StudentHomeworkImage[]>([]);
   readonly imageGalleryIndex = signal(0);
+  readonly galleryZoom = signal(1);
   readonly activeGalleryImage = computed(() => this.imageGallery()[this.imageGalleryIndex()] ?? null);
   readonly selectedStatus = signal<number | null>(null);
   readonly statusUpdating = signal(false);
@@ -52,19 +53,35 @@ export class StudentHomework {
   openImageGallery(images: StudentHomeworkImage[]): void {
     this.imageGallery.set([...images].sort((first, second) => first.srNo - second.srNo));
     this.imageGalleryIndex.set(0);
+    this.galleryZoom.set(1);
   }
 
   closeImageGallery(): void {
     this.imageGallery.set([]);
     this.imageGalleryIndex.set(0);
+    this.galleryZoom.set(1);
   }
 
   previousImage(): void {
     this.imageGalleryIndex.update(index => Math.max(0, index - 1));
+    this.galleryZoom.set(1);
   }
 
   nextImage(): void {
     this.imageGalleryIndex.update(index => Math.min(this.imageGallery().length - 1, index + 1));
+    this.galleryZoom.set(1);
+  }
+
+  zoomOut(): void {
+    this.galleryZoom.update(zoom => Math.max(1, zoom - 0.25));
+  }
+
+  resetGalleryZoom(): void {
+    this.galleryZoom.set(1);
+  }
+
+  zoomIn(): void {
+    this.galleryZoom.update(zoom => Math.min(3, zoom + 0.25));
   }
 
   updateStatus(homework: StudentHomeworkRecord, event: Event): void {
