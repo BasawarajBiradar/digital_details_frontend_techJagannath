@@ -56,6 +56,7 @@
             <col class="student-homework__column student-homework__column--date" />
             <col class="student-homework__column student-homework__column--date" />
             <col class="student-homework__column student-homework__column--status" />
+            <col class="student-homework__column student-homework__column--images" />
             <col class="student-homework__column student-homework__column--details" />
           </colgroup>
           <thead>
@@ -65,6 +66,7 @@
               <th scope="col">Assigned</th>
               <th scope="col">Deadline</th>
               <th scope="col">Status</th>
+              <th scope="col">Images</th>
               <th scope="col">Details</th>
             </tr>
           </thead>
@@ -79,6 +81,16 @@
                   <span class="student-homework__status" [class.student-homework__status--completed]="item.status === 'COMPLETED'" [class.student-homework__status--pending]="item.status === 'PENDING'">
                     {{ item.status ?? '-' }}
                   </span>
+                </td>
+                <td data-label="Images">
+                  @if (item.images.length) {
+                    <button class="student-homework__image-view-button" type="button" (click)="openImageGallery(item.images)" [attr.aria-label]="'View ' + item.images.length + ' homework images'">
+                      <mat-icon aria-hidden="true">photo_library</mat-icon>
+                      <span>View images</span>
+                    </button>
+                  } @else {
+                    <span aria-label="No images">-</span>
+                  }
                 </td>
                 <td data-label="Details">
                   <button class="student-homework__details-button" type="button" (click)="openDetails(item)">
@@ -131,6 +143,41 @@
           <div><dt>Description</dt><dd>{{ item.description ?? '-' }}</dd></div>
         </dl>
       </div>
+    </div>
+  }
+
+  @if (activeGalleryImage(); as image) {
+    <div class="student-homework__gallery-backdrop" role="presentation" (click)="closeImageGallery()">
+      <section
+        class="student-homework__gallery"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="homework-gallery-title"
+        (click)="$event.stopPropagation()"
+        (keydown.escape)="closeImageGallery()">
+        <header class="student-homework__gallery-header">
+          <div>
+            <h2 id="homework-gallery-title">Homework images</h2>
+            <span aria-live="polite">Image {{ image.srNo }} of {{ imageGallery().length }}</span>
+          </div>
+          <button type="button" aria-label="Close image viewer" (click)="closeImageGallery()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </header>
+        <div class="student-homework__gallery-stage">
+          <img [src]="image.fileUrl" [alt]="'Homework image ' + image.srNo" />
+        </div>
+        <nav class="student-homework__gallery-controls" aria-label="Image navigation">
+          <button type="button" aria-label="Previous image" [disabled]="imageGalleryIndex() === 0" (click)="previousImage()">
+            <mat-icon aria-hidden="true">chevron_left</mat-icon>
+            <span>Previous</span>
+          </button>
+          <button type="button" aria-label="Next image" [disabled]="imageGalleryIndex() >= imageGallery().length - 1" (click)="nextImage()">
+            <span>Next</span>
+            <mat-icon aria-hidden="true">chevron_right</mat-icon>
+          </button>
+        </nav>
+      </section>
     </div>
   }
 </main>

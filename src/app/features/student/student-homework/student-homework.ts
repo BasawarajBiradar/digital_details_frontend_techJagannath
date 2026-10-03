@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
-import { ApiStudent, StudentHomeworkOverview, StudentHomeworkRecord } from '../services/api-student';
+import { ApiStudent, StudentHomeworkImage, StudentHomeworkOverview, StudentHomeworkRecord } from '../services/api-student';
 import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 
 @Component({
@@ -20,6 +20,9 @@ export class StudentHomework {
   readonly tableLoading = signal(true);
   readonly tableError = signal(false);
   readonly selectedHomework = signal<StudentHomeworkRecord | null>(null);
+  readonly imageGallery = signal<StudentHomeworkImage[]>([]);
+  readonly imageGalleryIndex = signal(0);
+  readonly activeGalleryImage = computed(() => this.imageGallery()[this.imageGalleryIndex()] ?? null);
   readonly selectedStatus = signal<number | null>(null);
   readonly statusUpdating = signal(false);
   readonly statusError = signal(false);
@@ -44,6 +47,24 @@ export class StudentHomework {
     this.selectedHomework.set(null);
     this.selectedStatus.set(null);
     this.statusError.set(false);
+  }
+
+  openImageGallery(images: StudentHomeworkImage[]): void {
+    this.imageGallery.set([...images].sort((first, second) => first.srNo - second.srNo));
+    this.imageGalleryIndex.set(0);
+  }
+
+  closeImageGallery(): void {
+    this.imageGallery.set([]);
+    this.imageGalleryIndex.set(0);
+  }
+
+  previousImage(): void {
+    this.imageGalleryIndex.update(index => Math.max(0, index - 1));
+  }
+
+  nextImage(): void {
+    this.imageGalleryIndex.update(index => Math.min(this.imageGallery().length - 1, index + 1));
   }
 
   updateStatus(homework: StudentHomeworkRecord, event: Event): void {

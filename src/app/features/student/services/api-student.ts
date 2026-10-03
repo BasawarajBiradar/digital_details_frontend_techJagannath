@@ -98,6 +98,12 @@ export interface StudentHomeworkOverview {
   completedHomework: number | null;
 }
 
+export interface StudentHomeworkImage {
+  srNo: number;
+  fileUrl: string;
+  fileName: string;
+}
+
 export interface StudentHomeworkRecord {
   homeworkId: number;
   homeworkTitle: string;
@@ -106,6 +112,7 @@ export interface StudentHomeworkRecord {
   status: string | null;
   subjectName: string;
   description: string | null;
+  images: StudentHomeworkImage[];
 }
 
 @Injectable({ providedIn: 'root' })
