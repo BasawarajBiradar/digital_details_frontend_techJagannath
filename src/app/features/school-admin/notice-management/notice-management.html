@@ -1,0 +1,58 @@
+<main class="notice-management">
+  <section class="notice-management__card">
+    <div class="notice-management__header">
+      <div>
+        <p class="notice-management__eyebrow">School admin</p>
+        <h1>Create notice</h1>
+      </div>
+    </div>
+
+    <form class="notice-management__form" [formGroup]="noticeForm" (ngSubmit)="submitNotice()" novalidate>
+      <label class="notice-management__field">
+        <span>Notice title</span>
+        <input formControlName="noticeTitle" type="text" placeholder="Pending Fees" maxlength="120" />
+        @if (noticeForm.controls.noticeTitle.touched && noticeForm.controls.noticeTitle.invalid) {
+          <small>Enter a valid notice title.</small>
+        }
+      </label>
+
+      <label class="notice-management__field notice-management__field--wide">
+        <span>Notice description</span>
+        <textarea
+          formControlName="noticeDescription"
+          rows="5"
+          placeholder="Please pay your fees before 31 Dec 2026"
+          maxlength="500"></textarea>
+        @if (noticeForm.controls.noticeDescription.touched && noticeForm.controls.noticeDescription.invalid) {
+          <small>Enter a detailed notice description.</small>
+        }
+      </label>
+
+      <label class="notice-management__field">
+        <span>Class level (optional)</span>
+        <input formControlName="classLevel" type="number" min="1" step="1" placeholder="e.g. 12" />
+        @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
+          <small>Class level must be 1 or greater.</small>
+        }
+      </label>
+
+      <div class="notice-management__actions">
+        <button type="submit" class="notice-management__submit" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span>Creating...</span>
+          } @else {
+            <span>Create notice</span>
+          }
+        </button>
+      </div>
+
+      @if (submitSuccess()) {
+        <p class="notice-management__status notice-management__status--success" role="status">{{ submitSuccess() }}</p>
+      }
+
+      @if (submitError()) {
+        <p class="notice-management__status notice-management__status--error" role="alert">{{ submitError() }}</p>
+      }
+    </form>
+  </section>
+</main>

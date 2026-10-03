@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '@features/login/login';
 import { AttendenceDetailsPage } from '@features/school-admin/attendence-details-page/attendence-details-page';
+import { NoticeManagement } from '@features/school-admin/notice-management/notice-management';
 import { SchoolAdminDashboard } from '@features/school-admin/school-admin-dashboard/school-admin-dashboard';
 import { StudentDashboard } from '@features/student/student-dashboard/student-dashboard';
 import { StudentAttendanceDetailsComponent } from '@features/student/student-attendance-details/student-attendance-details';
@@ -36,6 +37,7 @@ export const routes: Routes = [
   {path: 'register/:uid', component: StudentNfcRegisterPage}, 
   {path: 'nfc-scanner', component: NfcScanner},
   { path: 'school-admin-dashboard', component: SchoolAdminDashboard},
+  { path: 'school-admin/notice', component: NoticeManagement },
   {path: 'tapaxe-admin-dashboard', component: TapaxeAdminDashboard},
   {path: 'school-admin/attendance-details', component: AttendenceDetailsPage}
 ];

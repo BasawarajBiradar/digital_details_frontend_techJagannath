@@ -55,12 +55,24 @@ export class DashboardFooter {
     };
     const roleRoutes = routes[this.role()];
 
-    return [
+    const isSchoolAdmin = this.role() === 'school-admin';
+    const baseItems: FooterOption[] = [
       { label: 'Home', icon: 'home', route: roleRoutes.home },
       { label: 'Attendance', icon: 'event_available', route: roleRoutes.attendance },
       { label: 'Photos', icon: 'photo_library', route: roleRoutes.photos },
-      { label: 'Homework', icon: 'assignment', route: roleRoutes.homework },
-      { label: 'Notice', icon: 'campaign', route: roleRoutes.notice, disabled: true },
     ];
+
+    if (!isSchoolAdmin) {
+      baseItems.push({ label: 'Homework', icon: 'assignment', route: roleRoutes.homework });
+    }
+
+    baseItems.push({
+      label: 'Notice',
+      icon: 'campaign',
+      route: roleRoutes.notice,
+      disabled: !isSchoolAdmin,
+    });
+
+    return baseItems;
   });
 }

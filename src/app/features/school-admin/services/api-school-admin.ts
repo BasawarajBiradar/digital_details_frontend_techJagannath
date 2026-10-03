@@ -57,6 +57,16 @@ export interface StudentsResponse {
   timestamp: string;
 }
 
+export interface SchoolNoticePayload {
+  noticeTitle: string;
+  noticeDescription: string;
+  classLevel?: number | null;
+}
+
+export interface SchoolNoticeResponse {
+  isCreated: boolean;
+}
+
   export interface SchoolLogoResponse {
     success: boolean;
     message: string;
@@ -139,6 +149,16 @@ export class ApiSchoolAdmin {
         .post<ApiResponse<StudentAttendanceHistoryRecord[]>>(`${this.base}/api/school-admin/retrieve/attendance-details`, {
           ...filter,
         });
+  }
+
+  createNotice(payload: SchoolNoticePayload): Observable<ApiResponse<SchoolNoticeResponse>> {
+    return this.http.post<ApiResponse<SchoolNoticeResponse>>(
+      `${this.base}/api/school-admin/notice/create_notice`,
+      {
+        ...payload,
+        classLevel: payload.classLevel ?? null,
+      },
+    );
   }
 
 }
