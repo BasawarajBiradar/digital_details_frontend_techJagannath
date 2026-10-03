@@ -9,6 +9,7 @@ import { StudentHomework } from '@features/student/student-homework/student-home
 import { TeacherDashboard } from '@features/teacher/teacher-dashboard/teacher-dashboard';
 import { TeacherAttendanceDetails } from '@features/teacher/teacher-attendance-details/teacher-attendance-details';
 import { TeacherTapPhotos } from '@features/teacher/teacher-tap-photos/teacher-tap-photos';
+import { TeacherHomework } from '@features/teacher/teacher-homework/teacher-homework';
 import { TeacherNfcLandingPage } from '@features/teacher/teacher-nfc-landingpage/teacher-nfc-landingpage';
 import { TeacherNfcRegisterPage } from '@features/teacher/teacher-nfc-register-page/teacher-nfc-register-page';
 import { StudentNfcLandingpage } from '@features/student/student-nfc-landingpage/student-nfc-landingpage';
@@ -27,6 +28,7 @@ export const routes: Routes = [
   {path: 'teacher-dashboard', component: TeacherDashboard},
   {path: 'teacher/attendance-details', component: TeacherAttendanceDetails},
   {path: 'teacher/tap-photos', component: TeacherTapPhotos},
+  {path: 'teacher/homework', component: TeacherHomework},
   {path: 'teacher/:uid', component: TeacherNfcLandingPage},
   {path: 'teacher-register/:uid', component: TeacherNfcRegisterPage},
   {path: 'student/uid/:uid', component: StudentNfcLandingpage},

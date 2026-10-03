@@ -1,0 +1,199 @@
+<main class="teacher-homework">
+  <section class="teacher-homework__summary" aria-labelledby="teacher-homework-title">
+    <div class="teacher-homework__heading">
+      <div>
+        <span class="teacher-homework__kicker">Teacher workspace</span>
+        <h1 id="teacher-homework-title">Homework</h1>
+      </div>
+      <mat-icon aria-hidden="true">assignment</mat-icon>
+    </div>
+
+    @if (overviewLoading()) {
+      <div class="teacher-homework__state" aria-live="polite">
+        <span class="teacher-homework__spinner" aria-hidden="true"></span>
+        Loading homework summary...
+      </div>
+    } @else if (overviewError()) {
+      <div class="teacher-homework__state teacher-homework__state--error" role="alert">
+        <span>Unable to load homework summary.</span>
+        <button type="button" (click)="retryOverview()">Retry</button>
+      </div>
+    } @else if (overview(); as data) {
+      <div class="teacher-homework__cards">
+        <article class="teacher-homework__card teacher-homework__card--monthly">
+          <mat-icon aria-hidden="true">calendar_month</mat-icon>
+          <span>Assigned this month</span>
+          <strong>{{ data.countThisMonth }}</strong>
+        </article>
+        <button
+          class="teacher-homework__card teacher-homework__card--reviews"
+          type="button"
+          [class.teacher-homework__card--selected]="detailsVisible()"
+          [attr.aria-expanded]="detailsVisible()"
+          aria-controls="review-request-details"
+          (click)="openReviewRequests()">
+          <mat-icon aria-hidden="true">rate_review</mat-icon>
+          <span>Review requests</span>
+          <strong>{{ data.reviewRequest }}</strong>
+        </button>
+      </div>
+    }
+  </section>
+
+  <section class="teacher-homework__add-section" aria-labelledby="add-homework-title">
+    <div class="teacher-homework__table-heading">
+      <h2 id="add-homework-title">Add homework</h2>
+    </div>
+    <form class="teacher-homework__form" [formGroup]="addHomeworkForm" (ngSubmit)="submitHomework()" novalidate>
+      <label class="teacher-homework__field">
+        <span>Subject</span>
+        <select formControlName="subjectMasterId">
+          @for (subject of subjects; track subject.id) {
+            <option [value]="subject.id">{{ subject.name }}</option>
+          }
+        </select>
+      </label>
+      <label class="teacher-homework__field">
+        <span>Class</span>
+        <select formControlName="classLevel" required>
+          <option value="" disabled>Select class</option>
+          @for (classLevel of classLevels; track classLevel) {
+            <option [value]="classLevel">Class {{ classLevel }}</option>
+          }
+        </select>
+        @if (addHomeworkForm.controls.classLevel.touched && addHomeworkForm.controls.classLevel.invalid) {
+          <small role="alert">Select a class.</small>
+        }
+      </label>
+      <label class="teacher-homework__field">
+        <span>Division</span>
+        <select formControlName="division" required>
+          <option value="" disabled>Select division</option>
+          @for (division of divisions; track division) {
+            <option [value]="division">{{ division }}</option>
+          }
+        </select>
+        @if (addHomeworkForm.controls.division.touched && addHomeworkForm.controls.division.invalid) {
+          <small role="alert">Select a division.</small>
+        }
+      </label>
+      <label class="teacher-homework__field">
+        <span>Deadline</span>
+        <input formControlName="deadlineDate" type="date" [min]="minimumDeadlineDate" required />
+        @if (addHomeworkForm.controls.deadlineDate.touched && addHomeworkForm.controls.deadlineDate.invalid) {
+          <small role="alert">Choose a deadline.</small>
+        }
+      </label>
+      <label class="teacher-homework__field teacher-homework__field--wide">
+        <span>Homework title</span>
+        <input formControlName="homeworkTitle" type="text" maxlength="120" placeholder="Enter homework title" required />
+        @if (addHomeworkForm.controls.homeworkTitle.touched && addHomeworkForm.controls.homeworkTitle.invalid) {
+          <small role="alert">Enter a title (up to 120 characters).</small>
+        }
+      </label>
+      <label class="teacher-homework__field teacher-homework__field--wide">
+        <span>Description</span>
+        <textarea formControlName="description" rows="3" placeholder="Add instructions for students" required></textarea>
+        @if (addHomeworkForm.controls.description.touched && addHomeworkForm.controls.description.invalid) {
+          <small role="alert">Enter homework instructions.</small>
+        }
+      </label>
+      <div class="teacher-homework__form-footer">
+        <button class="teacher-homework__update-button" type="submit" [disabled]="addHomeworkSaving()">
+          @if (addHomeworkSaving()) { Adding... } @else { Add homework }
+        </button>
+        @if (addHomeworkSuccess()) {
+          <span class="teacher-homework__form-success" role="status">{{ addHomeworkSuccess() }}</span>
+        }
+        @if (addHomeworkError()) {
+          <span class="teacher-homework__update-error" role="alert">Unable to add homework. Try again.</span>
+        }
+      </div>
+    </form>
+  </section>
+
+  @if (detailsVisible()) {
+    <div class="teacher-homework__modal-backdrop" role="presentation" (click)="closeReviewRequests()" (keydown.escape)="closeReviewRequests()">
+      <div class="teacher-homework__modal" role="dialog" aria-modal="true" aria-labelledby="review-request-title" tabindex="-1" (click)="$event.stopPropagation()">
+        <section class="teacher-homework__table-section" id="review-request-details">
+          <div class="teacher-homework__table-heading">
+            <h2 id="review-request-title">Review request details</h2>
+            <div class="teacher-homework__modal-actions">
+              <span>{{ reviewRequests().length }} requests</span>
+              <button class="teacher-homework__modal-close" type="button" aria-label="Close review requests" autofocus (click)="closeReviewRequests()">
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            </div>
+          </div>
+          @if (detailsLoading()) {
+            <div class="teacher-homework__table-state" aria-live="polite">Loading review requests...</div>
+          } @else if (detailsError()) {
+            <div class="teacher-homework__table-state teacher-homework__table-state--error" role="alert">
+              <span>Unable to load review requests.</span>
+              <button type="button" (click)="retryReviewRequests()">Retry</button>
+            </div>
+          } @else if (reviewRequests().length === 0) {
+            <div class="teacher-homework__table-state">No review requests found.</div>
+          } @else {
+            <div class="teacher-homework__table-wrap">
+              <table class="teacher-homework__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Student</th>
+                    <th scope="col">Homework</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Assigned</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">Update status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (request of reviewRequests(); track request.reviewRequestId) {
+                    <tr>
+                      <td data-label="Student">{{ request.studentName }}</td>
+                      <td data-label="Homework">
+                        <strong>{{ request.homeworkTitle }}</strong>
+                        <span class="teacher-homework__description">{{ request.homeworkDetails }}</span>
+                      </td>
+                      <td data-label="Class">{{ request.classLevel }}{{ request.division ? ' - ' + request.division : '' }}</td>
+                      <td data-label="Assigned">{{ formatDate(request.homeworkAssignedDate) }}</td>
+                      <td data-label="Deadline">{{ formatDate(request.homeworkDeadlineDate) }}</td>
+                      <td data-label="Update status">
+                        <div class="teacher-homework__actions">
+                          <select
+                            [value]="selectedStatuses()[request.reviewRequestId]"
+                            [disabled]="statusUpdating() !== null"
+                            [attr.aria-label]="'Status for ' + request.homeworkTitle"
+                            (change)="setStatus(request.reviewRequestId, $event)">
+                            <option value="2">COMPLETED</option>
+                            <option value="3">UNDER REVIEW</option>
+                          </select>
+                          <button
+                            class="teacher-homework__update-button"
+                            type="button"
+                            [disabled]="statusUpdating() !== null"
+                            (click)="updateStatus(request)">
+                            @if (statusUpdating() === request.reviewRequestId) {
+                              Updating...
+                            } @else {
+                              Update status
+                            }
+                          </button>
+                        </div>
+                        @if (statusError() === request.reviewRequestId) {
+                          <span class="teacher-homework__update-error" role="alert">Status update failed. Try again.</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      </div>
+    </div>
+  }
+
+  <app-dashboard-footer role="teacher" />
+</main>

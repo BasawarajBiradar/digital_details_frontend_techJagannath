@@ -49,6 +49,35 @@ export interface TeacherTapPhotoRecord {
   photoUrl: string | null;
 }
 
+export interface TeacherHomeworkOverview {
+  countThisMonth: number;
+  reviewRequest: number;
+}
+
+export interface TeacherReviewRequest {
+  reviewRequestId: number;
+  studentName: string;
+  homeworkTitle: string;
+  homeworkDetails: string;
+  homeworkAssignedDate: string;
+  homeworkDeadlineDate: string;
+  classLevel: string;
+  division: string;
+}
+
+export interface AddTeacherHomeworkPayload {
+  subjectMasterId: number;
+  deadlineDate: string;
+  classLevel: number;
+  division: string;
+  homeworkTitle: string;
+  description: string;
+}
+
+export interface AddTeacherHomeworkResponse {
+  savedHomeworkTitle: string;
+}
+
 export interface TeacherSchool {
   id: number;
   name: string;
@@ -113,6 +142,40 @@ export class ApiTeacher {
       .post<ApiResponse<TeacherTapPhotoRecord[]>>(
         `${this.base}/api/teacher/tap-photo-page/overview`,
         { fromDate, toDate },
+      )
+      .pipe(map(response => response.data));
+  }
+
+  getHomeworkOverview(): Observable<TeacherHomeworkOverview> {
+    return this.http
+      .get<ApiResponse<TeacherHomeworkOverview>>(
+        `${this.base}/api/teacher/homework/overview_cards`,
+      )
+      .pipe(map(response => response.data));
+  }
+
+  getHomeworkReviewRequests(): Observable<TeacherReviewRequest[]> {
+    return this.http
+      .get<ApiResponse<TeacherReviewRequest[]>>(
+        `${this.base}/api/teacher/homework/review_request/details`,
+      )
+      .pipe(map(response => response.data));
+  }
+
+  addHomework(payload: AddTeacherHomeworkPayload): Observable<AddTeacherHomeworkResponse> {
+    return this.http
+      .post<ApiResponse<AddTeacherHomeworkResponse>>(
+        `${this.base}/api/teacher/add/homework`,
+        payload,
+      )
+      .pipe(map(response => response.data));
+  }
+
+  updateHomeworkReviewStatus(reviewRequestId: number, statusId: number): Observable<{ responseStatus: boolean }> {
+    return this.http
+      .post<ApiResponse<{ responseStatus: boolean }>>(
+        `${this.base}/api/teacher/homework/review_request/update_status`,
+        { reviewRequestId, statusId },
       )
       .pipe(map(response => response.data));
   }

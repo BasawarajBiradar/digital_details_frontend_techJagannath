@@ -47,9 +47,9 @@ export class TeacherDashboard {
     return [
       { label: 'Attendance', value: data.attendanceStatus ?? '-' },
       { label: 'Entry time', value: data.entryTime ?? '-' },
-      { label: 'Photo taps', value: data.tapPhotoCount ?? 0, link: '/teacher/tap-photos' },
+      { label: 'Photo taps', value: data.tapPhotoCount ?? 0, icon: 'photo_camera', link: '/teacher/tap-photos' },
       { label: 'Notices', value: data.noticeCount ?? 0 },
-      { label: 'Pending tasks', value: data.pendingTaskCount ?? 0 },
+      { label: 'Pending tasks', value: data.pendingTaskCount ?? 0, icon: 'assignment', link: '/teacher/homework' },
     ];
   });
 
