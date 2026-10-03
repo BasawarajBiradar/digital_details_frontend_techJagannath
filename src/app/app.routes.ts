@@ -7,6 +7,7 @@ import { StudentDashboard } from '@features/student/student-dashboard/student-da
 import { StudentAttendanceDetailsComponent } from '@features/student/student-attendance-details/student-attendance-details';
 import { StudentTapPhotos } from '@features/student/student-tap-photos/student-tap-photos';
 import { StudentHomework } from '@features/student/student-homework/student-homework';
+import { StudentNotice } from '@features/student/student-notice/student-notice';
 import { TeacherDashboard } from '@features/teacher/teacher-dashboard/teacher-dashboard';
 import { TeacherAttendanceDetails } from '@features/teacher/teacher-attendance-details/teacher-attendance-details';
 import { TeacherTapPhotos } from '@features/teacher/teacher-tap-photos/teacher-tap-photos';
@@ -26,6 +27,7 @@ export const routes: Routes = [
   {path: 'student/attendance-details', component: StudentAttendanceDetailsComponent},
   {path: 'student/tap-photos', component: StudentTapPhotos},
   {path: 'student/homework', component: StudentHomework},
+  {path: 'student/notice', component: StudentNotice},
   {path: 'teacher-dashboard', component: TeacherDashboard},
   {path: 'teacher/attendance-details', component: TeacherAttendanceDetails},
   {path: 'teacher/tap-photos', component: TeacherTapPhotos},

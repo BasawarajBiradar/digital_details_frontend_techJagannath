@@ -1,0 +1,78 @@
+<main class="student-notice">
+  <section class="student-notice__header">
+    <div>
+      <p class="student-notice__eyebrow">Student workspace</p>
+      <h1>Notices</h1>
+    </div>
+  </section>
+
+  <section class="student-notice__table-section surface-card" aria-labelledby="student-notice-table-title">
+    <h2 id="student-notice-table-title">Notice list</h2>
+
+    @if (loading()) {
+      <div class="student-notice__state" aria-live="polite">Loading notices...</div>
+    } @else if (error()) {
+      <div class="student-notice__state student-notice__state--error" role="alert">{{ error() }}</div>
+    } @else if (tableRows().length === 0) {
+      <div class="student-notice__state">No notices found.</div>
+    } @else {
+      <div class="student-notice__table-wrap">
+        <table class="student-notice__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Announcement date</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of tableRows(); track row.noticeTitle + row.announcementDate; let rowIndex = $index) {
+              <tr>
+                <td data-label="#">{{ row.index }}</td>
+                <td data-label="Title">{{ row.noticeTitle }}</td>
+                <td data-label="Announcement date">{{ row.announcementDate }}</td>
+                <td data-label="Details">
+                  <button class="student-notice__details-button" type="button" (click)="openDetails(notices()[rowIndex])">
+                    <mat-icon aria-hidden="true">visibility</mat-icon>
+                    Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <app-dashboard-footer role="student" />
+
+  @if (selectedNotice(); as notice) {
+    <div class="student-notice__modal-backdrop" role="presentation" (click)="closeDetails()">
+      <div class="student-notice__modal" role="dialog" aria-modal="true" aria-labelledby="notice-details-title" (click)="$event.stopPropagation()">
+        <div class="student-notice__modal-header">
+          <h2 id="notice-details-title">Notice details</h2>
+          <button type="button" aria-label="Close notice details" (click)="closeDetails()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+
+        <dl class="student-notice__details-list">
+          <div>
+            <dt>Title</dt>
+            <dd>{{ notice.noticeTitle }}</dd>
+          </div>
+          <div>
+            <dt>Announcement date</dt>
+            <dd>{{ notice.announcementDate }}</dd>
+          </div>
+          <div>
+            <dt>Description</dt>
+            <dd>{{ notice.noticeDetail }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  }
+</main>

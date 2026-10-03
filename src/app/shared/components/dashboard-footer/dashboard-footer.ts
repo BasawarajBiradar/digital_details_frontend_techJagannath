@@ -70,7 +70,7 @@ export class DashboardFooter {
       label: 'Notice',
       icon: 'campaign',
       route: roleRoutes.notice,
-      disabled: !isSchoolAdmin,
+      disabled: this.role() === 'teacher' ? true : false,
     });
 
     return baseItems;

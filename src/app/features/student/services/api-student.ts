@@ -115,6 +115,12 @@ export interface StudentHomeworkRecord {
   images: StudentHomeworkImage[];
 }
 
+export interface StudentNoticeTableRecord {
+  noticeTitle: string;
+  announcementDate: string;
+  noticeDetail: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiStudent {
 
@@ -205,6 +211,12 @@ export class ApiStudent {
   getTodaysUpdateCards(): Observable<TodaysUpdateCards> {
     return this.http
       .get<ApiResponse<TodaysUpdateCards>>(`${this.base}/api/student/home-page/today-updates`)
+      .pipe(map(res => res.data));
+  }
+
+  getNoticeTable(): Observable<StudentNoticeTableRecord[]> {
+    return this.http
+      .get<ApiResponse<StudentNoticeTableRecord[]>>(`${this.base}/api/student/notice/table`)
       .pipe(map(res => res.data));
   }
 
