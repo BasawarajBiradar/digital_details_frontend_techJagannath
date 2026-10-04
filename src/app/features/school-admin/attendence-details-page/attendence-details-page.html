@@ -1,44 +1,93 @@
 <main class="attendance-page">
 
-  <div class="attendance-page__header">
-    <button class="attendance-page__back" (click)="goBack()">
-      <mat-icon aria-hidden="true">arrow_back</mat-icon>
-      Dashboard
-    </button>
-    <h1>Attendance Details</h1>
-  </div>
-
-  <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
-    <h2 id="attendance-filter-title">Filter by date</h2>
-    <div class="attendance-page__date-fields">
-      <app-date-picker
-        label="From date"
-        [minDate]="earliestDate"
-        [maxDate]="toDate() ?? today"
-        [selectedDate]="fromDate()"
-        (selectedDateChange)="onFromDateChanged($event)" />
-      <app-date-picker
-        label="To date"
-        [minDate]="fromDate() ?? earliestDate"
-        [maxDate]="today"
-        [selectedDate]="toDate()"
-        (selectedDateChange)="onToDateChanged($event)" />
+  <section class="attendance-page__filters" aria-labelledby="attendance-filter-title">
+    <div class="attendance-page__filter-fields">
+      <label class="attendance-page__month-field">
+        <span>Month and year</span>
+        <input type="month" [min]="earliestMonth" [max]="latestMonth" [value]="selectedMonth()"
+          (change)="onMonthChanged($any($event.target).value)" aria-label="Select attendance month and year" />
+      </label>
+      <div class="attendance-page__other-fields">
+        <label class="attendance-page__filter-field">
+          <span>Class</span>
+          <div class="attendance-page__select-wrap">
+            <select class="attendance-page__select" [value]="classLevel() ?? ''"
+              (change)="onClassChanged($any($event.target).value)" aria-label="Filter by class">
+              <option value="">All Classes</option>
+              @for (classOption of availableClasses; track classOption) {
+                <option [value]="classOption">Class {{ classOption }}</option>
+              }
+            </select>
+            <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
+          </div>
+        </label>
+        <label class="attendance-page__filter-field">
+          <span>Division</span>
+          <div class="attendance-page__select-wrap">
+            <select class="attendance-page__select" [value]="division() ?? ''"
+              (change)="onDivisionChanged($any($event.target).value)" aria-label="Filter by division">
+              <option value="">All Divisions</option>
+              @for (divisionOption of availableDivisions; track divisionOption) {
+                <option [value]="divisionOption">Division {{ divisionOption }}</option>
+              }
+            </select>
+            <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
+          </div>
+        </label>
+        <label class="attendance-page__filter-field">
+          <span>Role</span>
+          <div class="attendance-page__select-wrap">
+            <select class="attendance-page__select" [value]="roleId() ?? ''"
+              (change)="onRoleChanged($any($event.target).value)" aria-label="Filter by role">
+              <option value="">All</option>
+              <option value="4">Teacher</option>
+              <option value="3">Student</option>
+            </select>
+            <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
+          </div>
+        </label>
+      </div>
     </div>
-    <p class="attendance-page__range-note">Dates can be selected for the last two years only.</p>
   </section>
 
-  <div class="attendance-page__table-wrapper">
-    <app-data-table
-      title="Attendance Records"
-      [columns]="tableColumns"
-      [apiResponse]="tableRows()"
-      [loading]="isLoading()"
-      [headerAction]="null"
-      [action]="null"
-      [rowClassName]="rowClassName"
-      [exportable]="true"
-      [exportFileName]="'attendance-report'"/>
-  </div>
+  <section class="attendance-page__table-section" aria-labelledby="attendance-records-title">
+    <h2 id="attendance-records-title">Attendance Records</h2>
+
+    @if (isLoading()) {
+      <div class="attendance-page__state" aria-live="polite">Loading attendance...</div>
+    } @else if (hasError()) {
+      <div class="attendance-page__state attendance-page__state--error" role="alert">Unable to load attendance records.</div>
+    } @else if (tableRows().length === 0) {
+      <div class="attendance-page__state">No attendance records found.</div>
+    } @else {
+      <div class="attendance-page__table-wrap">
+        <table class="attendance-page__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Class</th>
+              <th>Division</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of tableRows(); track row.fullName + row.date + row.index; let i = $index) {
+              <tr [class.attendance-page__row--present]="row.status === 'Present'" [class.attendance-page__row--absent]="row.status === 'Absent'">
+                <td data-label="#">{{ row.index }}</td>
+                <td data-label="Name">{{ row.fullName }}</td>
+                <td data-label="Class">{{ row.classLevel }}</td>
+                <td data-label="Division">{{ row.division }}</td>
+                <td data-label="Date">{{ formatDate(row.date) }}</td>
+                <td data-label="Status">{{ row.status }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
 
   @if (hasError()) {
     <p class="attendance-page__error" role="alert">

@@ -7,16 +7,10 @@ import {
   StudentAttendanceHistoryRecord,
   AttendanceFilterPayload,
 } from '../services/api-school-admin';
-import {
-  DataTableColumn,
-  DataTableComponent,
-  DataTableRow,
-} from '../../../shared/components/data-table/data-table';
-import { DatePickerComponent } from '../../../shared/components/date-picker/date-picker';
 
 @Component({
   selector: 'app-attendence-details-page',
-  imports: [CommonModule, MatIconModule, DataTableComponent, DatePickerComponent],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './attendence-details-page.html',
   styleUrl: './attendence-details-page.scss',
 })
@@ -26,44 +20,36 @@ export class AttendenceDetailsPage implements OnInit {
   isLoading  = signal(true);
   hasError   = signal(false);
 
-  // ── Date filters ───────────────────────────────────────────────────────────
+  // ── Month filter ──────────────────────────────────────────────────────────
   readonly today         = this.startOfDay(new Date());
   readonly earliestDate  = this.addYears(this.today, -2);
-  readonly fromDate      = signal<Date | null>(this.earliestDate);
-  readonly toDate        = signal<Date | null>(this.today);
+  readonly earliestMonth = this.toMonthInputValue(this.earliestDate);
+  readonly latestMonth   = this.toMonthInputValue(
+    this.today.getDate() === 1
+      ? new Date(this.today.getFullYear(), this.today.getMonth() - 1, 1)
+      : this.today
+  );
+  readonly selectedMonth = signal(this.latestMonth);
+  readonly fromDate      = signal<Date | null>(this.getMonthRange(this.latestMonth)!.fromDate);
+  readonly toDate        = signal<Date | null>(this.getMonthRange(this.latestMonth)!.toDate);
 
-  // Role/class/division filters kept fixed to "no filter" now that the
-  // filter UI has been removed. If those toggles come back, restore the
-  // signals and setters that used to drive them.
-  private readonly roleId     = signal<number | null>(null);
-  private readonly classLevel = signal<string | null>(null);
-  private readonly division   = signal<string | null>(null);
+  readonly roleId = signal<number | null>(null);
+  readonly classLevel = signal<string | null>(null);
+  readonly division = signal<string | null>(null);
   private readonly isPresent  = signal<boolean | null>(null);
+  readonly availableClasses = Array.from({ length: 12 }, (_, index) => String(index + 1));
+  readonly availableDivisions = ['A', 'B', 'C', 'D', 'E'];
 
-  // ── Table setup ────────────────────────────────────────────────────────────
-  readonly tableColumns: readonly DataTableColumn[] = [
-    { key: 'index', header: '#', sortable: false },
-    { key: 'fullName', header: 'Name' },
-    { key: 'classLevel', header: 'Class', format: (value) => `Class ${value}` },
-    { key: 'division', header: 'Division' },
-    { key: 'date', header: 'Date', format: (value) => this.formatDate(value) },
-    { key: 'status', header: 'Status' },
-  ];
-
-  readonly tableRows = computed<readonly DataTableRow[]>(() =>
+  readonly tableRows = computed(() =>
     this.records().map((record, index) => ({
-      ...record,
       index: index + 1,
+      fullName: record.fullName,
+      classLevel: record.classLevel,
+      division: record.division,
+      date: record.date,
       status: record.status,
     }))
   );
-
-  readonly rowClassName = (row: DataTableRow): string | undefined =>
-    row['status'] === 'Present'
-      ? 'data-table__row--present'
-      : row['status'] === 'Absent'
-        ? 'data-table__row--absent'
-        : undefined;
 
   constructor(private api: ApiSchoolAdmin, private router: Router) {}
 
@@ -71,15 +57,32 @@ export class AttendenceDetailsPage implements OnInit {
     this.fetchData();
   }
 
-  // ── Date filter handlers ─────────────────────────────────────────────────────
+  // ── Filter handlers ───────────────────────────────────────────────────────
 
-  onFromDateChanged(date: Date | null): void {
-    this.fromDate.set(date);
+  onMonthChanged(value: string): void {
+    if (value < this.earliestMonth || value > this.latestMonth) return;
+    const range = this.getMonthRange(value);
+    if (!range) return;
+
+    this.selectedMonth.set(value);
+    this.fromDate.set(range.fromDate);
+    this.toDate.set(range.toDate);
     this.fetchData();
   }
 
-  onToDateChanged(date: Date | null): void {
-    this.toDate.set(date);
+  onRoleChanged(value: string): void {
+    const roleId = value === '' ? null : Number(value);
+    this.roleId.set(roleId);
+    this.fetchData();
+  }
+
+  onClassChanged(value: string): void {
+    this.classLevel.set(value || null);
+    this.fetchData();
+  }
+
+  onDivisionChanged(value: string): void {
+    this.division.set(value || null);
     this.fetchData();
   }
 
@@ -128,13 +131,35 @@ export class AttendenceDetailsPage implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  private formatDate(value: unknown): string {
+  formatDate(value: unknown): string {
     if (typeof value !== 'string' || !value) return '-';
     const d = new Date(value);
     if (isNaN(d.getTime())) return value;
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     return `${day}/${month}/${d.getFullYear()}`;
+  }
+
+  private toMonthInputValue(date: Date): string {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${date.getFullYear()}-${month}`;
+  }
+
+  private getMonthRange(value: string): { fromDate: Date; toDate: Date } | null {
+    const match = /^(\d{4})-(\d{2})$/.exec(value);
+    if (!match) return null;
+
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    if (month < 1 || month > 12) return null;
+
+    const fromDate = new Date(year, month - 1, 1);
+    const monthEnd = new Date(year, month, 0);
+    const yesterday = new Date(this.today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const toDate = monthEnd > this.today ? yesterday : monthEnd;
+
+    return fromDate <= toDate ? { fromDate, toDate } : null;
   }
 
   private startOfDay(date: Date): Date {
