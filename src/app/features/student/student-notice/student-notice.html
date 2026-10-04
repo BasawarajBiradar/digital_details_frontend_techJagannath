@@ -72,6 +72,38 @@
             <dd>{{ notice.noticeDetail }}</dd>
           </div>
         </dl>
+
+        @if (notice.files?.length) {
+          <div class="student-notice__attachments" aria-label="Notice attachments">
+            <h3>Attachments</h3>
+            @for (file of notice.files; track file.srNo) {
+              <div class="student-notice__attachment-card">
+                @if (isImageAttachment(file)) {
+                  <img class="student-notice__attachment-image" [src]="file.fileUrl" [alt]="file.fileName || 'Notice attachment'" />
+                } @else if (isPdfAttachment(file)) {
+                  <iframe
+                    class="student-notice__attachment-pdf"
+                    [src]="file.fileUrl"
+                    [title]="file.fileName || 'Notice attachment pdf'"
+                    loading="lazy"></iframe>
+                } @else {
+                  <a class="student-notice__attachment-link" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
+                    Open attachment
+                  </a>
+                }
+
+                <a class="student-notice__attachment-link student-notice__attachment-link--secondary" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
+                  Download / open file
+                </a>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="student-notice__attachments student-notice__attachments--empty" aria-live="polite">
+            <h3>Attachments</h3>
+            <p>No attachments available for this notice.</p>
+          </div>
+        }
       </div>
     </div>
   }

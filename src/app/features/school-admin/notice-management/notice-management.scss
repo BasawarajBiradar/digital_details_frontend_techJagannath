@@ -48,13 +48,29 @@
   color: #1f2937;
 }
 
+.notice-management__paired-fields {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  min-width: 0;
+}
+
+.notice-management__field--compact {
+  min-width: 0;
+}
+
 .notice-management__field--wide {
   grid-column: 1 / -1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .notice-management__field input,
 .notice-management__field textarea {
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   border: 1px solid #d5d9e2;
   border-radius: 12px;
@@ -63,6 +79,12 @@
   background: #f9fafb;
   color: #0f172a;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notice-management__field input[type='file'] {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .notice-management__field input:focus,
@@ -82,6 +104,75 @@
   color: #b42318;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.notice-management__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 10px 12px;
+  border: 1px solid #d5d9e2;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.notice-management__toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #2563eb;
+}
+
+.notice-management__attachments {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.notice-management__attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.notice-management__attachment-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #1f2937;
+  font-size: 0.92rem;
+}
+
+.notice-management__attachment-remove {
+  flex: 0 0 auto;
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #b42318;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
 }
 
 .notice-management__actions {
@@ -133,7 +224,29 @@
     grid-template-columns: 1fr;
   }
 
+  .notice-management__paired-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
   .notice-management__card {
     padding: 18px 14px;
+  }
+
+  .notice-management__attachment-item {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .notice-management__attachment-name {
+    flex-basis: 100%;
+    min-width: 0;
+    font-size: 0.82rem;
+  }
+
+  .notice-management__attachment-remove {
+    margin-left: 0;
+    font-size: 0.8rem;
   }
 }

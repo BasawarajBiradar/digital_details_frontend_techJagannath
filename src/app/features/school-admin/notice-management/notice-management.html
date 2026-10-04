@@ -28,13 +28,45 @@
         }
       </label>
 
-      <label class="notice-management__field">
-        <span>Class level (optional)</span>
-        <input formControlName="classLevel" type="number" min="1" step="1" placeholder="e.g. 12" />
-        @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
-          <small>Class level must be 1 or greater.</small>
+      <div class="notice-management__paired-fields">
+        <label class="notice-management__field notice-management__field--compact">
+          <span>Class level (optional)</span>
+          <input formControlName="classLevel" type="text" placeholder="e.g. 12" />
+          @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
+            <small>Class level must be 1 or greater.</small>
+          }
+        </label>
+
+        <div class="notice-management__field notice-management__field--compact">
+          <span>Audience</span>
+          <label class="notice-management__toggle" for="notice-is-staff">
+            <input id="notice-is-staff" type="checkbox" formControlName="isStaff" />
+            <span>{{ noticeForm.controls.isStaff.value ? 'Staff' : 'Students' }}</span>
+          </label>
+        </div>
+      </div>
+
+      <label class="notice-management__field notice-management__field--wide">
+        <span>Attachments (optional)</span>
+        <input type="file" multiple (change)="onNoticeFilesSelected($event)" />
+        @if (attachmentError()) {
+          <small>{{ attachmentError() }}</small>
         }
       </label>
+
+      @if (attachedFiles().length) {
+        <div class="notice-management__field notice-management__field--wide">
+          <span>Selected files</span>
+          <ul class="notice-management__attachments">
+            @for (file of attachedFiles(); track file.name; let i = $index) {
+              <li class="notice-management__attachment-item">
+                <span class="notice-management__attachment-name" [title]="file.name">{{ file.name }}</span>
+                <button type="button" class="notice-management__attachment-remove" (click)="removeAttachment(i)">Remove</button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
 
       <div class="notice-management__actions">
         <button type="submit" class="notice-management__submit" [disabled]="isSubmitting()">

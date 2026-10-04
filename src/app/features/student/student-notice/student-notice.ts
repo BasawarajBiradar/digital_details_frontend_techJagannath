@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
 
-import { ApiStudent, StudentNoticeTableRecord } from '../services/api-student';
+import { ApiStudent, StudentNoticeAttachment, StudentNoticeTableRecord } from '../services/api-student';
 import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 
 @Component({
@@ -39,6 +39,28 @@ export class StudentNotice {
 
   closeDetails(): void {
     this.selectedNotice.set(null);
+  }
+
+  isImageAttachment(file: StudentNoticeAttachment): boolean {
+    return this.getAttachmentKind(file) === 'image';
+  }
+
+  isPdfAttachment(file: StudentNoticeAttachment): boolean {
+    return this.getAttachmentKind(file) === 'pdf';
+  }
+
+  getAttachmentKind(file: StudentNoticeAttachment): 'image' | 'pdf' | 'other' {
+    const name = `${file.fileName ?? ''} ${file.fileUrl ?? ''}`.toLowerCase();
+
+    if (name.includes('pdf') || file.fileUrl.toLowerCase().endsWith('.pdf')) {
+      return 'pdf';
+    }
+
+    if (name.includes('image') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file.fileUrl)) {
+      return 'image';
+    }
+
+    return 'other';
   }
 
   private loadNotices(): void {

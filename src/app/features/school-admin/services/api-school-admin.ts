@@ -60,7 +60,8 @@ export interface StudentsResponse {
 export interface SchoolNoticePayload {
   noticeTitle: string;
   noticeDescription: string;
-  classLevel?: number | null;
+  classLevel?: string | null;
+  isStaff?: boolean | null;
 }
 
 export interface SchoolNoticeResponse {
@@ -151,13 +152,27 @@ export class ApiSchoolAdmin {
         });
   }
 
-  createNotice(payload: SchoolNoticePayload): Observable<ApiResponse<SchoolNoticeResponse>> {
+  createNotice(payload: SchoolNoticePayload, files: File[] = []): Observable<ApiResponse<SchoolNoticeResponse>> {
+    const formData = new FormData();
+
+    formData.append('noticeTitle', payload.noticeTitle);
+    formData.append('noticeDescription', payload.noticeDescription);
+
+    if (payload.classLevel !== null && payload.classLevel !== undefined && payload.classLevel !== '') {
+      formData.append('classLevel', payload.classLevel);
+    }
+
+    if (payload.isStaff !== null && payload.isStaff !== undefined) {
+      formData.append('isStaff', String(payload.isStaff));
+    }
+
+    files.forEach((file, index) => {
+      formData.append('files', file, file.name || `notice-attachment-${index + 1}`);
+    });
+
     return this.http.post<ApiResponse<SchoolNoticeResponse>>(
       `${this.base}/api/school-admin/notice/create_notice`,
-      {
-        ...payload,
-        classLevel: payload.classLevel ?? null,
-      },
+      formData,
     );
   }
 

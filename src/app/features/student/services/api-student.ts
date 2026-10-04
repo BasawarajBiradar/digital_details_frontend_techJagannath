@@ -115,10 +115,17 @@ export interface StudentHomeworkRecord {
   images: StudentHomeworkImage[];
 }
 
+export interface StudentNoticeAttachment {
+  srNo: number;
+  fileUrl: string;
+  fileName: string;
+}
+
 export interface StudentNoticeTableRecord {
   noticeTitle: string;
   announcementDate: string;
   noticeDetail: string;
+  files?: StudentNoticeAttachment[];
 }
 
 @Injectable({ providedIn: 'root' })
