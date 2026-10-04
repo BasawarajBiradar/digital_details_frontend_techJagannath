@@ -40,16 +40,40 @@ export class AttendenceDetailsPage implements OnInit {
   readonly availableClasses = Array.from({ length: 12 }, (_, index) => String(index + 1));
   readonly availableDivisions = ['A', 'B', 'C', 'D', 'E'];
 
-  readonly tableRows = computed(() =>
-    this.records().map((record, index) => ({
-      index: index + 1,
-      fullName: record.fullName,
-      classLevel: record.classLevel,
-      division: record.division,
-      date: record.date,
-      status: record.status,
-    }))
-  );
+  readonly attendanceDates = computed(() => {
+    const dates = new Set(
+      this.records().flatMap((record) =>
+        (record.childResult ?? []).map((dayResult) => dayResult.date)
+      )
+    );
+
+    return [...dates].sort((left, right) =>
+      (this.parseAttendanceDate(left)?.getTime() ?? 0) -
+      (this.parseAttendanceDate(right)?.getTime() ?? 0)
+    );
+  });
+
+  readonly tableRows = computed(() => {
+    const dates = this.attendanceDates();
+    return this.records().map((record) => {
+      const resultsByDate = new Map(
+        (record.childResult ?? []).map((dayResult) => [
+          dayResult.date,
+          this.formatStatus(dayResult.status),
+        ])
+      );
+
+      return {
+        fullName: record.fullName,
+        classLevel: record.classLevel,
+        division: record.division,
+        attendance: dates.map((date) => ({
+          date,
+          status: resultsByDate.get(date) ?? '',
+        })),
+      };
+    });
+  });
 
   constructor(private api: ApiSchoolAdmin, private router: Router) {}
 
@@ -133,11 +157,33 @@ export class AttendenceDetailsPage implements OnInit {
 
   formatDate(value: unknown): string {
     if (typeof value !== 'string' || !value) return '-';
-    const d = new Date(value);
-    if (isNaN(d.getTime())) return value;
+    const d = this.parseAttendanceDate(value);
+    if (!d) return value;
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     return `${day}/${month}/${d.getFullYear()}`;
+  }
+
+  private parseAttendanceDate(value: string): Date | null {
+    const dayFirstDate = /^(\d{2})-(\d{2})-(\d{4})$/.exec(value);
+    if (dayFirstDate) {
+      const day = Number(dayFirstDate[1]);
+      const month = Number(dayFirstDate[2]);
+      const year = Number(dayFirstDate[3]);
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+        ? date
+        : null;
+    }
+
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return null;
+    return d;
+  }
+
+  formatStatus(status: string): string {
+    const normalized = status.toLowerCase();
+    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
   }
 
   private toMonthInputValue(date: Date): string {

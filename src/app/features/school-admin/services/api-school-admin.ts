@@ -92,14 +92,18 @@ export interface SchoolNoticeResponse {
 
   export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'HOLIDAY' | string;
 
+  export interface StudentAttendanceDayResult {
+    date: string;
+    status: AttendanceStatus;
+    inTime: string | null;
+    outTime: string | null;
+  }
+
   export interface StudentAttendanceHistoryRecord {
     fullName: string;
     classLevel: string;
     division: string;
-    date:      string;
-    status:    AttendanceStatus;
-    inTime: string | null;
-    outTime:  string | null;
+    childResult: StudentAttendanceDayResult[] | null;
   }
 
   interface ApiResponse<T> {
