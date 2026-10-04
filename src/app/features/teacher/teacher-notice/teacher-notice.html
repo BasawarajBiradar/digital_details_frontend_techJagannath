@@ -1,0 +1,110 @@
+<main class="teacher-notice">
+  <section class="teacher-notice__header">
+    <div>
+      <p class="teacher-notice__eyebrow">Teacher workspace</p>
+      <h1>Notices</h1>
+    </div>
+  </section>
+
+  <section class="teacher-notice__table-section surface-card" aria-labelledby="teacher-notice-table-title">
+    <h2 id="teacher-notice-table-title">Notice list</h2>
+
+    @if (loading()) {
+      <div class="teacher-notice__state" aria-live="polite">Loading notices...</div>
+    } @else if (error()) {
+      <div class="teacher-notice__state teacher-notice__state--error" role="alert">{{ error() }}</div>
+    } @else if (tableRows().length === 0) {
+      <div class="teacher-notice__state">No notices found.</div>
+    } @else {
+      <div class="teacher-notice__table-wrap">
+        <table class="teacher-notice__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Announcement date</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of tableRows(); track row.noticeTitle + row.announcementDate; let rowIndex = $index) {
+              <tr>
+                <td data-label="#">{{ row.index }}</td>
+                <td data-label="Title">{{ row.noticeTitle }}</td>
+                <td data-label="Announcement date">{{ row.announcementDate }}</td>
+                <td data-label="Details">
+                  <button class="teacher-notice__details-button" type="button" (click)="openDetails(notices()[rowIndex])">
+                    <mat-icon aria-hidden="true">visibility</mat-icon>
+                    Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <app-dashboard-footer role="teacher" />
+
+  @if (selectedNotice(); as notice) {
+    <div class="teacher-notice__modal-backdrop" role="presentation" (click)="closeDetails()">
+      <div class="teacher-notice__modal" role="dialog" aria-modal="true" aria-labelledby="notice-details-title" (click)="$event.stopPropagation()">
+        <div class="teacher-notice__modal-header">
+          <h2 id="notice-details-title">Notice details</h2>
+          <button type="button" aria-label="Close notice details" (click)="closeDetails()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+
+        <dl class="teacher-notice__details-list">
+          <div>
+            <dt>Title</dt>
+            <dd>{{ notice.noticeTitle }}</dd>
+          </div>
+          <div>
+            <dt>Announcement date</dt>
+            <dd>{{ notice.announcementDate }}</dd>
+          </div>
+          <div>
+            <dt>Description</dt>
+            <dd>{{ notice.noticeDetail }}</dd>
+          </div>
+        </dl>
+
+        @if (notice.files?.length) {
+          <div class="teacher-notice__attachments" aria-label="Notice attachments">
+            <h3>Attachments</h3>
+            @for (file of notice.files; track file.srNo) {
+              <div class="teacher-notice__attachment-card">
+                @if (isImageAttachment(file)) {
+                  <img class="teacher-notice__attachment-image" [src]="file.fileUrl" [alt]="file.fileName || 'Notice attachment'" />
+                } @else if (isPdfAttachment(file)) {
+                  <iframe
+                    class="teacher-notice__attachment-pdf"
+                    [src]="file.fileUrl"
+                    [title]="file.fileName || 'Notice attachment pdf'"
+                    loading="lazy"></iframe>
+                } @else {
+                  <a class="teacher-notice__attachment-link" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
+                    Open attachment
+                  </a>
+                }
+
+                <a class="teacher-notice__attachment-link teacher-notice__attachment-link--secondary" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
+                  Download / open file
+                </a>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="teacher-notice__attachments teacher-notice__attachments--empty" aria-live="polite">
+            <h3>Attachments</h3>
+            <p>No attachments available for this notice.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</main>

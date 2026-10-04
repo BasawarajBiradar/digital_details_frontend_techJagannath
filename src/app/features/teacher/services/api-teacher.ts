@@ -78,6 +78,19 @@ export interface AddTeacherHomeworkResponse {
   savedHomeworkTitle: string;
 }
 
+export interface TeacherNoticeAttachment {
+  srNo: number;
+  fileUrl: string;
+  fileName: string;
+}
+
+export interface TeacherNoticeTableRecord {
+  noticeTitle: string;
+  announcementDate: string;
+  noticeDetail: string;
+  files?: TeacherNoticeAttachment[];
+}
+
 export interface TeacherSchool {
   id: number;
   name: string;
@@ -151,6 +164,12 @@ export class ApiTeacher {
       .get<ApiResponse<TeacherHomeworkOverview>>(
         `${this.base}/api/teacher/homework/overview_cards`,
       )
+      .pipe(map(response => response.data));
+  }
+
+  getNoticeTable(): Observable<TeacherNoticeTableRecord[]> {
+    return this.http
+      .get<ApiResponse<TeacherNoticeTableRecord[]>>(`${this.base}/api/teacher/notice/table`)
       .pipe(map(response => response.data));
   }
 
