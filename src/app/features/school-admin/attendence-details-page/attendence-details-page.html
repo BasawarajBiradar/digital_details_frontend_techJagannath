@@ -1,18 +1,57 @@
 <main class="attendance-page">
+  <div class="attendance-page__container">
 
-  <section class="attendance-page__filters" aria-labelledby="attendance-filter-title">
-    <div class="attendance-page__filter-fields">
-      <label class="attendance-page__month-field">
-        <span>Month and year</span>
-        <input type="month" [min]="earliestMonth" [max]="latestMonth" [value]="selectedMonth()"
-          (change)="onMonthChanged($any($event.target).value)" aria-label="Select attendance month and year" />
-      </label>
-      <div class="attendance-page__other-fields">
-        <label class="attendance-page__filter-field">
-          <span>Class</span>
+    <!-- Header Card -->
+    <header class="attendance-page__header surface-card" aria-labelledby="attendance-page-title">
+      <div class="attendance-page__header-row">
+        <div class="attendance-page__title-group">
+          <button class="attendance-page__back-btn" type="button" aria-label="Back to School Admin Dashboard" (click)="goBack()">
+            <mat-icon aria-hidden="true">arrow_back</mat-icon>
+            <span>Back to Dashboard</span>
+          </button>
+          <span class="attendance-page__kicker">School Administration</span>
+          <h1 id="attendance-page-title" class="attendance-page__title">Comprehensive Attendance Register</h1>
+        </div>
+
+        @if (!isLoading() && !hasError() && tableRows().length > 0) {
+          <div class="attendance-page__count-badge" aria-label="Total students recorded">
+            <mat-icon aria-hidden="true">groups</mat-icon>
+            <span>{{ tableRows().length }} {{ tableRows().length === 1 ? 'Student' : 'Students' }}</span>
+          </div>
+        }
+      </div>
+    </header>
+
+    <!-- Filters Card -->
+    <section class="attendance-page__filters surface-card" aria-labelledby="attendance-filter-title">
+      <div class="attendance-page__filter-header">
+        <div class="attendance-page__filter-title-wrap">
+          <mat-icon aria-hidden="true">tune</mat-icon>
+          <h2 id="attendance-filter-title" class="attendance-page__filter-heading">Filter Register</h2>
+        </div>
+      </div>
+
+      <div class="attendance-page__filter-grid">
+        <label class="attendance-page__field">
+          <span class="attendance-page__field-label">Month & Year</span>
+          <input
+            type="month"
+            class="attendance-page__input"
+            [min]="earliestMonth"
+            [max]="latestMonth"
+            [value]="selectedMonth()"
+            (change)="onMonthChanged($any($event.target).value)"
+            aria-label="Select attendance month and year" />
+        </label>
+
+        <label class="attendance-page__field">
+          <span class="attendance-page__field-label">Class</span>
           <div class="attendance-page__select-wrap">
-            <select class="attendance-page__select" [value]="classLevel() ?? ''"
-              (change)="onClassChanged($any($event.target).value)" aria-label="Filter by class">
+            <select
+              class="attendance-page__select"
+              [value]="classLevel() ?? ''"
+              (change)="onClassChanged($any($event.target).value)"
+              aria-label="Filter by class">
               <option value="">All Classes</option>
               @for (classOption of availableClasses; track classOption) {
                 <option [value]="classOption">Class {{ classOption }}</option>
@@ -21,83 +60,101 @@
             <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
           </div>
         </label>
-        <label class="attendance-page__filter-field">
-          <span>Division</span>
+
+        <label class="attendance-page__field">
+          <span class="attendance-page__field-label">Division</span>
           <div class="attendance-page__select-wrap">
-            <select class="attendance-page__select" [value]="division() ?? ''"
-              (change)="onDivisionChanged($any($event.target).value)" aria-label="Filter by division">
+            <select
+              class="attendance-page__select"
+              [value]="division() ?? ''"
+              (change)="onDivisionChanged($any($event.target).value)"
+              aria-label="Filter by division">
               <option value="">All Divisions</option>
               @for (divisionOption of availableDivisions; track divisionOption) {
-                <option [value]="divisionOption">Division {{ divisionOption }}</option>
+                <option [value]="divisionOption">Section {{ divisionOption }}</option>
               }
             </select>
             <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
           </div>
         </label>
-        <label class="attendance-page__filter-field">
-          <span>Role</span>
+
+        <label class="attendance-page__field">
+          <span class="attendance-page__field-label">User Role</span>
           <div class="attendance-page__select-wrap">
-            <select class="attendance-page__select" [value]="roleId() ?? ''"
-              (change)="onRoleChanged($any($event.target).value)" aria-label="Filter by role">
-              <option value="">All</option>
-              <option value="4">Teacher</option>
-              <option value="3">Student</option>
+            <select
+              class="attendance-page__select"
+              [value]="roleId() ?? ''"
+              (change)="onRoleChanged($any($event.target).value)"
+              aria-label="Filter by role">
+              <option value="">All Roles</option>
+              <option value="4">Teachers</option>
+              <option value="3">Students</option>
             </select>
             <mat-icon class="attendance-page__select-arrow" aria-hidden="true">expand_more</mat-icon>
           </div>
         </label>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="attendance-page__table-section" aria-labelledby="attendance-records-title">
-    <h2 id="attendance-records-title">Attendance Records</h2>
+    <!-- Table Section -->
+    <section class="attendance-page__table-section surface-card" aria-labelledby="attendance-records-title">
+      <div class="attendance-page__table-header">
+        <div class="attendance-page__table-title-group">
+          <mat-icon aria-hidden="true">calendar_month</mat-icon>
+          <h2 id="attendance-records-title" class="attendance-page__table-heading">Daily Attendance Matrix</h2>
+        </div>
+      </div>
 
-    @if (isLoading()) {
-      <div class="attendance-page__state" aria-live="polite">Loading attendance...</div>
-    } @else if (hasError()) {
-      <div class="attendance-page__state attendance-page__state--error" role="alert">Unable to load attendance records.</div>
-    } @else if (tableRows().length === 0 || attendanceDates().length === 0) {
-      <div class="attendance-page__state">No attendance records found.</div>
-    } @else {
-      <div class="attendance-page__table-wrap">
-        <table class="attendance-page__table">
-          <thead>
-            <tr>
-              <th class="attendance-page__student-heading">Student</th>
-              @for (date of attendanceDates(); track date) {
-                <th>{{ formatDate(date) }}</th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of tableRows(); track row.fullName + row.classLevel + row.division) {
+      @if (isLoading()) {
+        <div class="attendance-page__state" aria-live="polite">
+          <span class="attendance-page__spinner" aria-hidden="true"></span>
+          <p>Loading attendance matrix...</p>
+        </div>
+      } @else if (hasError()) {
+        <div class="attendance-page__state attendance-page__state--error" role="alert">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <p>Unable to load attendance records. Please verify filters and try again.</p>
+        </div>
+      } @else if (tableRows().length === 0 || attendanceDates().length === 0) {
+        <div class="attendance-page__state">
+          <mat-icon aria-hidden="true">event_busy</mat-icon>
+          <p>No attendance entries found for the selected period.</p>
+        </div>
+      } @else {
+        <div class="attendance-page__table-wrap">
+          <table class="attendance-page__table">
+            <caption class="visually-hidden">Attendance matrix for selected month and criteria</caption>
+            <thead>
               <tr>
-                <td class="attendance-page__student-cell">
-                  <span>{{ row.fullName }}</span>
-                  <small>Class {{ row.classLevel }} · Division {{ row.division }}</small>
-                </td>
-                @for (cell of row.attendance; track cell.date) {
-                  <td class="attendance-page__status-cell"
-                    [class.attendance-page__status-cell--present]="cell.status === 'Present'"
-                    [class.attendance-page__status-cell--absent]="cell.status === 'Absent'"
-                    [class.attendance-page__status-cell--holiday]="cell.status === 'Holiday'">
-                    {{ cell.status || '-' }}
-                  </td>
+                <th scope="col" class="attendance-page__th-student">Student / Member</th>
+                @for (date of attendanceDates(); track date) {
+                  <th scope="col" class="attendance-page__th-date">{{ formatDate(date) }}</th>
                 }
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-  </section>
+            </thead>
+            <tbody>
+              @for (row of tableRows(); track row.fullName + row.classLevel + row.division) {
+                <tr class="attendance-page__row">
+                  <td class="attendance-page__student-cell">
+                    <strong class="attendance-page__student-name">{{ row.fullName }}</strong>
+                    <span class="attendance-page__student-meta">Class {{ row.classLevel }} · Section {{ row.division }}</span>
+                  </td>
+                  @for (cell of row.attendance; track cell.date) {
+                    <td class="attendance-page__status-cell"
+                      [class.attendance-page__status-cell--present]="cell.status === 'Present'"
+                      [class.attendance-page__status-cell--absent]="cell.status === 'Absent'"
+                      [class.attendance-page__status-cell--holiday]="cell.status === 'Holiday'"
+                      [attr.aria-label]="formatDate(cell.date) + ': ' + (cell.status || 'No record')">
+                      {{ cell.status || '—' }}
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
 
-  @if (hasError()) {
-    <p class="attendance-page__error" role="alert">
-      <mat-icon aria-hidden="true">error_outline</mat-icon>
-      Could not load attendance records. Please try again.
-    </p>
-  }
-
+  </div>
 </main>

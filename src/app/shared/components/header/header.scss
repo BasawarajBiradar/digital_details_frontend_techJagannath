@@ -1,23 +1,32 @@
-@use '../../../../styles/variables' as *;
-
 :host {
   display: block;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
 .header {
-  position: relative;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 4px rgba(11, 31, 58, 0.04);
+}
+
+.header__inner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 4px clamp(16px, 4vw, 32px);
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-background);
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1160px;
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3vw, 24px);
+  box-sizing: border-box;
+  gap: 12px;
 }
 
 .header__leading {
-  position: absolute;
-  left: clamp(16px, 4vw, 32px);
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -28,109 +37,143 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 36px;
   height: 36px;
   padding: 0;
-  border: none;
-  border-radius: $radius-md;
-  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
   color: var(--color-primary);
   cursor: pointer;
+  transition: all 0.15s ease;
 
   mat-icon {
-    width: 22px;
-    height: 22px;
-    font-size: 22px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
   &:hover {
-    background: var(--color-surface);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    background: var(--color-surface-inset);
+    border-color: var(--color-primary);
+    transform: translateX(-1px);
   }
 }
 
 .header__logo {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--color-primary);
+  gap: 10px;
   text-decoration: none;
-  outline-offset: 4px;
+  outline: none;
+}
+
+.header__logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #EAF2FF 0%, #D8E7FF 100%);
+  border: 1px solid #C7DCFC;
+  box-shadow: 0 2px 6px rgba(22, 119, 248, 0.12);
 }
 
 .header__logo-icon {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
-.header__logo-name {
-  font-size: var(--font-sm);
+.header__brand-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header__brand-name {
+  font-size: 15px;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.header__brand-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+  background: var(--color-surface-inset);
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.header__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
 }
 
 .header__title {
-  max-width: 50%;
   margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
   overflow: hidden;
-  color: var(--color-primary-dark);
-  font-size: var(--font-md);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
-  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-@media (max-width: 640px) {
-  .header {
-    min-height: 44px;
-  }
-
-  .header__leading {
-    gap: 8px;
-  }
-
-  .header__back {
-    width: 32px;
-    height: 32px;
-
-    mat-icon {
-      width: 20px;
-      height: 20px;
-      font-size: 20px;
-    }
-  }
-
-  .header__logo {
-    gap: 6px;
-  }
-
-  .header__logo-icon {
-    width: 34px;
-    height: 34px;
-  }
-
-  .header__logo-name {
-    font-size: var(--font-xs);
-  }
-
-  .header__title {
-    max-width: 48%;
-    font-size: var(--font-sm);
-  }
+.header__trailing {
+  display: inline-flex;
+  align-items: center;
 }
 
-// Very small screens: logo name takes too much space alongside a back
-// button and title — hide the wordmark, keep the icon
-@media (max-width: 360px) {
-  .header__logo-name {
+.header__status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #E8F8EF;
+  border: 1px solid #C4ECD5;
+  color: #18794E;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.header__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #18794E;
+  box-shadow: 0 0 0 2px rgba(24, 121, 78, 0.2);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+@media (max-width: 640px) {
+  .header__inner {
+    height: 50px;
+  }
+  .header__brand-tag {
     display: none;
+  }
+  .header__status-text {
+    display: none;
+  }
+  .header__status-badge {
+    padding: 6px;
   }
 }

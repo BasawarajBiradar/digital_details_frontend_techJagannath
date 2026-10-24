@@ -1,25 +1,31 @@
 <div class="dashboard">
 
   @if (isLoading()) {
-    <div class="dashboard__loading">
-      <span class="spinner"></span>
-    </div>
+  <div class="dashboard__loading">
+    <span class="spinner"></span>
+  </div>
   }
 
   @else if (hasError()) {
-    <div class="surface-card dashboard__error">
-      <mat-icon>error_outline</mat-icon>
-      <p>Could not load student info. Please try again later.</p>
+  <div class="surface-card dashboard__error" role="alert">
+    <div class="dashboard__error-icon">
+      <mat-icon>lock_outline</mat-icon>
     </div>
+    <h2 class="dashboard__error-title">Student Profile Unavailable</h2>
+    <p class="dashboard__error-message">Could not load student info. Please sign in to an active student account.</p>
+    <a routerLink="/login" class="dashboard__error-btn">
+      <mat-icon>login</mat-icon>
+      <span>Sign In to TapAxe</span>
+    </a>
+  </div>
   }
 
   @else if (student()) {
+  <div class="dashboard__content">
     <div class="id-card">
       <div class="id-card__band">
         @if (student()!.schoolLogoUrl) {
-          <img class="id-card__band-logo"
-               [src]="student()!.schoolLogoUrl"
-               alt="School logo" />
+        <img class="id-card__band-logo" [src]="student()!.schoolLogoUrl" alt="School logo" />
         }
         <div class="id-card__band-text">
           <span class="id-card__band-title">{{ student()!.schoolName }}</span>
@@ -29,32 +35,22 @@
       <div class="id-card__body">
 
         <!-- Photo with edit overlay -->
-        <div class="id-card__photo-wrap id-card__photo-wrap--editable"
-             (click)="photoFileInput.click()"
-             role="button"
-             aria-label="Change photo"
-             tabindex="0"
-             (keydown.enter)="photoFileInput.click()">
+        <div class="id-card__photo-wrap id-card__photo-wrap--editable" (click)="photoFileInput.click()" role="button"
+          aria-label="Change photo" tabindex="0" (keydown.enter)="photoFileInput.click()">
 
           @if (displayPhotoUrl()) {
-            <img class="id-card__photo"
-                 [src]="displayPhotoUrl()"
-                 [alt]="student()!.fullName" />
+          <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="student()!.fullName" />
           } @else {
-            <div class="id-card__photo-fallback">
-              <mat-icon>person</mat-icon>
-            </div>
+          <div class="id-card__photo-fallback">
+            <mat-icon>person</mat-icon>
+          </div>
           }
 
           <div class="id-card__photo-edit-overlay" aria-hidden="true">
             <mat-icon>photo_camera</mat-icon>
           </div>
 
-          <input #photoFileInput
-                 type="file"
-                 accept="image/*"
-                 class="sr-only"
-                 (change)="onPhotoFileSelected($event)" />
+          <input #photoFileInput type="file" accept="image/*" class="sr-only" (change)="onPhotoFileSelected($event)" />
         </div>
 
         <div class="id-card__details">
@@ -110,82 +106,68 @@
         </div>
       </div>
 
+      <!-- QR button -->
+      <div class="id-card__actions">
+        <button class="btn-qr" (click)="openQr()">
+          <mat-icon>qr_code_2</mat-icon>
+          Show My QR Code
+        </button>
+      </div>
+
     </div>
 
     @if (todaysUpdateItems().length) {
-      <section class="todays-updates" aria-labelledby="todays-updates-title">
-        <div class="todays-updates__header">
-          <h2 id="todays-updates-title">Today's updates</h2>
-          <mat-icon aria-hidden="true">today</mat-icon>
-        </div>
+    <section class="todays-updates" aria-labelledby="todays-updates-title">
+      <div class="todays-updates__header">
+        <h2 id="todays-updates-title">Today's updates</h2>
+        <mat-icon aria-hidden="true">today</mat-icon>
+      </div>
 
-        <div class="todays-updates__grid">
-          @for (item of todaysUpdateItems(); track item.label) {
-            @if (item.label === tapPhotosAction.label) {
-              <a class="update-card update-card--link" [routerLink]="tapPhotosAction.link" [attr.aria-label]="tapPhotosAction.label">
-                <mat-icon class="update-card__icon" aria-hidden="true">{{ tapPhotosAction.icon }}</mat-icon>
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value">{{ item.value }}</strong>
-              </a>
-            } @else {
-              <article class="update-card">
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value">{{ item.value }}</strong>
-              </article>
-            }
-          }
-        </div>
-      </section>
+      <div class="todays-updates__grid">
+        @for (item of todaysUpdateItems(); track item.label) {
+        @if (item.label === tapPhotosAction.label) {
+        <a class="update-card update-card--link" [routerLink]="tapPhotosAction.link"
+          [attr.aria-label]="tapPhotosAction.label">
+          <mat-icon class="update-card__icon" aria-hidden="true">{{ tapPhotosAction.icon }}</mat-icon>
+          <span class="update-card__label">{{ item.label }}</span>
+          <strong class="update-card__value">{{ item.value }}</strong>
+        </a>
+        } @else {
+        <article class="update-card">
+          <span class="update-card__label">{{ item.label }}</span>
+          <strong class="update-card__value">{{ item.value }}</strong>
+        </article>
+        }
+        }
+      </div>
+    </section>
     }
+  </div>
   }
 
-  <!-- <app-data-table
-    [title]="'Today\'s Card Taps · ' + todayTaps().length"
-    [columns]="tapColumns"
-    [apiResponse]="todayTapRows()"
-    [headerAction]="detailsAction()"
-    [action]="tapAction"
-    [exportable]="true"
-    (actionTriggered)="onTapAction($event)" /> -->
-
-  <!-- QR button -->
-  <div class="id-card__actions">
-    <button class="btn-qr" (click)="openQr()">
-      <mat-icon>qr_code_2</mat-icon>
-      Show My QR Code
-    </button>
-  </div>
-
   @if (showQr()) {
-    <app-qr-model
-      [studentName]="student()?.fullName ?? ''"
-      [qrObjectUrl]="qrObjectUrl()"
-      [isLoading]="qrLoading()"
-      [hasError]="qrError()"
-      (closed)="closeQr()" />
+  <app-qr-model [studentName]="student()?.fullName ?? ''" [qrObjectUrl]="qrObjectUrl()" [isLoading]="qrLoading()"
+    [hasError]="qrError()" (closed)="closeQr()" />
   }
 
   @if (showImage()) {
-    <div class="image-modal__backdrop" (click)="closeImage()">
-      <div class="image-modal__panel" role="dialog" aria-modal="true">
-        <div class="image-modal__header">
-          <button class="image-modal__close" (click)="closeImage()" aria-label="Close">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="image-modal__body">
-          <img class="image-modal__img" [src]="selectedImageUrl()" [alt]="student()?.fullName" />
-        </div>
+  <div class="image-modal__backdrop" (click)="closeImage()">
+    <div class="image-modal__panel" role="dialog" aria-modal="true">
+      <div class="image-modal__header">
+        <button class="image-modal__close" (click)="closeImage()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="image-modal__body">
+        <img class="image-modal__img" [src]="selectedImageUrl()" [alt]="student()?.fullName" />
       </div>
     </div>
+  </div>
   }
 
   <!-- Crop modal -->
   @if (showCrop() && cropFile()) {
-  <app-image-crop-modal
-    [file]="cropFile()!"
-    [cropShape]="'portrait'"
-    (cropped)="onCropDone($event)"
+  <app-image-crop-modal [file]="cropFile()!" [cropShape]="'portrait'" (cropped)="onCropDone($event)"
     (cancelled)="onCropCancelled()" />
   }
 

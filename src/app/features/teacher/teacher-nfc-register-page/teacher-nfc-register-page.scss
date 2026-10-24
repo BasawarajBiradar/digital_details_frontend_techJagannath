@@ -9,7 +9,7 @@
 .teacher-register form { display: grid; gap: 12px; padding: 18px; }
 .teacher-register label { display: grid; gap: 5px; color: var(--color-text-muted); font-size: 0.72rem; font-weight: 700; }
 .teacher-register input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-surface); color: var(--color-text); font: inherit; }
-.teacher-register input:focus { border-color: var(--color-primary); outline: 2px solid rgba(44, 156, 104, 0.16); }
+.teacher-register input:focus { border-color: var(--color-primary); outline: 2px solid rgba(22, 119, 248, 0.16); }
 .teacher-register__password { display: flex; gap: 6px; }
 .teacher-register__password input { min-width: 0; }
 .teacher-register__password button { display: grid; width: 38px; flex-shrink: 0; place-items: center; border: 1px solid var(--color-border); border-radius: 7px; background: transparent; color: var(--color-text-muted); }

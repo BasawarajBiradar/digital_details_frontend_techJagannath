@@ -1,63 +1,100 @@
-<div class="auth-page">
-  <div class="auth-card login-card">
+<main class="login-page">
+  <div class="login-card" role="region" aria-labelledby="login-title">
 
-    <div class="login-card__header">
-      <h1 class="login-card__title">Welcome back</h1>
-      <p class="login-card__subtitle">Sign in to your TAPAXE account</p>
+    <!-- Card Brand Header -->
+    <header class="login-card__brand">
+      <div class="login-card__logo-badge" aria-hidden="true">
+        <mat-icon class="login-card__shield-icon">security</mat-icon>
+      </div>
+      <div class="login-card__title-group">
+        <span class="login-card__kicker">Secure Access</span>
+        <h1 id="login-title" class="login-card__title">Sign In to TapAxe</h1>
+        <p class="login-card__subtitle">Digital Identification & Campus Management</p>
+      </div>
+    </header>
+
+    <!-- Role Scope Badge -->
+    <div class="login-card__roles-bar" aria-label="Supported portal roles">
+      <span class="login-card__role-tag">Student</span>
+      <span class="login-card__role-dot" aria-hidden="true">•</span>
+      <span class="login-card__role-tag">Teacher</span>
+      <span class="login-card__role-dot" aria-hidden="true">•</span>
+      <span class="login-card__role-tag">School Admin</span>
     </div>
 
-    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <!-- Login Form -->
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
-      <mat-form-field appearance="outline" class="login-form__field">
-        <mat-label>Email address</mat-label>
-        <input
-          matInput
-          type="email"
-          formControlName="emailId"
-          placeholder="you@example.com"
-          autocomplete="email"/>
-        <mat-icon matSuffix>mail_outline</mat-icon>
-        @if (emailId.touched && emailId.hasError('required')) {
-          <mat-error>Email is required</mat-error>
-        } @else if (emailId.touched && emailId.hasError('email')) {
-          <mat-error>Enter a valid email address</mat-error>
-        }
-      </mat-form-field>
+      <div class="login-form__field-group">
+        <label class="login-form__label" for="login-email">Email Address</label>
+        <mat-form-field appearance="outline" class="login-form__field">
+          <mat-icon matPrefix class="login-form__prefix-icon" aria-hidden="true">mail_outline</mat-icon>
+          <input
+            id="login-email"
+            matInput
+            type="email"
+            formControlName="emailId"
+            placeholder="name@school.edu"
+            autocomplete="email" />
+          @if (emailId.touched && emailId.hasError('required')) {
+            <mat-error>Email address is required</mat-error>
+          } @else if (emailId.touched && emailId.hasError('email')) {
+            <mat-error>Enter a valid email address</mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="outline" class="login-form__field">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          [type]="hidePassword ? 'password' : 'text'"
-          formControlName="password"
-          placeholder="Min. 8 characters"
-          autocomplete="current-password"/>
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="hidePassword = !hidePassword">
-          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-        @if (password.touched && password.hasError('required')) {
-          <mat-error>Password is required</mat-error>
-        } @else if (password.touched && password.hasError('minlength')) {
-          <mat-error>Password must be at least 8 characters</mat-error>
-        }
-      </mat-form-field>
-
-      <div class="login-form__forgot">
-        <a href="#">Forgot password?</a>
+      <div class="login-form__field-group">
+        <div class="login-form__password-header">
+          <label class="login-form__label" for="login-password">Password</label>
+          <a href="#" class="login-form__forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
+        </div>
+        <mat-form-field appearance="outline" class="login-form__field">
+          <mat-icon matPrefix class="login-form__prefix-icon" aria-hidden="true">lock_outline</mat-icon>
+          <input
+            id="login-password"
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password" />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            class="login-form__toggle-btn"
+            aria-label="Toggle password visibility"
+            (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (password.touched && password.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          } @else if (password.touched && password.hasError('minlength')) {
+            <mat-error>Password must be at least 8 characters</mat-error>
+          }
+        </mat-form-field>
       </div>
 
       <button
-        class="btn-submit login-form__submit"
+        class="login-form__submit-btn"
         type="submit"
         [disabled]="isLoading">
-        {{ isLoading ? 'Signing in...' : 'Sign in' }}
+        @if (isLoading) {
+          <span class="login-form__btn-spinner" aria-hidden="true"></span>
+          <span>Authenticating...</span>
+        } @else {
+          <span>Sign In to Account</span>
+          <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+        }
       </button>
 
     </form>
 
+    <!-- Security Guarantee Footer -->
+    <footer class="login-card__footer">
+      <mat-icon class="login-card__lock-icon" aria-hidden="true">verified_user</mat-icon>
+      <span>Protected by 256-bit encrypted NFC credentials</span>
+    </footer>
+
   </div>
-</div>
+</main>

@@ -1,216 +1,254 @@
 <!-- School Admin Dashboard -->
 <div class="dashboard">
+  <div class="dashboard__container">
 
-  @if (isLoading()) {
-    <div class="dashboard__loading">
-      <span class="spinner"></span>
-    </div>
-  }
+    @if (isLoading()) {
+      <div class="dashboard__loading" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p class="dashboard__loading-text">Loading school dashboard...</p>
+      </div>
+    }
 
-  @else if (hasError()) {
-    <div class="surface-card dashboard__error">
-      <mat-icon>error_outline</mat-icon>
-      <p>Could not load dashboard. Please try again later.</p>
-    </div>
-  }
+    @else if (hasError()) {
+      <div class="surface-card dashboard__error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <h2>Could not load dashboard</h2>
+        <p>There was an issue fetching data. Please try again later.</p>
+      </div>
+    }
 
-  @else {
-    <!-- Header -->
-    <div class="dashboard__header">
-      <div class="dashboard__school-identity">
+    @else {
+      <!-- Header -->
+      <header class="dashboard__header surface-card" aria-label="School Admin Header">
+        <div class="dashboard__school-identity">
 
-        <!-- Logo upload button -->
-        <label class="dashboard__logo-wrap" aria-label="Change school logo">
-          <input
-            type="file"
-            accept="image/*"
-            class="dashboard__logo-input"
-            (change)="onLogoFileSelected($event)"
-          />
-
-          @if (isUploadingLogo()) {
-            <div class="dashboard__school-logo dashboard__school-logo--placeholder">
-              <span class="spinner spinner--sm"></span>
-            </div>
-          } @else if (schoolLogoUrl()) {
-            <img
-              class="dashboard__school-logo"
-              [src]="schoolLogoUrl()"
-              [alt]="schoolName() + ' logo'"
+          <!-- Logo upload button -->
+          <label class="dashboard__logo-wrap" aria-label="Change school logo">
+            <input
+              type="file"
+              accept="image/*"
+              class="dashboard__logo-input"
+              (change)="onLogoFileSelected($event)"
             />
+
+            @if (isUploadingLogo()) {
+              <div class="dashboard__school-logo dashboard__school-logo--placeholder">
+                <span class="spinner spinner--sm"></span>
+              </div>
+            } @else if (schoolLogoUrl()) {
+              <img
+                class="dashboard__school-logo"
+                [src]="schoolLogoUrl()"
+                [alt]="schoolName() + ' logo'"
+              />
+            } @else {
+              <div class="dashboard__school-logo dashboard__school-logo--placeholder">
+                <mat-icon aria-hidden="true">add_a_photo</mat-icon>
+              </div>
+            }
+
+            <!-- Hover overlay -->
+            <div class="dashboard__logo-overlay" aria-hidden="true">
+              <mat-icon>photo_camera</mat-icon>
+            </div>
+          </label>
+
+          <div class="dashboard__identity-copy">
+            <span class="dashboard__kicker">School Administration</span>
+            <h1 class="dashboard__title">{{ schoolName() || 'School Dashboard' }}</h1>
+            <p class="dashboard__subtitle">Overview of registrations, attendance & activities</p>
+          </div>
+        </div>
+
+        <div class="active-badge" aria-label="Status: Live">
+          <mat-icon aria-hidden="true">circle</mat-icon>
+          <span>Live Portal</span>
+        </div>
+      </header>
+
+      <!-- ── Filters Bar ──────────────────────────────────────────────────────── -->
+      <section class="filters-bar surface-card" aria-label="Dashboard filters">
+
+        <!-- Role toggle -->
+        <div class="filters-bar__group">
+          <span class="filters-bar__label">Filter Role</span>
+          <div class="filters-bar__toggle-group" role="group" aria-label="Select role">
+            <button
+              type="button"
+              class="filters-bar__toggle"
+              [class.filters-bar__toggle--active]="selectedRoleId() === null"
+              (click)="setRole(null)">
+              All Users
+            </button>
+            <button
+              type="button"
+              class="filters-bar__toggle"
+              [class.filters-bar__toggle--active]="selectedRoleId() === 3"
+              (click)="setRole(3)">
+              <mat-icon aria-hidden="true">school</mat-icon>
+              <span>Students</span>
+            </button>
+            <button
+              type="button"
+              class="filters-bar__toggle"
+              [class.filters-bar__toggle--active]="selectedRoleId() === 4"
+              (click)="setRole(4)">
+              <mat-icon aria-hidden="true">person</mat-icon>
+              <span>Teachers</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-filters: only visible when Student is selected -->
+        @if (selectedRoleId() === 3) {
+          <div class="filters-bar__subfilters">
+
+            <!-- Class dropdown -->
+            <div class="filters-bar__field">
+              <label class="filters-bar__field-label" for="filter-class">Select Class</label>
+              <div class="filters-bar__select-wrap">
+                <select
+                  id="filter-class"
+                  class="filters-bar__select"
+                  [value]="selectedClass() ?? ''"
+                  (change)="setClass($any($event.target).value === '' ? null : $any($event.target).value)">
+                  <option value="">All Classes</option>
+                  @for (cls of availableClasses; track cls) {
+                    <option [value]="cls">Class {{ cls }}</option>
+                  }
+                </select>
+                <mat-icon class="filters-bar__select-arrow" aria-hidden="true">expand_more</mat-icon>
+              </div>
+            </div>
+
+            <!-- Division dropdown -->
+            <div class="filters-bar__field">
+              <label class="filters-bar__field-label" for="filter-division">Select Division</label>
+              <div class="filters-bar__select-wrap">
+                <select
+                  id="filter-division"
+                  class="filters-bar__select"
+                  [value]="selectedDivision() ?? ''"
+                  (change)="setDivision($any($event.target).value === '' ? null : $any($event.target).value)">
+                  <option value="">All Divisions</option>
+                  @for (div of availableDivisions; track div) {
+                    <option [value]="div">Section {{ div }}</option>
+                  }
+                </select>
+                <mat-icon class="filters-bar__select-arrow" aria-hidden="true">expand_more</mat-icon>
+              </div>
+            </div>
+
+          </div>
+        }
+
+      </section>
+
+      <!-- ── Dashboard Side-by-Side Content Grid ──────────────────────────────── -->
+      <div class="dashboard__content">
+
+        <!-- Recent Registrations Card -->
+        <section class="surface-card students-card" aria-labelledby="recent-registrations-title">
+          <div class="students-card__header">
+            <div class="students-card__title-group">
+              <mat-icon aria-hidden="true">how_to_reg</mat-icon>
+              <h2 id="recent-registrations-title" class="students-card__heading">Recent Registrations</h2>
+            </div>
+            <span class="badge badge--primary">{{ students().length }} {{ students().length === 1 ? 'Record' : 'Records' }}</span>
+          </div>
+
+          @if (students().length > 0) {
+            <div class="students-table-wrap">
+              <table class="students-table">
+                <caption class="visually-hidden">Recent student registrations and attendance status</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Student Name</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Division</th>
+                    <th scope="col">Registered</th>
+                    <th scope="col" class="students-table__th-status">Status</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (student of students(); track student.id; let i = $index) {
+                    <tr
+                      class="students-table__row"
+                      (click)="openStudentDetail(student.id)"
+                      tabindex="0"
+                      role="button"
+                      [attr.aria-label]="'View details for ' + student.studentName">
+                      <td class="students-table__index">{{ i + 1 }}</td>
+                      <td class="students-table__name">
+                        <strong>{{ student.studentName }}</strong>
+                      </td>
+                      <td class="students-table__class">
+                        <span class="badge badge--primary">Class {{ student.classLevel }}</span>
+                      </td>
+                      <td class="students-table__division">{{ student.division }}</td>
+                      <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
+                      <td class="students-table__status">
+                        <span
+                          class="presence-dot"
+                          [class.presence-dot--present]="student.isPresent"
+                          [class.presence-dot--absent]="!student.isPresent"
+                          [title]="student.isPresent ? 'Present' : 'Absent'"
+                          [attr.aria-label]="student.isPresent ? 'Present' : 'Absent'"
+                        ></span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
           } @else {
-            <div class="dashboard__school-logo dashboard__school-logo--placeholder">
-              <mat-icon>add_a_photo</mat-icon>
+            <div class="students-card__empty">
+              <mat-icon aria-hidden="true">group_off</mat-icon>
+              <p>No recent registrations found for selected criteria.</p>
             </div>
           }
+        </section>
 
-          <!-- Hover overlay -->
-          <div class="dashboard__logo-overlay" aria-hidden="true">
-            <mat-icon>photo_camera</mat-icon>
-          </div>
-        </label>
-
-        <div>
-          <h1 class="dashboard__title">{{ schoolName() || 'School Dashboard' }}</h1>
-          <p class="dashboard__subtitle">Overview of recent student registrations</p>
-        </div>
-      </div>
-
-      <div class="active-badge">
-        <mat-icon style="font-size:14px;width:14px;height:14px;color:var(--color-primary)">circle</mat-icon>
-        Live
-      </div>
-    </div>
-
-    <!-- ── Filters ──────────────────────────────────────────────────────── -->
-    <div class="filters-bar surface-card">
-
-      <!-- Role toggle -->
-      <div class="filters-bar__group">
-        <span class="filters-bar__label">Role</span>
-        <div class="filters-bar__toggle-group">
-          <button
-            class="filters-bar__toggle"
-            [class.filters-bar__toggle--active]="selectedRoleId() === null"
-            (click)="setRole(null)">
-            All
-          </button>
-          <button
-            class="filters-bar__toggle"
-            [class.filters-bar__toggle--active]="selectedRoleId() === 3"
-            (click)="setRole(3)">
-            <mat-icon>school</mat-icon>
-            Student
-          </button>
-          <button
-            class="filters-bar__toggle"
-            [class.filters-bar__toggle--active]="selectedRoleId() === 4"
-            (click)="setRole(4)">
-            <mat-icon>person</mat-icon>
-            Teacher
-          </button>
-        </div>
-      </div>
-
-      <!-- Sub-filters: only visible when Student is selected -->
-      @if (selectedRoleId() === 3) {
-        <div class="filters-bar__subfilters">
-
-          <!-- Class dropdown -->
-          <div class="filters-bar__field">
-            <label class="filters-bar__field-label">Class</label>
-            <div class="filters-bar__select-wrap">
-              <select
-                class="filters-bar__select"
-                [value]="selectedClass() ?? ''"
-                (change)="setClass($any($event.target).value === '' ? null : $any($event.target).value)">
-                <option value="">All Classes</option>
-                @for (cls of availableClasses; track cls) {
-                  <option [value]="cls">Class {{ cls }}</option>
-                }
-              </select>
-              <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
+        <!-- Attendance Pie Chart Card -->
+        <section class="chart-wrapper surface-card" aria-labelledby="attendance-chart-title">
+          <div class="chart-wrapper__header">
+            <div class="chart-wrapper__title-group">
+              <mat-icon aria-hidden="true">pie_chart</mat-icon>
+              <h2 id="attendance-chart-title" class="chart-wrapper__title">Attendance Overview</h2>
             </div>
+            <button
+              class="btn-details"
+              type="button"
+              aria-label="View full attendance details"
+              (click)="goToAttendanceDetails()">
+              <mat-icon aria-hidden="true">open_in_new</mat-icon>
+              <span>Full Details</span>
+            </button>
           </div>
 
-          <!-- Division dropdown -->
-          <div class="filters-bar__field">
-            <label class="filters-bar__field-label">Division</label>
-            <div class="filters-bar__select-wrap">
-              <select
-                class="filters-bar__select"
-                [value]="selectedDivision() ?? ''"
-                (change)="setDivision($any($event.target).value === '' ? null : $any($event.target).value)">
-                <option value="">All Divisions</option>
-                @for (div of availableDivisions; track div) {
-                  <option [value]="div">Division {{ div }}</option>
-                }
-              </select>
-              <mat-icon class="filters-bar__select-arrow">expand_more</mat-icon>
-            </div>
+          <div class="chart-wrapper__body">
+            <app-pie-chart
+              [apiResponse]="attendanceData()"
+              [colors]="['#1677F8', '#62C8FF']"
+            />
           </div>
+        </section>
 
-        </div>
-      }
-
-    </div>
-    <!-- ── /Filters ─────────────────────────────────────────────────────── -->
-
-    <div class="surface-card students-card">
-      <h3 class="students-card__heading">
-        Recent Registrations
-        <span class="badge badge--primary">{{ students().length }}</span>
-      </h3>
-
-      @if (students().length > 0) {
-        <div class="students-table-wrap students-table-wrap--scrollable">
-          <table class="students-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Student Name</th>
-                <th>Class</th>
-                <th>Division</th>
-                <th>Registration Date</th>
-                <th>Status</th> 
-              </tr>
-            </thead>
-            <tbody>
-              @for (student of students(); track student.id; let i = $index) {
-                <tr (click)="openStudentDetail(student.id)" style="cursor:pointer;">
-                  <td class="students-table__index">{{ i + 1 }}</td>
-                  <td class="students-table__name">{{ student.studentName }}</td>
-                  <td class="students-table__class">
-                    <span class="badge badge--primary">Class {{ student.classLevel }}</span>
-                  </td>
-                  <td class="students-table__division">{{ student.division }}</td>
-                  <td class="students-table__date">{{ student.registrationDate | date: 'dd/MM/yyyy' }}</td>
-                  <td class="students-table__status">
-                    <span
-                      class="presence-dot"
-                      [class.presence-dot--present]="student.isPresent"
-                      [class.presence-dot--absent]="!student.isPresent"
-                      [title]="student.isPresent ? 'Present' : 'Absent'"
-                    ></span>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      } @else {
-        <div class="students-card__empty">
-          <mat-icon>group_off</mat-icon>
-          <p>No student data available</p>
-        </div>
-      }
-    </div>
-
-    <div class="chart-wrapper surface-card">
-      <div class="chart-wrapper__header">
-        <span class="chart-wrapper__title">Student Attendance</span>
-        <button class="btn-details" (click)="goToAttendanceDetails()">
-          <mat-icon>open_in_new</mat-icon>
-          Details
-        </button>
       </div>
-      <app-pie-chart
-        [apiResponse]="attendanceData()"
-        [colors]="['#2E8FE8', '#62C8FF']"
-      />
-    </div>
-  }
+    }
 
-  <!-- Crop modal — rendered outside the @else so it can appear over everything -->
-  @if (pendingLogoFile()) {
-  <app-image-crop-modal
-    [file]="pendingLogoFile()!"
-    [outputSize]="400"
-    [cropShape]="'square'"
-    (cropped)="onLogoCropped($event)"
-    (cancelled)="onLogoCropCancelled()" />
-  }
+    <!-- Crop modal -->
+    @if (pendingLogoFile()) {
+      <app-image-crop-modal
+        [file]="pendingLogoFile()!"
+        [outputSize]="400"
+        [cropShape]="'square'"
+        (cropped)="onLogoCropped($event)"
+        (cancelled)="onLogoCropCancelled()" />
+    }
+
+  </div>
 
   <app-dashboard-footer role="school-admin" />
-
 </div>

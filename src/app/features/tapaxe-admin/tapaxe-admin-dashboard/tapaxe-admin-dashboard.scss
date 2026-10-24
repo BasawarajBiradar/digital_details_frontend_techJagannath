@@ -1,6 +1,3 @@
-// tapaxe-admin-dashboard.scss
-
-// ─── Root layout ──────────────────────────────────────────────────────────────
 .tapaxe-dashboard {
   display: flex;
   flex-direction: column;
@@ -8,7 +5,6 @@
   background: var(--color-background);
 }
 
-// ─── Top Nav ──────────────────────────────────────────────────────────────────
 .tapaxe-topnav {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -27,7 +23,6 @@
   }
 }
 
-// ─── Brand ────────────────────────────────────────────────────────────────────
 .tapaxe-topnav__brand {
   display: flex;
   align-items: center;
@@ -38,7 +33,7 @@
 
   @media (max-width: 520px) {
     padding: 14px 16px;
-    border-right: none;
+    border-right: 0;
     border-bottom: 1px solid var(--color-border);
   }
 }
@@ -47,26 +42,23 @@
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: var(--color-glow);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary);
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  display: grid;
+  place-items: center;
+  color: var(--color-primary-dark);
   flex-shrink: 0;
 
-  mat-icon { font-size: 17px; width: 17px; height: 17px; }
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 
 .tapaxe-topnav__brand-name {
-  font-size: 0.9rem;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--color-text);
-  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
 .tapaxe-tabs {
   display: flex;
   align-items: center;
@@ -74,12 +66,7 @@
   flex: 1;
   overflow-x: auto;
   scrollbar-width: none;
-
   &::-webkit-scrollbar { display: none; }
-
-  @media (max-width: 520px) {
-    padding: 0 8px;
-  }
 }
 
 .tapaxe-tabs__item {
@@ -88,23 +75,17 @@
   gap: 7px;
   padding: 0 16px;
   height: 56px;
-  border: none;
+  border: 0;
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.83rem;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   position: relative;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: color 0.15s ease, background 0.15s ease;
 
-  mat-icon {
-    font-size: 17px;
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-  }
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
 
   &::after {
     content: '';
@@ -112,8 +93,8 @@
     bottom: 0;
     left: 12px;
     right: 12px;
-    height: 2.5px;
-    border-radius: 99px 99px 0 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
     background: var(--color-primary);
     transform: scaleX(0);
     transition: transform 0.2s ease;
@@ -125,25 +106,20 @@
   }
 
   &--active {
-    color: var(--color-primary);
-
-    mat-icon { color: var(--color-primary); }
+    color: var(--color-primary-dark);
+    font-weight: 700;
+    mat-icon { color: var(--color-primary-dark); }
     &::after { transform: scaleX(1); }
   }
 
   @media (max-width: 400px) {
-    padding: 0 12px;
+    padding: 0 10px;
     height: 48px;
-
     span { display: none; }
-
     mat-icon { font-size: 20px; width: 20px; height: 20px; }
-
-    &::after { left: 6px; right: 6px; }
   }
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 .tapaxe-main {
   flex: 1;
   padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 32px);
@@ -152,183 +128,157 @@
   align-items: flex-start;
 }
 
-// ─── Panel ────────────────────────────────────────────────────────────────────
 .tapaxe-panel {
   width: 100%;
-  max-width: 520px;
-  animation: fade-up 0.3s ease both;
+  max-width: 540px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(11, 31, 58, 0.04);
+  padding: 24px;
+  box-sizing: border-box;
 
-  &--wide { max-width: 560px; }
-
+  &--wide { max-width: 600px; }
   app-nfc-scanner { display: block; }
 
   &__header {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
   }
 
   &__header-icon {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: var(--color-glow);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primary);
+    background: var(--color-surface-inset);
+    border: 1px solid var(--color-border);
+    display: grid;
+    place-items: center;
+    color: var(--color-primary-dark);
     flex-shrink: 0;
 
-    mat-icon { font-size: 22px; width: 22px; height: 22px; }
+    mat-icon { font-size: 24px; width: 24px; height: 24px; }
   }
 
   &__title {
-    font-size: 1.15rem;
-    font-weight: 800;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--color-text);
-    margin: 0 0 2px;
-    line-height: 1.2;
+    margin: 0;
   }
 
   &__subtitle {
-    font-size: 0.78rem;
+    font-size: 12px;
     color: var(--color-text-muted);
-    margin: 0;
+    margin: 2px 0 0;
   }
 }
 
-// ─── Form ─────────────────────────────────────────────────────────────────────
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+  margin: 16px 0 8px;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-
-  @media (max-width: 420px) { grid-template-columns: 1fr; }
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 
   label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-text-subtle);
   }
 
-  input {
+  input, select {
     height: 40px;
     padding: 0 12px;
     border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: var(--color-surface-inset);
+    background: #FAFCFE;
     color: var(--color-text);
     font-size: 13px;
-    font-weight: 500;
-    outline: none;
+    font-family: inherit;
     width: 100%;
     box-sizing: border-box;
-    appearance: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-    &::placeholder { color: var(--color-text-subtle); opacity: 0.7; }
-
-    &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-glow);
-    }
-  }
-
-  // ── select kept separate — NO appearance:none so browser renders option text correctly
-  select {
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    background: var(--color-surface-inset);
-    color: var(--color-text);
-    font-size: 13px;
-    font-weight: 500;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-
-    &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-glow);
-    }
+    &:focus { outline: 0; border-color: var(--color-primary); }
   }
 
   &__error {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    color: var(--color-primary);
-    letter-spacing: 0.04em;
+    color: #C43D4B;
   }
 }
 
-.req { color: var(--color-primary); }
+.req { color: #C43D4B; }
 
 .form-submit-row {
-  margin-top: 24px;
+  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
 }
 
-// ─── Submit button ────────────────────────────────────────────────────────────
 .btn-submit {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 24px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  min-height: 42px;
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-primary);
   color: #fff;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s, transform 0.15s;
 
-  mat-icon { font-size: 16px; width: 16px; height: 16px; }
-
-  &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  &:not(:disabled):hover { opacity: 0.9; transform: translateY(-1px); }
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  &:hover:not(:disabled) { background: var(--color-primary-dark); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
-// ─── Password eye toggle ──────────────────────────────────────────────────────
 .input-eye {
   position: relative;
   display: flex;
   align-items: center;
-
   input { padding-right: 40px; }
 
   &__btn {
     position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
+    right: 8px;
+    background: 0;
+    border: 0;
     cursor: pointer;
     padding: 0;
-    display: flex;
-    align-items: center;
+    display: grid;
+    place-items: center;
     color: var(--color-text-subtle);
-    transition: color 0.15s;
 
     mat-icon { font-size: 18px; width: 18px; height: 18px; }
     &:hover { color: var(--color-text); }
   }
 }
 
-// ─── Schools loading ──────────────────────────────────────────────────────────
 .schools-loading {
   display: flex;
   align-items: center;
@@ -341,83 +291,69 @@
   border-radius: 10px;
 }
 
-// ─── Spinner small ────────────────────────────────────────────────────────────
 .spinner--sm {
   width: 14px;
   height: 14px;
-  border-width: 2px;
-  border-color: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: tapaxe-spin 0.8s linear infinite;
 }
 
-// ─── Alert ────────────────────────────────────────────────────────────────────
+@keyframes tapaxe-spin { to { transform: rotate(360deg); } }
+
 .tapaxe-alert {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
   font-size: 13px;
-  font-weight: 500;
-  margin-top: 16px;
+  font-weight: 600;
+  margin-top: 14px;
 
   mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
-
-  &--error { background: #ffebee; color: #c62828; }
+  &--error { background: #FFF0F0; color: #C43D4B; }
 }
 
-// ─── Success state ────────────────────────────────────────────────────────────
 .tapaxe-success {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: #f1f8e9;
-  border: 1px solid #c5e1a5;
-  border-radius: 14px;
-  animation: fade-up 0.3s ease both;
+  gap: 14px;
+  padding: 16px;
+  background: #E8F8EF;
+  border: 1px solid #BDE7CE;
+  border-radius: 12px;
 
   &__icon {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background: #e8f5e9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: #fff;
+    display: grid;
+    place-items: center;
     flex-shrink: 0;
 
-    mat-icon { font-size: 26px; width: 26px; height: 26px; color: #2e7d32; }
+    mat-icon { font-size: 24px; width: 24px; height: 24px; color: #18794E; }
   }
 
-  strong {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #1b5e20;
-    margin-bottom: 2px;
-  }
-
-  p { font-size: 0.78rem; color: #388e3c; margin: 0; }
+  strong { display: block; font-size: 14px; font-weight: 700; color: #18794E; }
+  p { font-size: 12px; color: var(--color-text-muted); margin: 2px 0 0; }
 
   &__btn {
     margin-left: auto;
-    flex-shrink: 0;
-    padding: 7px 14px;
-    border: 1px solid #a5d6a7;
-    border-radius: 999px;
-    background: transparent;
-    color: #2e7d32;
+    padding: 6px 14px;
+    border: 1px solid #18794E;
+    border-radius: 8px;
+    background: #fff;
+    color: #18794E;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover { background: #c8e6c9; }
   }
 }
 
-// ─── Custom Select ────────────────────────────────────────────────────────────
 .custom-select {
   position: relative;
 
@@ -430,31 +366,19 @@
     padding: 0 12px;
     border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: var(--color-surface-inset);
+    background: #FAFCFE;
     color: var(--color-text);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    text-align: left;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
     box-sizing: border-box;
+
+    &:focus { outline: 0; border-color: var(--color-primary); }
   }
 
-  &--open &__trigger,
-  &__trigger:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-glow);
-    outline: none;
-  }
-
-  &--error &__trigger {
-    border-color: var(--color-primary);
-  }
-
-  &__placeholder {
-    color: var(--color-text-subtle);
-    opacity: 0.7;
-  }
+  &--open &__trigger { border-color: var(--color-primary); }
+  &--error &__trigger { border-color: #C43D4B; }
+  &__placeholder { color: var(--color-text-subtle); }
 
   &__arrow {
     font-size: 18px;
@@ -465,9 +389,7 @@
     transition: transform 0.2s ease;
   }
 
-  &--open &__arrow {
-    transform: rotate(180deg);
-  }
+  &--open &__arrow { transform: rotate(180deg); }
 
   &__menu {
     position: absolute;
@@ -475,44 +397,30 @@
     left: 0;
     right: 0;
     background: var(--color-surface);
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid var(--color-border);
     border-radius: 10px;
-    box-shadow: 0 4px 16px var(--color-shadow-md), 0 12px 32px var(--color-shadow);
+    box-shadow: 0 8px 24px rgba(11, 31, 58, 0.12);
     z-index: 200;
-    overflow: hidden;
-    animation: fade-up 0.15s ease both;
+    max-height: 220px;
+    overflow-y: auto;
   }
 
   &__option {
     display: block;
     width: 100%;
     padding: 10px 14px;
-    border: none;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
     background: transparent;
     color: var(--color-text);
     font-size: 13px;
     font-weight: 500;
     text-align: left;
     cursor: pointer;
-    transition: background 0.1s ease;
 
-    &:hover {
-      background: var(--color-surface-inset);
-    }
-
-    &--selected {
-      color: var(--color-primary);
-      font-weight: 700;
-      background: var(--color-glow);
-    }
-
-    &--placeholder {
-      color: var(--color-text-subtle);
-      font-size: 12px;
-    }
-
-    & + & {
-      border-top: 1px solid var(--color-border);
-    }
+    &:last-child { border-bottom: 0; }
+    &:hover { background: var(--color-surface-inset); }
+    &--selected { color: var(--color-primary-dark); font-weight: 700; background: var(--color-surface-inset); }
+    &--placeholder { color: var(--color-text-subtle); }
   }
 }

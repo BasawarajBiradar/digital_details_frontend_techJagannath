@@ -1,90 +1,118 @@
 <main class="notice-management">
-  <section class="notice-management__card">
-    <div class="notice-management__header">
-      <div>
-        <p class="notice-management__eyebrow">School admin</p>
-        <h1>Create notice</h1>
-      </div>
-    </div>
+  <div class="notice-management__container">
 
-    <form class="notice-management__form" [formGroup]="noticeForm" (ngSubmit)="submitNotice()" novalidate>
-      <label class="notice-management__field">
-        <span>Notice title</span>
-        <input formControlName="noticeTitle" type="text" placeholder="Pending Fees" maxlength="120" />
-        @if (noticeForm.controls.noticeTitle.touched && noticeForm.controls.noticeTitle.invalid) {
-          <small>Enter a valid notice title.</small>
-        }
-      </label>
+    <section class="notice-management__card surface-card" aria-labelledby="create-notice-title">
+      <header class="notice-management__header">
+        <div class="notice-management__title-group">
+          <span class="notice-management__kicker">School Administration</span>
+          <h1 id="create-notice-title" class="notice-management__title">Publish School Notice</h1>
+          <p class="notice-management__subtitle">Broadcast announcements, circulars, and updates to students and faculty</p>
+        </div>
+      </header>
 
-      <label class="notice-management__field notice-management__field--wide">
-        <span>Notice description</span>
-        <textarea
-          formControlName="noticeDescription"
-          rows="5"
-          placeholder="Please pay your fees before 31 Dec 2026"
-          maxlength="500"></textarea>
-        @if (noticeForm.controls.noticeDescription.touched && noticeForm.controls.noticeDescription.invalid) {
-          <small>Enter a detailed notice description.</small>
-        }
-      </label>
-
-      <div class="notice-management__paired-fields">
-        <label class="notice-management__field notice-management__field--compact">
-          <span>Class level (optional)</span>
-          <input formControlName="classLevel" type="text" placeholder="e.g. 12" />
-          @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
-            <small>Class level must be 1 or greater.</small>
+      <form class="notice-management__form" [formGroup]="noticeForm" (ngSubmit)="submitNotice()" novalidate>
+        
+        <label class="notice-management__field notice-management__field--wide">
+          <span class="notice-management__label-text">Notice Title <span class="notice-management__req">*</span></span>
+          <input
+            formControlName="noticeTitle"
+            type="text"
+            class="notice-management__input"
+            placeholder="e.g. Annual Sports Meet Schedule 2026"
+            maxlength="120" />
+          @if (noticeForm.controls.noticeTitle.touched && noticeForm.controls.noticeTitle.invalid) {
+            <small class="notice-management__field-error" role="alert">Please enter a valid notice title (min. 3 characters).</small>
           }
         </label>
 
-        <div class="notice-management__field notice-management__field--compact">
-          <span>Audience</span>
-          <label class="notice-management__toggle" for="notice-is-staff">
-            <input id="notice-is-staff" type="checkbox" formControlName="isStaff" />
-            <span>{{ noticeForm.controls.isStaff.value ? 'Staff' : 'Students' }}</span>
-          </label>
-        </div>
-      </div>
-
-      <label class="notice-management__field notice-management__field--wide">
-        <span>Attachments (optional)</span>
-        <input type="file" multiple (change)="onNoticeFilesSelected($event)" />
-        @if (attachmentError()) {
-          <small>{{ attachmentError() }}</small>
-        }
-      </label>
-
-      @if (attachedFiles().length) {
-        <div class="notice-management__field notice-management__field--wide">
-          <span>Selected files</span>
-          <ul class="notice-management__attachments">
-            @for (file of attachedFiles(); track file.name; let i = $index) {
-              <li class="notice-management__attachment-item">
-                <span class="notice-management__attachment-name" [title]="file.name">{{ file.name }}</span>
-                <button type="button" class="notice-management__attachment-remove" (click)="removeAttachment(i)">Remove</button>
-              </li>
-            }
-          </ul>
-        </div>
-      }
-
-      <div class="notice-management__actions">
-        <button type="submit" class="notice-management__submit" [disabled]="isSubmitting()">
-          @if (isSubmitting()) {
-            <span>Creating...</span>
-          } @else {
-            <span>Create notice</span>
+        <label class="notice-management__field notice-management__field--wide">
+          <span class="notice-management__label-text">Notice Description <span class="notice-management__req">*</span></span>
+          <textarea
+            formControlName="noticeDescription"
+            rows="5"
+            class="notice-management__textarea"
+            placeholder="Provide comprehensive details, timings, instructions, or guidelines for the announcement..."
+            maxlength="500"></textarea>
+          @if (noticeForm.controls.noticeDescription.touched && noticeForm.controls.noticeDescription.invalid) {
+            <small class="notice-management__field-error" role="alert">Please enter a detailed description (min. 10 characters).</small>
           }
-        </button>
-      </div>
+        </label>
 
-      @if (submitSuccess()) {
-        <p class="notice-management__status notice-management__status--success" role="status">{{ submitSuccess() }}</p>
-      }
+        <div class="notice-management__paired-fields">
+          <label class="notice-management__field notice-management__field--compact">
+            <span class="notice-management__label-text">Target Class (Optional)</span>
+            <input
+              formControlName="classLevel"
+              type="text"
+              class="notice-management__input"
+              placeholder="e.g. 10 (Leave blank for all classes)" />
+            @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
+              <small class="notice-management__field-error" role="alert">Class level must be 1 or greater.</small>
+            }
+          </label>
 
-      @if (submitError()) {
-        <p class="notice-management__status notice-management__status--error" role="alert">{{ submitError() }}</p>
-      }
-    </form>
-  </section>
+          <div class="notice-management__field notice-management__field--compact">
+            <span class="notice-management__label-text">Target Audience</span>
+            <label class="notice-management__toggle" for="notice-is-staff">
+              <input id="notice-is-staff" type="checkbox" formControlName="isStaff" />
+              <span class="notice-management__toggle-badge" [class.notice-management__toggle-badge--staff]="noticeForm.controls.isStaff.value">
+                {{ noticeForm.controls.isStaff.value ? 'Staff Only' : 'Students & Parents' }}
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="notice-management__field notice-management__field--wide">
+          <span class="notice-management__label-text">Attachments (Optional)</span>
+          <div class="notice-management__file-upload-wrap">
+            <input
+              type="file"
+              id="notice-file-input"
+              class="notice-management__file-input"
+              multiple
+              (change)="onNoticeFilesSelected($event)" />
+            <label for="notice-file-input" class="notice-management__file-label">
+              <span>Choose Files to Attach (PDF, Images, Documents)</span>
+            </label>
+          </div>
+          @if (attachmentError()) {
+            <small class="notice-management__field-error" role="alert">{{ attachmentError() }}</small>
+          }
+        </div>
+
+        @if (attachedFiles().length) {
+          <div class="notice-management__field notice-management__field--wide">
+            <span class="notice-management__label-text">Attached Files ({{ attachedFiles().length }})</span>
+            <ul class="notice-management__attachments">
+              @for (file of attachedFiles(); track file.name; let i = $index) {
+                <li class="notice-management__attachment-item">
+                  <span class="notice-management__attachment-name" [title]="file.name">{{ file.name }}</span>
+                  <button type="button" class="notice-management__attachment-remove" (click)="removeAttachment(i)">Remove</button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="notice-management__actions">
+          <button type="submit" class="notice-management__submit" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <span>Publishing Notice...</span>
+            } @else {
+              <span>Publish Notice</span>
+            }
+          </button>
+        </div>
+
+        @if (submitSuccess()) {
+          <p class="notice-management__status notice-management__status--success" role="status">{{ submitSuccess() }}</p>
+        }
+
+        @if (submitError()) {
+          <p class="notice-management__status notice-management__status--error" role="alert">{{ submitError() }}</p>
+        }
+      </form>
+    </section>
+
+  </div>
 </main>

@@ -1,79 +1,156 @@
 <main class="tap-photos">
-  <section class="tap-photos__filter" aria-labelledby="tap-photos-filter-title">
-    <div>
-      <span id="tap-photos-filter-title" class="tap-photos__kicker">Filter period</span>
-    </div>
-    <app-date-picker
-      [compact]="true"
-      [startDate]="fromDate()"
-      (startDateChange)="onFromDateChanged($event)"
-      [endDate]="toDate()"
-      (endDateChange)="onToDateChanged($event)" />
-  </section>
+  <div class="tap-photos__container">
 
-  <section class="tap-photos__content" aria-labelledby="tap-photos-title">
+    <!-- Filter Card Header -->
+    <header class="tap-photos__filter-card" aria-labelledby="tap-photos-title">
+      <div class="tap-photos__header-row">
+        <div class="tap-photos__title-group">
+          <span class="tap-photos__kicker">Student Portal</span>
+          <h1 id="tap-photos-title" class="tap-photos__title">Tap Photos</h1>
+        </div>
 
-    @if (loading()) {
-      <div class="tap-photos__message" aria-live="polite">
-        <span class="tap-photos__spinner" aria-hidden="true"></span>
-        Loading tap photos...
+        @if (!loading() && !error() && tapPhotos().length > 0) {
+          <div class="tap-photos__count-badge" aria-label="Total records found">
+            <mat-icon aria-hidden="true">photo_library</mat-icon>
+            <span>{{ tapPhotos().length }} {{ tapPhotos().length === 1 ? 'Record' : 'Records' }}</span>
+          </div>
+        }
       </div>
-    } @else if (error()) {
-      <div class="tap-photos__message tap-photos__message--error" role="alert">
-        <mat-icon aria-hidden="true">error_outline</mat-icon>
-        <span>Unable to load tap photos.</span>
-        <button type="button" (click)="retry()">Retry</button>
+
+      <div class="tap-photos__filter-row" aria-labelledby="tap-photos-filter-title">
+        <div class="tap-photos__filter-caption">
+          <mat-icon aria-hidden="true">date_range</mat-icon>
+          <span id="tap-photos-filter-title">Filter by date</span>
+        </div>
+        <div class="tap-photos__picker-wrap">
+          <app-date-picker
+            [compact]="true"
+            [startDate]="fromDate()"
+            (startDateChange)="onFromDateChanged($event)"
+            [endDate]="toDate()"
+            (endDateChange)="onToDateChanged($event)" />
+        </div>
       </div>
-    } @else if (tapPhotos().length === 0) {
-      <div class="tap-photos__message">
-        <mat-icon aria-hidden="true">photo_camera</mat-icon>
-        <span>No tap photos for this period.</span>
-      </div>
-    } @else {
-      <div class="tap-photos__table-wrap">
-        <table class="tap-photos__table">
-          <caption class="visually-hidden">Tap photos between the selected dates</caption>
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Time</th>
-              <th scope="col">Photo</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (photo of tapPhotos(); track photo.date + photo.time) {
-              <tr>
-                <td data-label="Date">{{ formatDate(photo.date) }}</td>
-                <td data-label="Time">{{ formatTime(photo.time) }}</td>
-                <td data-label="Photo">
-                  @if (photo.photoUrl) {
-                    <button class="tap-photos__view-link" type="button" (click)="openPhoto(photo.photoUrl!)">
-                      <mat-icon aria-hidden="true">visibility</mat-icon>
-                      View photo
-                    </button>
-                  } @else {
-                    <span class="tap-photos__unavailable">Unavailable</span>
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-  </section>
+    </header>
+
+    <!-- Main Results Section -->
+    <section class="tap-photos__content" aria-live="polite">
+
+      @if (loading()) {
+        <div class="tap-photos__state-card tap-photos__state-card--loading" aria-live="polite">
+          <span class="tap-photos__spinner" aria-hidden="true"></span>
+          <p class="tap-photos__state-text">Loading tap photos...</p>
+        </div>
+      } @else if (error()) {
+        <div class="tap-photos__state-card tap-photos__state-card--error" role="alert">
+          <div class="tap-photos__state-icon tap-photos__state-icon--error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+          </div>
+          <h2 class="tap-photos__state-heading">Unable to Load Tap Photos</h2>
+          <p class="tap-photos__state-subtext">There was an issue fetching records for the selected period.</p>
+          <button class="tap-photos__retry-btn" type="button" (click)="retry()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            Retry
+          </button>
+        </div>
+      } @else if (tapPhotos().length === 0) {
+        <div class="tap-photos__state-card tap-photos__state-card--empty">
+          <div class="tap-photos__state-icon">
+            <mat-icon aria-hidden="true">photo_camera</mat-icon>
+          </div>
+          <h2 class="tap-photos__state-heading">No Tap Photos Found</h2>
+          <p class="tap-photos__state-subtext">No attendance photo entries were recorded in the selected date range.</p>
+        </div>
+      } @else {
+        <div class="tap-photos__table-card">
+          <div class="tap-photos__table-wrap">
+            <table class="tap-photos__table">
+              <caption class="visually-hidden">Tap photos between the selected dates</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
+                  <th scope="col" class="tap-photos__th-action">Photo Record</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (photo of tapPhotos(); track photo.date + photo.time) {
+                  <tr class="tap-photos__row">
+                    <td class="tap-photos__td-date">
+                      <div class="tap-photos__cell-with-icon">
+                        <mat-icon class="tap-photos__cell-icon" aria-hidden="true">calendar_today</mat-icon>
+                        <span class="tap-photos__cell-value">{{ formatDate(photo.date) }}</span>
+                      </div>
+                    </td>
+                    <td class="tap-photos__td-time">
+                      <div class="tap-photos__cell-with-icon">
+                        <mat-icon class="tap-photos__cell-icon" aria-hidden="true">schedule</mat-icon>
+                        <span class="tap-photos__cell-value">{{ formatTime(photo.time) }}</span>
+                      </div>
+                    </td>
+                    <td class="tap-photos__td-action">
+                      @if (photo.photoUrl) {
+                        <button
+                          class="tap-photos__view-btn"
+                          type="button"
+                          aria-label="View photo captured on {{ formatDate(photo.date) }} at {{ formatTime(photo.time) }}"
+                          (click)="openPhoto(photo.photoUrl!)">
+                          <mat-icon aria-hidden="true">visibility</mat-icon>
+                          <span>View photo</span>
+                        </button>
+                      } @else {
+                        <span class="tap-photos__unavailable">
+                          <mat-icon aria-hidden="true">photo_size_select_actual</mat-icon>
+                          Unavailable
+                        </span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+    </section>
+
+  </div>
 
   <app-dashboard-footer role="student" />
 
+  <!-- Photo Modal / Lightbox -->
   @if (showPhoto() && selectedPhotoUrl(); as photoUrl) {
-    <div class="tap-photos__modal-backdrop" role="presentation" (click)="closePhoto()">
-      <div class="tap-photos__modal" role="dialog" aria-modal="true" aria-label="Tap photo" (click)="$event.stopPropagation()">
-        <button class="tap-photos__modal-close" type="button" aria-label="Close photo" (click)="closePhoto()">
-          <mat-icon aria-hidden="true">close</mat-icon>
-        </button>
-        <img class="tap-photos__modal-image" [src]="photoUrl" alt="Student tap photo" />
+    <div
+      class="tap-photos__modal-backdrop"
+      role="presentation"
+      (click)="closePhoto()">
+      <div
+        class="tap-photos__modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Tap photo preview"
+        (click)="$event.stopPropagation()">
+        <header class="tap-photos__modal-header">
+          <div class="tap-photos__modal-title-group">
+            <mat-icon aria-hidden="true">photo</mat-icon>
+            <span class="tap-photos__modal-title">Attendance Photo</span>
+          </div>
+          <button
+            class="tap-photos__modal-close"
+            type="button"
+            aria-label="Close photo preview"
+            (click)="closePhoto()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </header>
+        <div class="tap-photos__modal-body">
+          <img
+            class="tap-photos__modal-image"
+            [src]="photoUrl"
+            alt="Student tap photo preview" />
+        </div>
       </div>
     </div>
   }
-
 </main>

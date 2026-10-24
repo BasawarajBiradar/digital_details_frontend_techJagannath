@@ -1,123 +1,146 @@
-<!-- landing page html -->
-<div class="dashboard">
+<div class="landing-page">
+  <div class="landing-page__container">
 
-  @if (isLoading()) {
-    <div class="dashboard__loading">
-      <span class="spinner"></span>
-    </div>
-  }
-
-  @else if (hasError()) {
-    <div class="surface-card dashboard__error">
-      <mat-icon>error_outline</mat-icon>
-      <p>Could not load student info. Please try again later.</p>
-    </div>
-  }
-
-  @else if (student()) {
-
-    <div class="id-card">
-      <div class="id-card__band">
-          <img class="id-card__band-logo"
-               [src]="student()!.schoolLogoUrl"
-               alt="School logo" />
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">{{ student()!.schoolName }}</span>
-        </div>
+    @if (isLoading()) {
+      <div class="landing-page__loading" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p class="landing-page__loading-text">Loading student information...</p>
       </div>
+    } @else if (hasError()) {
+      <div class="surface-card landing-page__error" role="alert">
+        <div class="landing-page__error-icon">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+        </div>
+        <h2>Unable to Load Student Info</h2>
+        <p>Could not verify or load the requested card. Redirecting to login...</p>
+      </div>
+    } @else if (student(); as s) {
 
-      <div class="id-card__body">
-        <div class="id-card__photo-wrap">
-          @if (student()!.photoUrl) {
-            <img class="id-card__photo"
-                 [src]="student()!.photoUrl"
-                 [alt]="student()!.fullName" />
-          } @else {
-            <div class="id-card__photo-fallback">
-              <mat-icon>person</mat-icon>
-            </div>
+      <!-- Student Digital Identity Card -->
+      <article class="id-card" aria-label="Student ID Card">
+        <header class="id-card__band">
+          @if (s.schoolLogoUrl) {
+            <img
+              class="id-card__band-logo"
+              [src]="s.schoolLogoUrl"
+              alt="{{ s.schoolName }} logo" />
           }
+          <div class="id-card__band-text">
+            <span class="id-card__band-title">{{ s.schoolName }}</span>
+            <span class="id-card__band-subtitle">Student Identity Card</span>
+          </div>
+        </header>
+
+        <div class="id-card__body">
+          <div class="id-card__photo-wrap">
+            @if (s.photoUrl) {
+              <img
+                class="id-card__photo"
+                [src]="s.photoUrl"
+                alt="Photo of {{ s.fullName }}" />
+            } @else {
+              <div class="id-card__photo-fallback">
+                <mat-icon aria-hidden="true">person</mat-icon>
+              </div>
+            }
+          </div>
+
+          <div class="id-card__details">
+            <h1 class="id-card__name">{{ s.fullName }}</h1>
+            <div class="id-card__class-chip">
+              <span>{{ classDivision() }}</span>
+            </div>
+
+            <div class="id-card__divider"></div>
+
+            <div class="id-card__info-grid">
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">Blood</span>
+                <span class="id-card__info-val id-card__info-val--blood">{{ s.bloodGroup || '—' }}</span>
+              </div>
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">DOB</span>
+                <span class="id-card__info-val">{{ s.birthDate || '—' }}</span>
+              </div>
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">Contact</span>
+                <span class="id-card__info-val">
+                  @if (s.contactNumber) {
+                    <a class="id-card__link" href="tel:{{ s.contactNumber }}">
+                      <mat-icon class="id-card__link-icon" aria-hidden="true">phone</mat-icon>
+                      {{ s.contactNumber }}
+                    </a>
+                  } @else {
+                    —
+                  }
+                </span>
+              </div>
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">Email</span>
+                <span class="id-card__info-val">
+                  @if (s.emailId) {
+                    <a class="id-card__link" href="mailto:{{ s.emailId }}">
+                      <mat-icon class="id-card__link-icon" aria-hidden="true">mail</mat-icon>
+                      {{ s.emailId }}
+                    </a>
+                  } @else {
+                    —
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="id-card__details">
-          <div class="id-card__name">{{ student()!.fullName }}</div>
-          <div class="id-card__class">{{ classDivision() }}</div>
+        @if (s.address) {
+          <footer class="id-card__address">
+            <span class="id-card__address-label">Address</span>
+            <span class="id-card__address-val">{{ s.address }}</span>
+          </footer>
+        }
+      </article>
 
-          <div class="id-card__divider"></div>
+      <!-- Emergency Contact Card -->
+      <article class="id-card id-card--emergency" aria-label="Emergency Contact Details">
+        <header class="id-card__band id-card__band--emergency">
+          <mat-icon aria-hidden="true">contact_emergency</mat-icon>
+          <div class="id-card__band-text">
+            <span class="id-card__band-title">Emergency Contact</span>
+          </div>
+        </header>
 
-          <div class="id-card__row">
-            <span class="id-card__row-label">Blood</span>
-            <span class="id-card__row-value id-card__row-value--blood">
-              {{ student()!.bloodGroup }}
-            </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">DOB</span>
-            <span class="id-card__row-value">{{ student()!.birthDate }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">
-              <a href="tel:{{ student()!.contactNumber }}">{{ student()!.contactNumber }}</a>
-            </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Email</span>
-            <span class="id-card__row-value">
-              <a href="mailto:{{ student()!.emailId }}">{{ student()!.emailId }}</a>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="id-card__address">
-        <span class="id-card__row-label">Address</span>
-        <span class="id-card__address-value">{{ student()!.address }}</span>
-      </div>
-    </div>
-
-    <div class="id-card">
-      <div class="id-card__band id-card__band--emergency">
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">Emergency Contact</span>
-        </div>
-      </div>
-      <div class="id-card__body">
-        <div class="id-card__details">
-          <div class="id-card__row">
-            <span class="id-card__row-label">Name</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Relation</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactRelation }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">
-              <a class="id-card__link" href="tel:{{ student()!.emergencyContactNumber }}">
-              @if (student()!.emergencyContactNumber) {
-                <mat-icon class="id-card__link-icon">phone</mat-icon>
+        <div class="id-card__body">
+          <div class="id-card__details">
+            <div class="id-card__emergency-row">
+              <span class="id-card__info-label">Guardian</span>
+              <span class="id-card__emergency-name">{{ s.emergencyContactName || '—' }}</span>
+              @if (s.emergencyContactRelation) {
+                <span class="id-card__relation-chip">({{ s.emergencyContactRelation }})</span>
               }
-                {{ student()!.emergencyContactNumber }}
-              </a>
-            </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">
-              <a class="id-card__link" href="tel:{{ student()!.alternateContactNumber }}">
-              @if (student()!.alternateContactNumber) {
-                <mat-icon class="id-card__link-icon">phone</mat-icon>
+            </div>
+
+            <div class="id-card__divider"></div>
+
+            <div class="id-card__emergency-actions">
+              @if (s.emergencyContactNumber) {
+                <a class="id-card__call-btn" href="tel:{{ s.emergencyContactNumber }}" aria-label="Call emergency contact">
+                  <mat-icon aria-hidden="true">call</mat-icon>
+                  <span>Primary: {{ s.emergencyContactNumber }}</span>
+                </a>
               }
-                {{ student()!.alternateContactNumber }}
-              </a>
-            </span>
+
+              @if (s.alternateContactNumber) {
+                <a class="id-card__call-btn id-card__call-btn--secondary" href="tel:{{ s.alternateContactNumber }}" aria-label="Call alternate contact">
+                  <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
+                  <span>Alternate: {{ s.alternateContactNumber }}</span>
+                </a>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </article>
 
-  }
+    }
 
+  </div>
 </div>

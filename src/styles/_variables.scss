@@ -1,18 +1,18 @@
-// === Brand Colors (Spider-Man) ===
-$primary: #E8222A;       // Spider-Man Red
-$accent: #1A44AE;        // Spider-Man Blue
-$warn: #FF6D00;          // Warning Orange
+// === TapAxe Enterprise Brand Colors ===
+$primary: #1677F8;       // TapAxe Royal Blue
+$accent: #00B4D8;        // TapAxe Cyan
+$warn: #C43D4B;          // Warning / Error Crimson
 
 // === Light Theme Surfaces ===
-$light-background: #F5F5F5;
+$light-background: #F4F8FF;
 $light-surface: #FFFFFF;
-$light-on-surface: #1A1A1A;
+$light-on-surface: #0B1F3A;
 $light-on-primary: #FFFFFF;
 
 // === Dark Theme Surfaces ===
-$dark-background: #0D0D0D;
-$dark-surface: #1C1C1E;
-$dark-on-surface: #F0F0F0;
+$dark-background: #0B1F3A;
+$dark-surface: #102A4C;
+$dark-on-surface: #F4F8FF;
 $dark-on-primary: #FFFFFF;
 
 // === Spacing Scale ===
@@ -30,6 +30,6 @@ $radius-lg: 16px;
 $radius-full: 9999px;
 
 // === Shadow ===
-$shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-$shadow-md: 0 4px 12px rgba(0,0,0,0.15);
-$shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+$shadow-sm: 0 1px 3px rgba(11, 31, 58, 0.08);
+$shadow-md: 0 4px 12px rgba(11, 31, 58, 0.12);
+$shadow-lg: 0 8px 24px rgba(11, 31, 58, 0.18);

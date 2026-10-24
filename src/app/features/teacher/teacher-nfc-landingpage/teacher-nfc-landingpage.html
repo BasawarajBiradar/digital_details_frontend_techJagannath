@@ -1,26 +1,98 @@
-<main class="teacher-landing">
-  @if (loading()) {
-    <div class="teacher-landing__state" aria-live="polite">Loading teacher profile...</div>
-  } @else if (error()) {
-    <div class="teacher-landing__state" role="alert">Unable to load this profile.</div>
-  } @else if (teacher(); as profile) {
-    <section class="teacher-landing__card" aria-labelledby="teacher-landing-name">
-      <div class="teacher-landing__band">
-        @if (profile.schoolLogoUrl) { <img [src]="profile.schoolLogoUrl" alt="School logo" /> }
-        <span>{{ profile.schoolName }}</span>
+<div class="landing-page">
+  <div class="landing-page__container">
+
+    @if (loading()) {
+      <div class="landing-page__loading" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p class="landing-page__loading-text">Loading teacher profile...</p>
       </div>
-      <div class="teacher-landing__body">
-        <div class="teacher-landing__photo">
-          @if (profile.photoUrl) { <img [src]="profile.photoUrl" [alt]="profile.fullName" /> }
-          @else { <mat-icon aria-hidden="true">person</mat-icon> }
+    } @else if (error()) {
+      <div class="surface-card landing-page__error" role="alert">
+        <div class="landing-page__error-icon">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
         </div>
-        <div>
-          <h1 id="teacher-landing-name">{{ profile.fullName }}</h1>
-          <p>{{ profile.designation ?? 'Teacher' }}</p>
-          <span>{{ profile.department ?? profile.emailId }}</span>
-          <span>{{ profile.contactNumber }}</span>
-        </div>
+        <h2>Unable to Load Teacher Profile</h2>
+        <p>Could not verify or load the requested card. Redirecting to login...</p>
       </div>
-    </section>
-  }
-</main>
+    } @else if (teacher(); as profile) {
+
+      <!-- Teacher Digital Identity Card -->
+      <article class="id-card" aria-label="Teacher ID Card">
+        <header class="id-card__band">
+          @if (profile.schoolLogoUrl) {
+            <img
+              class="id-card__band-logo"
+              [src]="profile.schoolLogoUrl"
+              alt="{{ profile.schoolName }} logo" />
+          }
+          <div class="id-card__band-text">
+            <span class="id-card__band-title">{{ profile.schoolName }}</span>
+            <span class="id-card__band-subtitle">Faculty Digital Identity Card</span>
+          </div>
+        </header>
+
+        <div class="id-card__body">
+          <div class="id-card__photo-wrap">
+            @if (profile.photoUrl) {
+              <img
+                class="id-card__photo"
+                [src]="profile.photoUrl"
+                alt="Photo of {{ profile.fullName }}" />
+            } @else {
+              <div class="id-card__photo-fallback">
+                <mat-icon aria-hidden="true">person</mat-icon>
+              </div>
+            }
+          </div>
+
+          <div class="id-card__details">
+            <h1 class="id-card__name" id="teacher-landing-name">{{ profile.fullName }}</h1>
+            <div class="id-card__designation-chip">
+              <mat-icon aria-hidden="true">school</mat-icon>
+              <span>{{ profile.designation ?? 'Teacher' }}</span>
+            </div>
+
+            <div class="id-card__divider"></div>
+
+            <div class="id-card__info-grid">
+              @if (profile.department) {
+                <div class="id-card__info-item">
+                  <span class="id-card__info-label">Department</span>
+                  <span class="id-card__info-val">{{ profile.department }}</span>
+                </div>
+              }
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">Contact</span>
+                <span class="id-card__info-val">
+                  @if (profile.contactNumber) {
+                    <a class="id-card__link" href="tel:{{ profile.contactNumber }}">
+                      <mat-icon class="id-card__link-icon" aria-hidden="true">phone</mat-icon>
+                      {{ profile.contactNumber }}
+                    </a>
+                  } @else {
+                    —
+                  }
+                </span>
+              </div>
+              <div class="id-card__info-item">
+                <span class="id-card__info-label">Email</span>
+                <span class="id-card__info-val">
+                  @if (profile.emailId) {
+                    <a class="id-card__link" href="mailto:{{ profile.emailId }}">
+                      <mat-icon class="id-card__link-icon" aria-hidden="true">mail</mat-icon>
+                      {{ profile.emailId }}
+                    </a>
+                  } @else {
+                    —
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    }
+
+  </div>
+</div>

@@ -1,109 +1,195 @@
 <main class="student-notice">
-  <section class="student-notice__header">
-    <div>
-      <p class="student-notice__eyebrow">Student workspace</p>
-      <h1>Notices</h1>
-    </div>
-  </section>
+  <div class="student-notice__container">
 
-  <section class="student-notice__table-section surface-card" aria-labelledby="student-notice-table-title">
-    <h2 id="student-notice-table-title">Notice list</h2>
+    <!-- Header Card -->
+    <header class="student-notice__header-card" aria-labelledby="student-notice-title">
+      <div class="student-notice__title-row">
+        <div class="student-notice__title-group">
+          <span class="student-notice__kicker">Student Portal</span>
+          <h1 id="student-notice-title" class="student-notice__title">School Notices</h1>
+        </div>
 
-    @if (loading()) {
-      <div class="student-notice__state" aria-live="polite">Loading notices...</div>
-    } @else if (error()) {
-      <div class="student-notice__state student-notice__state--error" role="alert">{{ error() }}</div>
-    } @else if (tableRows().length === 0) {
-      <div class="student-notice__state">No notices found.</div>
-    } @else {
-      <div class="student-notice__table-wrap">
-        <table class="student-notice__table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Announcement date</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of tableRows(); track row.noticeTitle + row.announcementDate; let rowIndex = $index) {
-              <tr>
-                <td data-label="#">{{ row.index }}</td>
-                <td data-label="Title">{{ row.noticeTitle }}</td>
-                <td data-label="Announcement date">{{ row.announcementDate }}</td>
-                <td data-label="Details">
-                  <button class="student-notice__details-button" type="button" (click)="openDetails(notices()[rowIndex])">
-                    <mat-icon aria-hidden="true">visibility</mat-icon>
-                    Details
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        <div class="student-notice__badge-group">
+          @if (!loading() && !error() && tableRows().length > 0) {
+            <span class="student-notice__count-chip">
+              <mat-icon aria-hidden="true">campaign</mat-icon>
+              {{ tableRows().length }} {{ tableRows().length === 1 ? 'Notice' : 'Notices' }}
+            </span>
+          }
+        </div>
       </div>
-    }
-  </section>
+    </header>
+
+    <!-- Table Section -->
+    <section class="student-notice__table-section" aria-labelledby="student-notice-table-title">
+      <div class="student-notice__section-header">
+        <h2 id="student-notice-table-title" class="student-notice__section-title">Notice Board</h2>
+      </div>
+
+      @if (loading()) {
+        <div class="student-notice__state-card" aria-live="polite">
+          <span class="student-notice__spinner" aria-hidden="true"></span>
+          <p class="student-notice__state-text">Loading notices...</p>
+        </div>
+      } @else if (error()) {
+        <div class="student-notice__state-card student-notice__state-card--error" role="alert">
+          <div class="student-notice__state-icon student-notice__state-icon--error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+          </div>
+          <h3 class="student-notice__state-heading">Notice Loading Issue</h3>
+          <p class="student-notice__state-subtext">{{ error() }}</p>
+        </div>
+      } @else if (tableRows().length === 0) {
+        <div class="student-notice__state-card student-notice__state-card--empty">
+          <div class="student-notice__state-icon">
+            <mat-icon aria-hidden="true">campaign</mat-icon>
+          </div>
+          <h3 class="student-notice__state-heading">No Notices Available</h3>
+          <p class="student-notice__state-subtext">There are currently no active announcements published for your class.</p>
+        </div>
+      } @else {
+        <div class="student-notice__table-card">
+          <div class="student-notice__table-wrap">
+            <table class="student-notice__table">
+              <caption class="visually-hidden">School announcements and notices table</caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="student-notice__th-num">#</th>
+                  <th scope="col">Announcement Title</th>
+                  <th scope="col">Published Date</th>
+                  <th scope="col" class="student-notice__th-action">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of tableRows(); track row.noticeTitle + row.announcementDate; let rowIndex = $index) {
+                  <tr class="student-notice__row">
+                    <td class="student-notice__td-num" data-label="#">
+                      <span class="student-notice__index-badge">{{ row.index }}</span>
+                    </td>
+                    <td data-label="Title" class="student-notice__td-title">
+                      <span class="student-notice__notice-name">{{ row.noticeTitle }}</span>
+                    </td>
+                    <td data-label="Announcement date" class="student-notice__td-date">
+                      <div class="student-notice__date-cell">
+                        <mat-icon class="student-notice__date-icon" aria-hidden="true">calendar_today</mat-icon>
+                        <span>{{ row.announcementDate }}</span>
+                      </div>
+                    </td>
+                    <td data-label="Details" class="student-notice__td-action">
+                      <button
+                        class="student-notice__details-button"
+                        type="button"
+                        aria-label="View details for notice {{ row.noticeTitle }}"
+                        (click)="openDetails(notices()[rowIndex])">
+                        <mat-icon aria-hidden="true">visibility</mat-icon>
+                        <span>View Notice</span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </section>
+
+  </div>
 
   <app-dashboard-footer role="student" />
 
+  <!-- Notice Details Modal -->
   @if (selectedNotice(); as notice) {
-    <div class="student-notice__modal-backdrop" role="presentation" (click)="closeDetails()">
-      <div class="student-notice__modal" role="dialog" aria-modal="true" aria-labelledby="notice-details-title" (click)="$event.stopPropagation()">
-        <div class="student-notice__modal-header">
-          <h2 id="notice-details-title">Notice details</h2>
-          <button type="button" aria-label="Close notice details" (click)="closeDetails()">
+    <div
+      class="student-notice__modal-backdrop"
+      role="presentation"
+      (click)="closeDetails()">
+      <div
+        class="student-notice__modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="notice-details-title"
+        (click)="$event.stopPropagation()">
+        <header class="student-notice__modal-header">
+          <div class="student-notice__modal-title-group">
+            <mat-icon aria-hidden="true">campaign</mat-icon>
+            <h2 id="notice-details-title">Notice Details</h2>
+          </div>
+          <button
+            class="student-notice__modal-close"
+            type="button"
+            aria-label="Close notice details"
+            (click)="closeDetails()">
             <mat-icon aria-hidden="true">close</mat-icon>
           </button>
-        </div>
+        </header>
 
-        <dl class="student-notice__details-list">
-          <div>
-            <dt>Title</dt>
-            <dd>{{ notice.noticeTitle }}</dd>
-          </div>
-          <div>
-            <dt>Announcement date</dt>
-            <dd>{{ notice.announcementDate }}</dd>
-          </div>
-          <div>
-            <dt>Description</dt>
-            <dd>{{ notice.noticeDetail }}</dd>
-          </div>
-        </dl>
+        <div class="student-notice__modal-body">
+          <dl class="student-notice__details-list">
+            <div class="student-notice__detail-item">
+              <dt>Announcement Title</dt>
+              <dd class="student-notice__detail-title">{{ notice.noticeTitle }}</dd>
+            </div>
+            <div class="student-notice__detail-item">
+              <dt>Published Date</dt>
+              <dd class="student-notice__detail-date">
+                <mat-icon class="student-notice__date-icon" aria-hidden="true">calendar_today</mat-icon>
+                <span>{{ notice.announcementDate }}</span>
+              </dd>
+            </div>
+            <div class="student-notice__detail-item student-notice__detail-item--full">
+              <dt>Notice Content</dt>
+              <dd class="student-notice__notice-body">{{ notice.noticeDetail }}</dd>
+            </div>
+          </dl>
 
-        @if (notice.files?.length) {
-          <div class="student-notice__attachments" aria-label="Notice attachments">
-            <h3>Attachments</h3>
-            @for (file of notice.files; track file.srNo) {
-              <div class="student-notice__attachment-card">
-                @if (isImageAttachment(file)) {
-                  <img class="student-notice__attachment-image" [src]="file.fileUrl" [alt]="file.fileName || 'Notice attachment'" />
-                } @else if (isPdfAttachment(file)) {
-                  <iframe
-                    class="student-notice__attachment-pdf"
-                    [src]="file.fileUrl"
-                    [title]="file.fileName || 'Notice attachment pdf'"
-                    loading="lazy"></iframe>
-                } @else {
-                  <a class="student-notice__attachment-link" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
-                    Open attachment
-                  </a>
+          <!-- Attachments -->
+          @if (notice.files?.length) {
+            <section class="student-notice__attachments-section" aria-label="Notice attachments">
+              <h3 class="student-notice__attachments-heading">
+                <mat-icon aria-hidden="true">attachment</mat-icon>
+                <span>Attachments ({{ notice.files?.length }})</span>
+              </h3>
+              <div class="student-notice__attachments-grid">
+                @for (file of notice.files; track file.srNo) {
+                  <div class="student-notice__attachment-card">
+                    @if (isImageAttachment(file)) {
+                      <div class="student-notice__image-preview-wrap">
+                        <img
+                          class="student-notice__attachment-image"
+                          [src]="file.fileUrl"
+                          [alt]="file.fileName || 'Notice attachment image'" />
+                      </div>
+                    } @else if (isPdfAttachment(file)) {
+                      <iframe
+                        class="student-notice__attachment-pdf"
+                        [src]="file.fileUrl"
+                        [title]="file.fileName || 'Notice attachment pdf'"
+                        loading="lazy"></iframe>
+                    }
+
+                    <div class="student-notice__attachment-actions">
+                      <a
+                        class="student-notice__attachment-btn"
+                        [href]="file.fileUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open or download attachment {{ file.fileName || file.fileUrl }}">
+                        <mat-icon aria-hidden="true">open_in_new</mat-icon>
+                        <span>{{ file.fileName || 'View Attachment' }}</span>
+                      </a>
+                    </div>
+                  </div>
                 }
-
-                <a class="student-notice__attachment-link student-notice__attachment-link--secondary" [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
-                  Download / open file
-                </a>
               </div>
-            }
-          </div>
-        } @else {
-          <div class="student-notice__attachments student-notice__attachments--empty" aria-live="polite">
-            <h3>Attachments</h3>
-            <p>No attachments available for this notice.</p>
-          </div>
-        }
+            </section>
+          } @else {
+            <div class="student-notice__attachments-empty" aria-live="polite">
+              <mat-icon aria-hidden="true">info_outline</mat-icon>
+              <span>No attachments accompanied this notice.</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
   }

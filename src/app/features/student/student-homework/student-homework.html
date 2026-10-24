@@ -1,152 +1,265 @@
 <main class="student-homework">
-  <section class="student-homework__summary" aria-labelledby="student-homework-title">
-    <div class="student-homework__heading">
-      <div>
-        <span class="student-homework__kicker">Student workspace</span>
-      </div>
-      <mat-icon aria-hidden="true">assignment</mat-icon>
-    </div>
+  <div class="student-homework__container">
 
-    @if (loading()) {
-      <div class="student-homework__state" aria-live="polite">
-        <span class="student-homework__spinner" aria-hidden="true"></span>
-        Loading homework summary...
+    <!-- Header & Summary Card -->
+    <header class="student-homework__header-card" aria-labelledby="student-homework-title">
+      <div class="student-homework__title-row">
+        <div class="student-homework__title-group">
+          <span class="student-homework__kicker">Student Portal</span>
+          <h1 id="student-homework-title" class="student-homework__title">Homework & Assignments</h1>
+        </div>
+        <div class="student-homework__icon-badge" aria-hidden="true">
+          <mat-icon>assignment</mat-icon>
+        </div>
       </div>
-    } @else if (error()) {
-      <div class="student-homework__state student-homework__state--error" role="alert">
-        <mat-icon aria-hidden="true">error_outline</mat-icon>
-        <span>Unable to load homework summary.</span>
-        <button type="button" (click)="retry()">Retry</button>
-      </div>
-    } @else if (overview(); as data) {
-      <div class="student-homework__cards">
-        <article class="student-homework__card student-homework__card--pending">
-          <mat-icon aria-hidden="true">pending_actions</mat-icon>
-          <span>Pending assignments</span>
-          <strong>{{ data.pendingHomework ?? 0 }}</strong>
-        </article>
-        <article class="student-homework__card student-homework__card--completed">
-          <mat-icon aria-hidden="true">task_alt</mat-icon>
-          <span>Completed assignments</span>
-          <strong>{{ data.completedHomework ?? 0 }}</strong>
-        </article>
-      </div>
-    }
-  </section>
 
+      <!-- KPI Summary Cards -->
+      @if (loading()) {
+        <div class="student-homework__summary-state" aria-live="polite">
+          <span class="student-homework__spinner" aria-hidden="true"></span>
+          <span>Loading homework summary...</span>
+        </div>
+      } @else if (error()) {
+        <div class="student-homework__summary-state student-homework__summary-state--error" role="alert">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <span>Unable to load homework summary.</span>
+          <button class="student-homework__retry-sm-btn" type="button" (click)="retry()">Retry</button>
+        </div>
+      } @else if (overview(); as data) {
+        <div class="student-homework__cards">
+          <article class="student-homework__kpi-card student-homework__kpi-card--pending">
+            <div class="student-homework__kpi-icon-wrap student-homework__kpi-icon-wrap--pending">
+              <mat-icon aria-hidden="true">pending_actions</mat-icon>
+            </div>
+            <div class="student-homework__kpi-data">
+              <span class="student-homework__kpi-label">Pending</span>
+              <strong class="student-homework__kpi-value">{{ data.pendingHomework ?? 0 }}</strong>
+            </div>
+          </article>
 
-  <section class="student-homework__table-section" aria-labelledby="student-homework-table-title">
-    <h2 id="student-homework-table-title">Assignments</h2>
-    @if (tableLoading()) {
-      <div class="student-homework__table-state" aria-live="polite">Loading assignments...</div>
-    } @else if (tableError()) {
-      <div class="student-homework__table-state student-homework__table-state--error" role="alert">
-        <span>Unable to load assignments.</span>
-        <button type="button" (click)="retry()">Retry</button>
-      </div>
-    } @else if (homework().length === 0) {
-      <div class="student-homework__table-state">No assignments found.</div>
-    } @else {
-      <div class="student-homework__table-wrap">
-        <table class="student-homework__table">
-          <colgroup>
-            <col class="student-homework__column student-homework__column--title" />
-            <col class="student-homework__column student-homework__column--subject" />
-            <col class="student-homework__column student-homework__column--date" />
-            <col class="student-homework__column student-homework__column--date" />
-            <col class="student-homework__column student-homework__column--status" />
-            <col class="student-homework__column student-homework__column--images" />
-            <col class="student-homework__column student-homework__column--details" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Assignment</th>
-              <th scope="col">Subject</th>
-              <th scope="col">Assigned</th>
-              <th scope="col">Deadline</th>
-              <th scope="col">Status</th>
-              <th scope="col">Images</th>
-              <th scope="col">Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of homework(); track item.homeworkId) {
-              <tr>
-                <td data-label="Assignment">{{ item.homeworkTitle }}</td>
-                <td data-label="Subject">{{ item.subjectName }}</td>
-                <td data-label="Assigned">{{ formatDate(item.dateOfAssignment) }}</td>
-                <td data-label="Deadline">{{ formatDate(item.deadlineDate) }}</td>
-                <td data-label="Status">
-                  <span class="student-homework__status" [class.student-homework__status--completed]="item.status === 'COMPLETED'" [class.student-homework__status--pending]="item.status === 'PENDING'">
-                    {{ item.status ?? '-' }}
-                  </span>
-                </td>
-                <td data-label="Images">
-                  @if (item.images.length) {
-                    <button class="student-homework__image-view-button" type="button" (click)="openImageGallery(item.images)" [attr.aria-label]="'View ' + item.images.length + ' homework images'">
-                      <mat-icon aria-hidden="true">photo_library</mat-icon>
-                      <span>View images</span>
-                    </button>
-                  } @else {
-                    <span aria-label="No images">-</span>
-                  }
-                </td>
-                <td data-label="Details">
-                  <button class="student-homework__details-button" type="button" (click)="openDetails(item)">
-                    <mat-icon aria-hidden="true">visibility</mat-icon>
-                    Details
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-  </section>
+          <article class="student-homework__kpi-card student-homework__kpi-card--completed">
+            <div class="student-homework__kpi-icon-wrap student-homework__kpi-icon-wrap--completed">
+              <mat-icon aria-hidden="true">task_alt</mat-icon>
+            </div>
+            <div class="student-homework__kpi-data">
+              <span class="student-homework__kpi-label">Completed</span>
+              <strong class="student-homework__kpi-value">{{ data.completedHomework ?? 0 }}</strong>
+            </div>
+          </article>
+        </div>
+      }
+    </header>
 
+    <!-- Table Section -->
+    <section class="student-homework__table-section" aria-labelledby="student-homework-table-title">
+      <div class="student-homework__table-header">
+        <h2 id="student-homework-table-title" class="student-homework__section-title">Assigned Tasks</h2>
+        @if (!tableLoading() && !tableError() && homework().length > 0) {
+          <span class="student-homework__count-chip">{{ homework().length }} {{ homework().length === 1 ? 'task' : 'tasks' }}</span>
+        }
+      </div>
+
+      @if (tableLoading()) {
+        <div class="student-homework__state-card" aria-live="polite">
+          <span class="student-homework__spinner" aria-hidden="true"></span>
+          <p class="student-homework__state-text">Loading assignments...</p>
+        </div>
+      } @else if (tableError()) {
+        <div class="student-homework__state-card student-homework__state-card--error" role="alert">
+          <div class="student-homework__state-icon student-homework__state-icon--error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+          </div>
+          <h3 class="student-homework__state-heading">Unable to Load Assignments</h3>
+          <p class="student-homework__state-subtext">There was a problem retrieving your homework list.</p>
+          <button class="student-homework__retry-btn" type="button" (click)="retry()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            Retry
+          </button>
+        </div>
+      } @else if (homework().length === 0) {
+        <div class="student-homework__state-card student-homework__state-card--empty">
+          <div class="student-homework__state-icon">
+            <mat-icon aria-hidden="true">assignment_turned_in</mat-icon>
+          </div>
+          <h3 class="student-homework__state-heading">No Assignments Found</h3>
+          <p class="student-homework__state-subtext">You have no homework assignments assigned at this time.</p>
+        </div>
+      } @else {
+        <div class="student-homework__table-card">
+          <div class="student-homework__table-wrap">
+            <table class="student-homework__table">
+              <caption class="visually-hidden">Student homework assignments table</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Assignment</th>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Assigned</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Attachments</th>
+                  <th scope="col" class="student-homework__th-action">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of homework(); track item.homeworkId) {
+                  <tr class="student-homework__row">
+                    <td class="student-homework__td-title" data-label="Assignment">
+                      <div class="student-homework__title-cell">
+                        <span class="student-homework__title-text">{{ item.homeworkTitle }}</span>
+                      </div>
+                    </td>
+                    <td data-label="Subject">
+                      <span class="student-homework__subject-badge">{{ item.subjectName }}</span>
+                    </td>
+                    <td data-label="Assigned" class="student-homework__td-date">
+                      <div class="student-homework__date-cell">
+                        <mat-icon class="student-homework__date-icon" aria-hidden="true">event</mat-icon>
+                        <span>{{ formatDate(item.dateOfAssignment) }}</span>
+                      </div>
+                    </td>
+                    <td data-label="Deadline" class="student-homework__td-date">
+                      <div class="student-homework__date-cell">
+                        <mat-icon class="student-homework__date-icon" aria-hidden="true">event_busy</mat-icon>
+                        <span>{{ formatDate(item.deadlineDate) }}</span>
+                      </div>
+                    </td>
+                    <td data-label="Status">
+                      <span
+                        class="student-homework__status"
+                        [class.student-homework__status--completed]="item.status === 'COMPLETED'"
+                        [class.student-homework__status--pending]="item.status === 'PENDING'"
+                        [class.student-homework__status--review]="item.status === 'UNDER REVIEW'">
+                        {{ item.status ?? '-' }}
+                      </span>
+                    </td>
+                    <td data-label="Attachments">
+                      @if (item.images.length) {
+                        <button
+                          class="student-homework__image-view-button"
+                          type="button"
+                          (click)="openImageGallery(item.images)"
+                          [attr.aria-label]="'View ' + item.images.length + ' homework images'">
+                          <mat-icon aria-hidden="true">photo_library</mat-icon>
+                          <span>{{ item.images.length }} {{ item.images.length === 1 ? 'Image' : 'Images' }}</span>
+                        </button>
+                      } @else {
+                        <span class="student-homework__no-images" aria-label="No images">—</span>
+                      }
+                    </td>
+                    <td data-label="Actions" class="student-homework__td-action">
+                      <button
+                        class="student-homework__details-button"
+                        type="button"
+                        aria-label="View details for assignment {{ item.homeworkTitle }}"
+                        (click)="openDetails(item)">
+                        <mat-icon aria-hidden="true">visibility</mat-icon>
+                        <span>Details</span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </section>
+
+  </div>
 
   <app-dashboard-footer role="student" />
 
-    @if (selectedHomework(); as item) {
-
-    <div class="student-homework__modal-backdrop" role="presentation" (click)="closeDetails()">
-      <div class="student-homework__modal" role="dialog" aria-modal="true" aria-labelledby="homework-details-title" (click)="$event.stopPropagation()">
-        <div class="student-homework__modal-header">
-          <h2 id="homework-details-title">Homework details</h2>
-          <button type="button" aria-label="Close homework details" (click)="closeDetails()">
+  <!-- Homework Details Modal -->
+  @if (selectedHomework(); as item) {
+    <div
+      class="student-homework__modal-backdrop"
+      role="presentation"
+      (click)="closeDetails()">
+      <div
+        class="student-homework__modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="homework-details-title"
+        (click)="$event.stopPropagation()">
+        <header class="student-homework__modal-header">
+          <div class="student-homework__modal-title-group">
+            <mat-icon aria-hidden="true">assignment</mat-icon>
+            <h2 id="homework-details-title">Assignment Details</h2>
+          </div>
+          <button
+            class="student-homework__modal-close"
+            type="button"
+            aria-label="Close homework details"
+            (click)="closeDetails()">
             <mat-icon aria-hidden="true">close</mat-icon>
           </button>
+        </header>
+
+        <div class="student-homework__modal-body">
+          <dl class="student-homework__details-list">
+            <div class="student-homework__detail-item">
+              <dt>Assignment Title</dt>
+              <dd class="student-homework__detail-title">{{ item.homeworkTitle }}</dd>
+            </div>
+            <div class="student-homework__detail-item">
+              <dt>Subject</dt>
+              <dd><span class="student-homework__subject-badge">{{ item.subjectName }}</span></dd>
+            </div>
+            <div class="student-homework__detail-item">
+              <dt>Submission Status</dt>
+              <dd>
+                @if (item.status === 'COMPLETED') {
+                  <span class="student-homework__status student-homework__status--completed">{{ item.status }}</span>
+                } @else {
+                  <div class="student-homework__status-edit-group">
+                    <select
+                      class="student-homework__status-select"
+                      [value]="selectedStatus()"
+                      [disabled]="statusUpdating()"
+                      (change)="updateStatus(item, $event)"
+                      aria-label="Update homework status">
+                      <option value="1">PENDING</option>
+                      <option value="3">UNDER REVIEW</option>
+                    </select>
+                    @if (statusUpdating()) {
+                      <span class="student-homework__status-note student-homework__status-note--updating">
+                        <span class="student-homework__spinner-xs" aria-hidden="true"></span>
+                        Updating...
+                      </span>
+                    }
+                    @if (statusError()) {
+                      <span class="student-homework__status-note student-homework__status-note--error" role="alert">
+                        Update failed. Try again.
+                      </span>
+                    }
+                  </div>
+                }
+              </dd>
+            </div>
+            <div class="student-homework__detail-item">
+              <dt>Assigned Date</dt>
+              <dd>{{ formatDate(item.dateOfAssignment) }}</dd>
+            </div>
+            <div class="student-homework__detail-item">
+              <dt>Submission Deadline</dt>
+              <dd>{{ formatDate(item.deadlineDate) }}</dd>
+            </div>
+            <div class="student-homework__detail-item student-homework__detail-item--full">
+              <dt>Instructions & Description</dt>
+              <dd class="student-homework__description">{{ item.description ?? 'No specific instructions provided.' }}</dd>
+            </div>
+          </dl>
         </div>
-        <dl class="student-homework__details-list">
-          <div><dt>Homework ID</dt><dd>{{ item.homeworkId }}</dd></div>
-          <div><dt>Assignment</dt><dd>{{ item.homeworkTitle }}</dd></div>
-          <div><dt>Subject</dt><dd>{{ item.subjectName }}</dd></div>
-          <div>
-            <dt>Status</dt>
-            <dd>
-              @if (item.status === 'COMPLETED') {
-                {{ item.status }}
-              } @else {
-                <select [value]="selectedStatus()" [disabled]="statusUpdating()" (change)="updateStatus(item, $event)" aria-label="Homework status">
-                  <option value="1">PENDING</option>
-                  <option value="3">UNDER REVIEW</option>
-                </select>
-                @if (statusUpdating()) { <span>Updating...</span> }
-                @if (statusError()) { <span role="alert">Update failed.</span> }
-              }
-            </dd>
-          </div>
-          <div><dt>Assigned date</dt><dd>{{ formatDate(item.dateOfAssignment) }}</dd></div>
-          <div><dt>Deadline</dt><dd>{{ formatDate(item.deadlineDate) }}</dd></div>
-          <div><dt>Description</dt><dd>{{ item.description ?? '-' }}</dd></div>
-        </dl>
       </div>
     </div>
   }
 
+  <!-- Image Gallery Lightbox -->
   @if (activeGalleryImage(); as image) {
-    <div class="student-homework__gallery-backdrop" role="presentation" (click)="closeImageGallery()">
+    <div
+      class="student-homework__gallery-backdrop"
+      role="presentation"
+      (click)="closeImageGallery()">
       <section
         class="student-homework__gallery"
         role="dialog"
@@ -156,7 +269,7 @@
         (keydown.escape)="closeImageGallery()">
         <header class="student-homework__gallery-header">
           <div>
-            <h2 id="homework-gallery-title">Homework images</h2>
+            <h2 id="homework-gallery-title">Homework Attachment</h2>
             <span aria-live="polite">Image {{ image.srNo }} of {{ imageGallery().length }}</span>
           </div>
           <button type="button" aria-label="Close image viewer" (click)="closeImageGallery()">
@@ -164,25 +277,51 @@
           </button>
         </header>
         <div class="student-homework__gallery-stage">
-          <img [src]="image.fileUrl" [alt]="'Homework image ' + image.srNo" [style.transform]="'scale(' + galleryZoom() + ')'" />
+          <img
+            [src]="image.fileUrl"
+            [alt]="'Homework attachment ' + image.srNo"
+            [style.transform]="'scale(' + galleryZoom() + ')'" />
         </div>
         <div class="student-homework__gallery-zoom" aria-label="Image zoom controls">
-          <button type="button" aria-label="Zoom out" title="Zoom out" [disabled]="galleryZoom() <= 1" (click)="zoomOut()">
+          <button
+            type="button"
+            aria-label="Zoom out"
+            title="Zoom out"
+            [disabled]="galleryZoom() <= 1"
+            (click)="zoomOut()">
             <mat-icon aria-hidden="true">remove</mat-icon>
           </button>
-          <button class="student-homework__gallery-zoom-reset" type="button" aria-label="Reset zoom" title="Reset zoom" (click)="resetGalleryZoom()">
+          <button
+            class="student-homework__gallery-zoom-reset"
+            type="button"
+            aria-label="Reset zoom"
+            title="Reset zoom"
+            (click)="resetGalleryZoom()">
             {{ galleryZoom() * 100 }}%
           </button>
-          <button type="button" aria-label="Zoom in" title="Zoom in" [disabled]="galleryZoom() >= 3" (click)="zoomIn()">
+          <button
+            type="button"
+            aria-label="Zoom in"
+            title="Zoom in"
+            [disabled]="galleryZoom() >= 3"
+            (click)="zoomIn()">
             <mat-icon aria-hidden="true">add</mat-icon>
           </button>
         </div>
         <nav class="student-homework__gallery-controls" aria-label="Image navigation">
-          <button type="button" aria-label="Previous image" [disabled]="imageGalleryIndex() === 0" (click)="previousImage()">
+          <button
+            type="button"
+            aria-label="Previous image"
+            [disabled]="imageGalleryIndex() === 0"
+            (click)="previousImage()">
             <mat-icon aria-hidden="true">chevron_left</mat-icon>
             <span>Previous</span>
           </button>
-          <button type="button" aria-label="Next image" [disabled]="imageGalleryIndex() >= imageGallery().length - 1" (click)="nextImage()">
+          <button
+            type="button"
+            aria-label="Next image"
+            [disabled]="imageGalleryIndex() >= imageGallery().length - 1"
+            (click)="nextImage()">
             <span>Next</span>
             <mat-icon aria-hidden="true">chevron_right</mat-icon>
           </button>

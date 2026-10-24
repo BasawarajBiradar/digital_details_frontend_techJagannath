@@ -7,117 +7,150 @@
       <p>Could not load teacher info. Please try again later.</p>
     </div>
   } @else if (teacher(); as profile) {
-    <div class="id-card">
-      <div class="id-card__band">
-        @if (profile.schoolLogoUrl) {
-          <img class="id-card__band-logo" [src]="profile.schoolLogoUrl" alt="School logo" />
-        }
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">{{ profile.schoolName }}</span>
-        </div>
-      </div>
+    <div class="dashboard__content">
 
-      <div class="id-card__body">
-           <div class="id-card__photo-wrap id-card__photo-wrap--editable"
-             (click)="openImage()"
-             role="button"
-             aria-label="View profile photo"
-             tabindex="0"
-             (keydown.enter)="openImage()">
-          @if (displayPhotoUrl()) {
-            <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="profile.fullName" />
-          } @else {
-            <div class="id-card__photo-fallback"><mat-icon aria-hidden="true">person</mat-icon></div>
+      <!-- Teacher Identity Card -->
+      <article class="id-card" aria-label="Teacher Digital ID Card">
+        <header class="id-card__band">
+          @if (profile.schoolLogoUrl) {
+            <img class="id-card__band-logo" [src]="profile.schoolLogoUrl" alt="School logo" />
           }
-          <label class="id-card__photo-edit-overlay" (click)="$event.stopPropagation()" aria-label="Change photo">
-            <mat-icon aria-hidden="true">photo_camera</mat-icon>
-            <input #photoFileInput
-                   type="file"
-                   accept="image/*"
-                   class="sr-only"
-                   (change)="onPhotoFileSelected($event)" />
-          </label>
-        </div>
-        <div class="id-card__details">
-          <div class="id-card__name">{{ profile.fullName }}</div>
-          <div class="id-card__class">
-            {{ profile.designation ?? 'Teacher' }}{{ profile.department ? ' · ' + profile.department : '' }}
+          <div class="id-card__band-text">
+            <span class="id-card__band-title">{{ profile.schoolName }}</span>
           </div>
-          <div class="id-card__divider"></div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Blood</span>
-            <span class="id-card__row-value id-card__row-value--blood">{{ profile.bloodGroup ?? '-' }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">DOB</span>
-            <span class="id-card__row-value">{{ profile.birthDate ?? '-' }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ profile.contactNumber }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Email</span>
-            <span class="id-card__row-value">{{ profile.emailId }}</span>
-          </div>
-        </div>
-      </div>
+        </header>
 
-      <div class="id-card__address">
-        <span class="id-card__row-label">Address</span>
-        <span class="id-card__address-value">{{ profile.address ?? '-' }}</span>
-      </div>
-
-      <div class="id-card__body">
-        <div class="id-card__details">
-          <div class="id-card__row">
-            <span class="id-card__row-label">Name</span>
-            <span class="id-card__row-value">{{ profile.emergencyContactName ?? '-' }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Relation</span>
-            <span class="id-card__row-value">{{ profile.emergencyContactRelation ?? '-' }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ profile.emergencyContactNumber ?? '-' }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">{{ profile.alternateContactNumber ?? '-' }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    @if (updateItems().length) {
-      <section class="todays-updates" aria-labelledby="todays-updates-title">
-        <div class="todays-updates__header">
-          <h2 id="todays-updates-title">Today's updates</h2>
-          <mat-icon aria-hidden="true">today</mat-icon>
-        </div>
-        <div class="todays-updates__grid">
-          @for (item of updateItems(); track item.label) {
-            @if (item.link; as link) {
-              <a class="update-card update-card--link" [routerLink]="link" [attr.aria-label]="item.label">
-                <mat-icon class="update-card__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value">{{ item.value }}</strong>
-              </a>
+        <div class="id-card__body">
+          <div class="id-card__photo-wrap id-card__photo-wrap--editable"
+               (click)="openImage()"
+               role="button"
+               aria-label="View profile photo"
+               tabindex="0"
+               (keydown.enter)="openImage()">
+            @if (displayPhotoUrl()) {
+              <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="profile.fullName" />
             } @else {
-              <article class="update-card">
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value">{{ item.value }}</strong>
-              </article>
+              <div class="id-card__photo-fallback"><mat-icon aria-hidden="true">person</mat-icon></div>
             }
-          }
+            <label class="id-card__photo-edit-overlay" (click)="$event.stopPropagation()" aria-label="Change photo">
+              <mat-icon aria-hidden="true">photo_camera</mat-icon>
+              <input #photoFileInput
+                     type="file"
+                     accept="image/*"
+                     class="sr-only"
+                     (change)="onPhotoFileSelected($event)" />
+            </label>
+          </div>
+          <div class="id-card__details">
+            <h1 class="id-card__name">{{ profile.fullName }}</h1>
+            <div class="id-card__class">
+              {{ profile.designation ?? 'Teacher' }}{{ profile.department ? ' · ' + profile.department : '' }}
+            </div>
+            <div class="id-card__divider"></div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Blood</span>
+              <span class="id-card__row-value id-card__row-value--blood">{{ profile.bloodGroup ?? '-' }}</span>
+            </div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">DOB</span>
+              <span class="id-card__row-value">{{ profile.birthDate ?? '-' }}</span>
+            </div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Contact</span>
+              <span class="id-card__row-value">
+                @if (profile.contactNumber) {
+                  <a class="id-card__link" href="tel:{{ profile.contactNumber }}">{{ profile.contactNumber }}</a>
+                } @else {
+                  -
+                }
+              </span>
+            </div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Email</span>
+              <span class="id-card__row-value">
+                @if (profile.emailId) {
+                  <a class="id-card__link" href="mailto:{{ profile.emailId }}">{{ profile.emailId }}</a>
+                } @else {
+                  -
+                }
+              </span>
+            </div>
+          </div>
         </div>
-      </section>
-    }
+
+        @if (profile.address) {
+          <div class="id-card__address">
+            <span class="id-card__row-label">Address</span>
+            <span class="id-card__address-value">{{ profile.address }}</span>
+          </div>
+        }
+
+        <!-- Emergency Contact Subsection -->
+        <div class="id-card__body id-card__body--emergency">
+          <div class="id-card__details">
+            <div class="id-card__row-label id-card__row-label--heading">Emergency Contact</div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Name</span>
+              <span class="id-card__row-value">{{ profile.emergencyContactName ?? '-' }}</span>
+            </div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Relation</span>
+              <span class="id-card__row-value">{{ profile.emergencyContactRelation ?? '-' }}</span>
+            </div>
+            <div class="id-card__row">
+              <span class="id-card__row-label">Contact</span>
+              <span class="id-card__row-value">
+                @if (profile.emergencyContactNumber) {
+                  <a class="id-card__link" href="tel:{{ profile.emergencyContactNumber }}">{{ profile.emergencyContactNumber }}</a>
+                } @else {
+                  -
+                }
+              </span>
+            </div>
+            @if (profile.alternateContactNumber) {
+              <div class="id-card__row">
+                <span class="id-card__row-label">Alt. No</span>
+                <span class="id-card__row-value">
+                  <a class="id-card__link" href="tel:{{ profile.alternateContactNumber }}">{{ profile.alternateContactNumber }}</a>
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      </article>
+
+      <!-- Today's Updates Card -->
+      @if (updateItems().length) {
+        <section class="todays-updates" aria-labelledby="todays-updates-title">
+          <div class="todays-updates__header">
+            <h2 id="todays-updates-title">Today's updates</h2>
+            <mat-icon aria-hidden="true">today</mat-icon>
+          </div>
+          <div class="todays-updates__grid">
+            @for (item of updateItems(); track item.label) {
+              @if (item.link; as link) {
+                <a class="update-card update-card--link" [routerLink]="link" [attr.aria-label]="item.label">
+                  <mat-icon class="update-card__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+                  <span class="update-card__label">{{ item.label }}</span>
+                  <strong class="update-card__value">{{ item.value }}</strong>
+                </a>
+              } @else {
+                <article class="update-card">
+                  <span class="update-card__label">{{ item.label }}</span>
+                  <strong class="update-card__value">{{ item.value }}</strong>
+                </article>
+              }
+            }
+          </div>
+        </section>
+      }
+
+    </div>
   } @else {
     <div class="surface-card dashboard__error" role="alert">Could not load teacher information.</div>
   }
 
+  <!-- Photo Preview Modal -->
   @if (showImage()) {
     <div class="image-modal__backdrop" (click)="closeImage()">
       <div class="image-modal__panel" role="dialog" aria-modal="true" aria-label="Teacher profile photo" (click)="$event.stopPropagation()">
@@ -133,6 +166,7 @@
     </div>
   }
 
+  <!-- Crop Modal -->
   @if (showCrop() && cropFile()) {
     <app-image-crop-modal
       [file]="cropFile()!"
