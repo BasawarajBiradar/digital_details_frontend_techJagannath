@@ -50,7 +50,7 @@
       }
     </header>
 
-    <!-- Table Section -->
+    <!-- Assignments Section -->
     <section class="student-homework__table-section" aria-labelledby="student-homework-table-title">
       <div class="student-homework__table-header">
         <h2 id="student-homework-table-title" class="student-homework__section-title">Assigned Tasks</h2>
@@ -85,6 +85,86 @@
           <p class="student-homework__state-subtext">You have no homework assignments assigned at this time.</p>
         </div>
       } @else {
+
+        <!-- Mobile Assignment Cards View (< 768px) -->
+        <div class="student-homework__cards-list" aria-label="Homework assignment cards">
+          @for (item of homework(); track item.homeworkId) {
+            <article class="homework-card">
+              <!-- Top Row: Subject Badge + Status Chip -->
+              <div class="homework-card__header">
+                <span class="student-homework__subject-badge">{{ item.subjectName }}</span>
+                <span
+                  class="student-homework__status"
+                  [class.student-homework__status--completed]="item.status === 'COMPLETED'"
+                  [class.student-homework__status--pending]="item.status === 'PENDING'"
+                  [class.student-homework__status--review]="item.status === 'UNDER REVIEW'">
+                  @if (item.status === 'COMPLETED') {
+                    <mat-icon aria-hidden="true">check_circle</mat-icon>
+                  } @else if (item.status === 'UNDER REVIEW') {
+                    <mat-icon aria-hidden="true">hourglass_top</mat-icon>
+                  } @else {
+                    <mat-icon aria-hidden="true">schedule</mat-icon>
+                  }
+                  <span>{{ item.status ?? '-' }}</span>
+                </span>
+              </div>
+
+              <!-- Title -->
+              <h3 class="homework-card__title">{{ item.homeworkTitle }}</h3>
+
+              <!-- Dates 2-column Grid -->
+              <div class="homework-card__dates">
+                <div class="homework-card__date-item">
+                  <span class="homework-card__date-label">
+                    <mat-icon aria-hidden="true">event</mat-icon>
+                    <span>Assigned</span>
+                  </span>
+                  <time class="homework-card__date-val">{{ formatDate(item.dateOfAssignment) }}</time>
+                </div>
+
+                <div class="homework-card__date-item">
+                  <span class="homework-card__date-label">
+                    <mat-icon aria-hidden="true">event_busy</mat-icon>
+                    <span>Deadline</span>
+                  </span>
+                  <time class="homework-card__date-val">{{ formatDate(item.deadlineDate) }}</time>
+                </div>
+              </div>
+
+              <!-- Footer: Attachments & Details Action -->
+              <div class="homework-card__footer">
+                <div class="homework-card__attachment-col">
+                  @if (item.images.length) {
+                    <button
+                      class="student-homework__image-view-button"
+                      type="button"
+                      (click)="openImageGallery(item.images)"
+                      [attr.aria-label]="'View ' + item.images.length + (item.images.length === 1 ? ' attachment' : ' attachments') + ' for ' + item.homeworkTitle">
+                      <mat-icon aria-hidden="true">photo_library</mat-icon>
+                      <span>{{ item.images.length }} {{ item.images.length === 1 ? 'Attachment' : 'Attachments' }}</span>
+                    </button>
+                  } @else {
+                    <span class="homework-card__no-attachments" aria-label="No attachments">
+                      <mat-icon aria-hidden="true">attach_file</mat-icon>
+                      <span>No attachments</span>
+                    </span>
+                  }
+                </div>
+
+                <button
+                  class="student-homework__details-button student-homework__details-button--card"
+                  type="button"
+                  [attr.aria-label]="'View details for assignment ' + item.homeworkTitle"
+                  (click)="openDetails(item)">
+                  <mat-icon aria-hidden="true">visibility</mat-icon>
+                  <span>Details</span>
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- Desktop Table View (>= 768px) -->
         <div class="student-homework__table-card">
           <div class="student-homework__table-wrap">
             <table class="student-homework__table">
@@ -114,13 +194,13 @@
                     <td data-label="Assigned" class="student-homework__td-date">
                       <div class="student-homework__date-cell">
                         <mat-icon class="student-homework__date-icon" aria-hidden="true">event</mat-icon>
-                        <span>{{ formatDate(item.dateOfAssignment) }}</span>
+                        <time>{{ formatDate(item.dateOfAssignment) }}</time>
                       </div>
                     </td>
                     <td data-label="Deadline" class="student-homework__td-date">
                       <div class="student-homework__date-cell">
                         <mat-icon class="student-homework__date-icon" aria-hidden="true">event_busy</mat-icon>
-                        <span>{{ formatDate(item.deadlineDate) }}</span>
+                        <time>{{ formatDate(item.deadlineDate) }}</time>
                       </div>
                     </td>
                     <td data-label="Status">
@@ -129,7 +209,14 @@
                         [class.student-homework__status--completed]="item.status === 'COMPLETED'"
                         [class.student-homework__status--pending]="item.status === 'PENDING'"
                         [class.student-homework__status--review]="item.status === 'UNDER REVIEW'">
-                        {{ item.status ?? '-' }}
+                        @if (item.status === 'COMPLETED') {
+                          <mat-icon aria-hidden="true">check_circle</mat-icon>
+                        } @else if (item.status === 'UNDER REVIEW') {
+                          <mat-icon aria-hidden="true">hourglass_top</mat-icon>
+                        } @else {
+                          <mat-icon aria-hidden="true">schedule</mat-icon>
+                        }
+                        <span>{{ item.status ?? '-' }}</span>
                       </span>
                     </td>
                     <td data-label="Attachments">
@@ -138,19 +225,22 @@
                           class="student-homework__image-view-button"
                           type="button"
                           (click)="openImageGallery(item.images)"
-                          [attr.aria-label]="'View ' + item.images.length + ' homework images'">
+                          [attr.aria-label]="'View ' + item.images.length + (item.images.length === 1 ? ' attachment' : ' attachments')">
                           <mat-icon aria-hidden="true">photo_library</mat-icon>
-                          <span>{{ item.images.length }} {{ item.images.length === 1 ? 'Image' : 'Images' }}</span>
+                          <span>{{ item.images.length }} {{ item.images.length === 1 ? 'Attachment' : 'Attachments' }}</span>
                         </button>
                       } @else {
-                        <span class="student-homework__no-images" aria-label="No images">—</span>
+                        <span class="student-homework__no-images" aria-label="No attachments">
+                          <mat-icon aria-hidden="true">attach_file</mat-icon>
+                          <span>No attachments</span>
+                        </span>
                       }
                     </td>
                     <td data-label="Actions" class="student-homework__td-action">
                       <button
                         class="student-homework__details-button"
                         type="button"
-                        aria-label="View details for assignment {{ item.homeworkTitle }}"
+                        [attr.aria-label]="'View details for assignment ' + item.homeworkTitle"
                         (click)="openDetails(item)">
                         <mat-icon aria-hidden="true">visibility</mat-icon>
                         <span>Details</span>
@@ -180,7 +270,9 @@
         role="dialog"
         aria-modal="true"
         aria-labelledby="homework-details-title"
-        (click)="$event.stopPropagation()">
+        (click)="$event.stopPropagation()"
+        (keydown.escape)="closeDetails()"
+        tabindex="-1">
         <header class="student-homework__modal-header">
           <div class="student-homework__modal-title-group">
             <mat-icon aria-hidden="true">assignment</mat-icon>
@@ -209,7 +301,10 @@
               <dt>Submission Status</dt>
               <dd>
                 @if (item.status === 'COMPLETED') {
-                  <span class="student-homework__status student-homework__status--completed">{{ item.status }}</span>
+                  <span class="student-homework__status student-homework__status--completed">
+                    <mat-icon aria-hidden="true">check_circle</mat-icon>
+                    <span>{{ item.status }}</span>
+                  </span>
                 } @else {
                   <div class="student-homework__status-edit-group">
                     <select
@@ -238,11 +333,11 @@
             </div>
             <div class="student-homework__detail-item">
               <dt>Assigned Date</dt>
-              <dd>{{ formatDate(item.dateOfAssignment) }}</dd>
+              <dd><time>{{ formatDate(item.dateOfAssignment) }}</time></dd>
             </div>
             <div class="student-homework__detail-item">
               <dt>Submission Deadline</dt>
-              <dd>{{ formatDate(item.deadlineDate) }}</dd>
+              <dd><time>{{ formatDate(item.deadlineDate) }}</time></dd>
             </div>
             <div class="student-homework__detail-item student-homework__detail-item--full">
               <dt>Instructions & Description</dt>
@@ -266,7 +361,8 @@
         aria-modal="true"
         aria-labelledby="homework-gallery-title"
         (click)="$event.stopPropagation()"
-        (keydown.escape)="closeImageGallery()">
+        (keydown.escape)="closeImageGallery()"
+        tabindex="-1">
         <header class="student-homework__gallery-header">
           <div>
             <h2 id="homework-gallery-title">Homework Attachment</h2>

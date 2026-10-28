@@ -1,40 +1,56 @@
 <div class="qr-modal__backdrop" (click)="onBackdropClick($event)">
-  <div class="qr-modal__panel" role="dialog" aria-modal="true">
+  <div class="qr-modal__panel" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
 
     <div class="qr-modal__header">
-      <span class="qr-modal__title">My QR Code</span>
-      <button class="qr-modal__close" (click)="close()" aria-label="Close">
-        <mat-icon>close</mat-icon>
+      <div class="qr-modal__title-group">
+        <div class="qr-modal__icon-badge">
+          <mat-icon aria-hidden="true">qr_code_2</mat-icon>
+        </div>
+        <div class="qr-modal__header-text">
+          <span id="qr-modal-title" class="qr-modal__title">Student QR Pass</span>
+          <span class="qr-modal__subtitle">Scan with TapAxe Reader</span>
+        </div>
+      </div>
+      <button class="qr-modal__close" (click)="close()" aria-label="Close modal">
+        <mat-icon aria-hidden="true">close</mat-icon>
       </button>
     </div>
 
     <div class="qr-modal__body">
 
       @if (isLoading) {
-        <div class="qr-modal__state">
-          <span class="spinner"></span>
+        <div class="qr-modal__state" role="status">
+          <span class="spinner" aria-hidden="true"></span>
+          <p class="qr-modal__state-text">Generating student QR code...</p>
         </div>
       }
 
       @else if (hasError) {
-        <div class="qr-modal__state qr-modal__state--error">
-          <mat-icon>error_outline</mat-icon>
-          <p>Could not generate QR code. Please try again.</p>
+        <div class="qr-modal__state qr-modal__state--error" role="alert">
+          <div class="qr-modal__error-icon">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+          </div>
+          <p class="qr-modal__error-title">QR Generation Unavailable</p>
+          <p class="qr-modal__error-desc">Could not load the QR code. Please try again.</p>
         </div>
       }
 
       @else if (qrObjectUrl) {
-        <div class="qr-modal__qr-wrap">
-          <img class="qr-modal__qr-img"
-               [src]="qrObjectUrl"
-               [alt]="studentName + ' QR code'" />
+        <div class="qr-modal__card">
+          <div class="qr-modal__qr-wrap">
+            <img class="qr-modal__qr-img"
+                 [src]="qrObjectUrl"
+                 [alt]="studentName + ' QR code'" />
+          </div>
+          <div class="qr-modal__meta">
+            <p class="qr-modal__name">{{ studentName }}</p>
+            <p class="qr-modal__hint">Show this code at campus entry devices</p>
+          </div>
         </div>
-        <p class="qr-modal__name">{{ studentName }}</p>
-        <p class="qr-modal__hint">Scan to view student details</p>
 
-        <button class="qr-modal__download" (click)="downloadQr()">
-          <mat-icon>download</mat-icon>
-          Download QR
+        <button type="button" class="qr-modal__download" (click)="downloadQr()" aria-label="Download QR Pass Image">
+          <mat-icon aria-hidden="true">download</mat-icon>
+          <span>Download QR Pass</span>
         </button>
       }
 

@@ -2,19 +2,22 @@
 
   @if (isLoading()) {
   <div class="dashboard__loading">
-    <span class="spinner"></span>
+    <div class="loading-card">
+      <span class="spinner" aria-hidden="true"></span>
+      <p class="loading-card__text">Loading student profile...</p>
+    </div>
   </div>
   }
 
   @else if (hasError()) {
   <div class="surface-card dashboard__error" role="alert">
     <div class="dashboard__error-icon">
-      <mat-icon>lock_outline</mat-icon>
+      <mat-icon aria-hidden="true">lock_outline</mat-icon>
     </div>
     <h2 class="dashboard__error-title">Student Profile Unavailable</h2>
     <p class="dashboard__error-message">Could not load student info. Please sign in to an active student account.</p>
     <a routerLink="/login" class="dashboard__error-btn">
-      <mat-icon>login</mat-icon>
+      <mat-icon aria-hidden="true">login</mat-icon>
       <span>Sign In to TapAxe</span>
     </a>
   </div>
@@ -22,140 +25,292 @@
 
   @else if (student()) {
   <div class="dashboard__content">
-    <div class="id-card">
-      <div class="id-card__band">
-        @if (student()!.schoolLogoUrl) {
-        <img class="id-card__band-logo" [src]="student()!.schoolLogoUrl" alt="School logo" />
-        }
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">{{ student()!.schoolName }}</span>
+
+    <!-- LEFT COLUMN: DIGITAL STUDENT ID CARD -->
+    <aside class="id-card-wrapper" aria-label="Student Identification Card">
+      <article class="id-card">
+
+        <!-- Header School Band -->
+        <header class="id-card__band">
+          <div class="id-card__band-brand">
+            @if (student()!.schoolLogoUrl) {
+            <div class="id-card__logo-wrap">
+              <img class="id-card__school-logo" [src]="student()!.schoolLogoUrl" alt="School logo" />
+            </div>
+            } @else {
+            <div class="id-card__logo-wrap id-card__logo-wrap--fallback">
+              <mat-icon aria-hidden="true">school</mat-icon>
+            </div>
+            }
+            <div class="id-card__school-meta">
+              <span class="id-card__school-name">{{ student()!.schoolName }}</span>
+              <span class="id-card__badge-tag">Student Identification Card</span>
+            </div>
+          </div>
+
+          @if (student()!.uid) {
+          <div class="id-card__uid-badge" title="Student Unique ID">
+            <span class="id-card__uid-label">ID:</span>
+            <span class="id-card__uid-value">{{ student()!.uid }}</span>
+          </div>
+          }
+        </header>
+
+        <!-- Hero Section: Portrait Photo & Primary Student Identity -->
+        <div class="id-card__hero">
+
+          <!-- Photo Container with Accessible Edit Control -->
+          <div class="id-card__photo-container">
+            <div class="id-card__photo-wrap id-card__photo-wrap--editable"
+                 (click)="photoFileInput.click()"
+                 role="button"
+                 aria-label="Change student profile photo"
+                 tabindex="0"
+                 (keydown.enter)="photoFileInput.click()">
+
+              @if (displayPhotoUrl()) {
+              <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="student()!.fullName" />
+              } @else {
+              <div class="id-card__photo-fallback">
+                <mat-icon aria-hidden="true">person</mat-icon>
+              </div>
+              }
+
+              <div class="id-card__photo-edit-overlay" aria-hidden="true">
+                <mat-icon aria-hidden="true">photo_camera</mat-icon>
+                <span class="id-card__photo-edit-hint">Change</span>
+              </div>
+
+              <input #photoFileInput type="file" accept="image/*" class="sr-only" (change)="onPhotoFileSelected($event)" />
+            </div>
+
+            @if (photoUploading()) {
+            <div class="id-card__photo-status" role="status">
+              <span class="spinner spinner--sm" aria-hidden="true"></span>
+              <span>Uploading...</span>
+            </div>
+            }
+          </div>
+
+          <!-- Student Core Bio & Badges -->
+          <div class="id-card__hero-info">
+            <h1 class="id-card__name">{{ student()!.fullName }}</h1>
+
+            <div class="id-card__tags">
+              <span class="badge-pill badge-pill--primary" title="Class and Division">
+                <mat-icon aria-hidden="true">school</mat-icon>
+                <span>Class {{ classDivision() }}</span>
+              </span>
+              @if (student()!.bloodGroup) {
+              <span class="badge-pill badge-pill--blood" title="Blood Group">
+                <mat-icon aria-hidden="true">water_drop</mat-icon>
+                <span>{{ student()!.bloodGroup }}</span>
+              </span>
+              }
+            </div>
+
+            <div class="id-card__hero-dob">
+              <span class="id-card__field-label">
+                <mat-icon aria-hidden="true">cake</mat-icon>
+                <span>DOB</span>
+              </span>
+              <span class="id-card__field-value">{{ student()!.birthDate || '-' }}</span>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="id-card__body">
+        <!-- Personal Details Section (Phone, Email, Address) -->
+        <div class="id-card__section id-card__section--details">
+          
+          <!-- Contact Phone -->
+          <div class="id-card__field id-card__field--phone">
+            <span class="id-card__field-label">
+              <mat-icon aria-hidden="true">call</mat-icon>
+              <span>Student Contact</span>
+            </span>
+            @if (student()!.contactNumber) {
+            <a [href]="'tel:' + student()!.contactNumber" class="id-card__field-value id-card__field-value--link">
+              {{ student()!.contactNumber }}
+            </a>
+            } @else {
+            <span class="id-card__field-value">-</span>
+            }
+          </div>
 
-        <!-- Photo with edit overlay -->
-        <div class="id-card__photo-wrap id-card__photo-wrap--editable" (click)="photoFileInput.click()" role="button"
-          aria-label="Change photo" tabindex="0" (keydown.enter)="photoFileInput.click()">
+          <!-- Email Address (Full Width Row with Safe Wrapping) -->
+          <div class="id-card__field id-card__field--full">
+            <span class="id-card__field-label">
+              <mat-icon aria-hidden="true">mail_outline</mat-icon>
+              <span>Email Address</span>
+            </span>
+            @if (student()!.emailId) {
+            <a [href]="'mailto:' + student()!.emailId" 
+               class="id-card__field-value id-card__field-value--link id-card__field-value--wrap" 
+               [title]="student()!.emailId">
+              {{ student()!.emailId }}
+            </a>
+            } @else {
+            <span class="id-card__field-value">-</span>
+            }
+          </div>
 
-          @if (displayPhotoUrl()) {
-          <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="student()!.fullName" />
-          } @else {
-          <div class="id-card__photo-fallback">
-            <mat-icon>person</mat-icon>
+          <!-- Residential Address (Full Width Row with Natural Wrap) -->
+          @if (student()!.address) {
+          <div class="id-card__field id-card__field--full">
+            <span class="id-card__field-label">
+              <mat-icon aria-hidden="true">place</mat-icon>
+              <span>Residential Address</span>
+            </span>
+            <span class="id-card__field-value id-card__field-value--address">
+              {{ student()!.address }}
+            </span>
           </div>
           }
 
-          <div class="id-card__photo-edit-overlay" aria-hidden="true">
-            <mat-icon>photo_camera</mat-icon>
-          </div>
-
-          <input #photoFileInput type="file" accept="image/*" class="sr-only" (change)="onPhotoFileSelected($event)" />
         </div>
 
-        <div class="id-card__details">
-          <div class="id-card__name">{{ student()!.fullName }}</div>
-          <div class="id-card__class">{{ classDivision() }}</div>
+        <!-- Guardian & Emergency Contact Section -->
+        <div class="id-card__section id-card__section--emergency">
+          <div class="emergency-panel">
+            <div class="emergency-panel__header">
+              <div class="emergency-panel__icon-wrap">
+                <mat-icon aria-hidden="true">shield</mat-icon>
+              </div>
+              <div class="emergency-panel__title-box">
+                <span class="emergency-panel__title">Emergency Contact</span>
+                <span class="emergency-panel__subtitle">Parent / Guardian Information</span>
+              </div>
+            </div>
 
-          <div class="id-card__divider"></div>
+            <div class="emergency-panel__body">
+              <div class="emergency-panel__person">
+                <span class="emergency-panel__name">{{ student()!.emergencyContactName || '-' }}</span>
+                @if (student()!.emergencyContactRelation) {
+                <span class="emergency-panel__relation-badge">{{ student()!.emergencyContactRelation }}</span>
+                }
+              </div>
 
-          <div class="id-card__row">
-            <span class="id-card__row-label">Blood</span>
-            <span class="id-card__row-value id-card__row-value--blood">
-              {{ student()!.bloodGroup }}
-            </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">DOB</span>
-            <span class="id-card__row-value">{{ student()!.birthDate }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ student()!.contactNumber }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Email</span>
-            <span class="id-card__row-value">{{ student()!.emailId }}</span>
-          </div>
-        </div>
-      </div>
+              <div class="emergency-panel__actions">
+                @if (student()!.emergencyContactNumber) {
+                <a [href]="'tel:' + student()!.emergencyContactNumber"
+                   class="btn-call-emergency"
+                   aria-label="Call emergency contact at {{ student()!.emergencyContactNumber }}">
+                  <mat-icon aria-hidden="true">call</mat-icon>
+                  <span>{{ student()!.emergencyContactNumber }}</span>
+                </a>
+                }
 
-      <div class="id-card__address">
-        <span class="id-card__row-label">Address</span>
-        <span class="id-card__address-value">{{ student()!.address }}</span>
-      </div>
-
-      <div class="id-card__body">
-        <div class="id-card__details">
-          <div class="id-card__row">
-            <span class="id-card__row-label">Name</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Relation</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactRelation }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactNumber }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">{{ student()!.alternateContactNumber }}</span>
+                @if (student()!.alternateContactNumber) {
+                <a [href]="'tel:' + student()!.alternateContactNumber"
+                   class="btn-call-alt"
+                   aria-label="Call alternate contact at {{ student()!.alternateContactNumber }}">
+                  <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
+                  <span>Alt: {{ student()!.alternateContactNumber }}</span>
+                </a>
+                }
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- QR button -->
-      <div class="id-card__actions">
-        <button class="btn-qr" (click)="openQr()">
-          <mat-icon>qr_code_2</mat-icon>
-          Show My QR Code
-        </button>
-      </div>
+        <!-- Card Footer: QR Pass Action -->
+        <div class="id-card__footer-action">
+          <button type="button" class="btn-qr" (click)="openQr()" aria-label="View Student QR Pass">
+            <div class="btn-qr__inner">
+              <div class="btn-qr__icon-wrap">
+                <mat-icon aria-hidden="true">qr_code_2</mat-icon>
+              </div>
+              <div class="btn-qr__text">
+                <span class="btn-qr__title">View Student QR Pass</span>
+                <span class="btn-qr__subtitle">Tap to display QR pass for campus scanning</span>
+              </div>
+            </div>
+            <mat-icon class="btn-qr__arrow" aria-hidden="true">chevron_right</mat-icon>
+          </button>
+        </div>
 
-    </div>
+      </article>
+    </aside>
 
-    @if (todaysUpdateItems().length) {
-    <section class="todays-updates" aria-labelledby="todays-updates-title">
-      <div class="todays-updates__header">
-        <h2 id="todays-updates-title">Today's updates</h2>
-        <mat-icon aria-hidden="true">today</mat-icon>
-      </div>
+    <!-- RIGHT COLUMN: TODAY'S UPDATES & ACTIVITY -->
+    <main class="dashboard-activity">
+      @if (todaysUpdateItems().length) {
+      <section class="todays-updates" aria-labelledby="todays-updates-title">
+        <div class="todays-updates__header">
+          <div class="todays-updates__title-group">
+            <div class="todays-updates__header-icon">
+              <mat-icon aria-hidden="true">dashboard</mat-icon>
+            </div>
+            <div>
+              <h2 id="todays-updates-title" class="todays-updates__heading">Today's Overview</h2>
+              <p class="todays-updates__subheading">Daily academic and attendance updates</p>
+            </div>
+          </div>
+        </div>
 
-      <div class="todays-updates__grid">
-        @for (item of todaysUpdateItems(); track item.label) {
-        @if (item.label === tapPhotosAction.label) {
-        <a class="update-card update-card--link" [routerLink]="tapPhotosAction.link"
-          [attr.aria-label]="tapPhotosAction.label">
-          <mat-icon class="update-card__icon" aria-hidden="true">{{ tapPhotosAction.icon }}</mat-icon>
-          <span class="update-card__label">{{ item.label }}</span>
-          <strong class="update-card__value">{{ item.value }}</strong>
-        </a>
-        } @else {
-        <article class="update-card">
-          <span class="update-card__label">{{ item.label }}</span>
-          <strong class="update-card__value">{{ item.value }}</strong>
-        </article>
-        }
-        }
-      </div>
-    </section>
-    }
+        <div class="todays-updates__grid">
+          @for (item of todaysUpdateItems(); track item.label) {
+            @if (item.link) {
+            <a class="update-card update-card--interactive"
+               [routerLink]="item.link"
+               [attr.aria-label]="item.label + ': ' + item.value + '. Click to view details.'">
+              <div class="update-card__top">
+                <div class="update-card__icon-box">
+                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+                </div>
+                <div class="update-card__action-indicator">
+                  <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+                </div>
+              </div>
+              <div class="update-card__bottom">
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value" [class.update-card__value--status]="item.isStatus" [ngClass]="item.statusClass || ''">
+                  {{ item.value }}
+                </strong>
+              </div>
+            </a>
+            } @else {
+            <article class="update-card update-card--info" [attr.aria-label]="item.label + ': ' + item.value">
+              <div class="update-card__top">
+                <div class="update-card__icon-box">
+                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+                </div>
+              </div>
+              <div class="update-card__bottom">
+                <span class="update-card__label">{{ item.label }}</span>
+                <strong class="update-card__value" [class.update-card__value--status]="item.isStatus" [ngClass]="item.statusClass || ''">
+                  {{ item.value }}
+                </strong>
+              </div>
+            </article>
+            }
+          }
+        </div>
+      </section>
+      }
+    </main>
+
   </div>
   }
 
+  <!-- QR Modal Dialog -->
   @if (showQr()) {
-  <app-qr-model [studentName]="student()?.fullName ?? ''" [qrObjectUrl]="qrObjectUrl()" [isLoading]="qrLoading()"
-    [hasError]="qrError()" (closed)="closeQr()" />
+  <app-qr-model [studentName]="student()?.fullName ?? ''"
+                [qrObjectUrl]="qrObjectUrl()"
+                [isLoading]="qrLoading()"
+                [hasError]="qrError()"
+                (closed)="closeQr()" />
   }
 
+  <!-- Full-size Image Preview Modal -->
   @if (showImage()) {
   <div class="image-modal__backdrop" (click)="closeImage()">
-    <div class="image-modal__panel" role="dialog" aria-modal="true">
+    <div class="image-modal__panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
       <div class="image-modal__header">
-        <button class="image-modal__close" (click)="closeImage()" aria-label="Close">
-          <mat-icon>close</mat-icon>
+        <span class="image-modal__title">{{ student()?.fullName }}</span>
+        <button class="image-modal__close" (click)="closeImage()" aria-label="Close image preview">
+          <mat-icon aria-hidden="true">close</mat-icon>
         </button>
       </div>
       <div class="image-modal__body">
@@ -165,12 +320,15 @@
   </div>
   }
 
-  <!-- Crop modal -->
+  <!-- Crop Modal -->
   @if (showCrop() && cropFile()) {
-  <app-image-crop-modal [file]="cropFile()!" [cropShape]="'portrait'" (cropped)="onCropDone($event)"
-    (cancelled)="onCropCancelled()" />
+  <app-image-crop-modal [file]="cropFile()!"
+                        [cropShape]="'portrait'"
+                        (cropped)="onCropDone($event)"
+                        (cancelled)="onCropCancelled()" />
   }
 
+  <!-- Persistent Dashboard Navigation Footer -->
   <app-dashboard-footer role="student" />
 
 </div>

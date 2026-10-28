@@ -9,13 +9,16 @@
           <h1 id="student-notice-title" class="student-notice__title">School Notices</h1>
         </div>
 
-        <div class="student-notice__badge-group">
+        <div class="student-notice__header-actions">
           @if (!loading() && !error() && tableRows().length > 0) {
             <span class="student-notice__count-chip">
               <mat-icon aria-hidden="true">campaign</mat-icon>
               {{ tableRows().length }} {{ tableRows().length === 1 ? 'Notice' : 'Notices' }}
             </span>
           }
+          <div class="student-notice__icon-badge" aria-hidden="true">
+            <mat-icon>campaign</mat-icon>
+          </div>
         </div>
       </div>
     </header>
@@ -38,6 +41,10 @@
           </div>
           <h3 class="student-notice__state-heading">Notice Loading Issue</h3>
           <p class="student-notice__state-subtext">{{ error() }}</p>
+          <button class="student-notice__retry-btn" type="button" (click)="retry()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            Retry
+          </button>
         </div>
       } @else if (tableRows().length === 0) {
         <div class="student-notice__state-card student-notice__state-card--empty">
@@ -48,6 +55,59 @@
           <p class="student-notice__state-subtext">There are currently no active announcements published for your class.</p>
         </div>
       } @else {
+
+        <!-- Mobile Notice Cards View (< 768px) -->
+        <div class="student-notice__cards-list" aria-label="School notice cards">
+          @for (notice of notices(); track notice.noticeTitle + notice.announcementDate; let idx = $index) {
+            <article class="notice-card">
+              <!-- Top Row: Index Badge + Published Date -->
+              <div class="notice-card__header">
+                <span class="notice-card__index-pill">
+                  <span class="notice-card__index-num">#{{ idx + 1 }}</span>
+                  <span class="notice-card__index-label">Notice</span>
+                </span>
+                <div class="notice-card__date-pill">
+                  <mat-icon class="student-notice__date-icon" aria-hidden="true">calendar_today</mat-icon>
+                  <time class="notice-card__date-text">{{ notice.announcementDate }}</time>
+                </div>
+              </div>
+
+              <!-- Title -->
+              <h3 class="notice-card__title">{{ notice.noticeTitle }}</h3>
+
+              <!-- Notice Snippet -->
+              @if (notice.noticeDetail) {
+                <p class="notice-card__snippet">{{ notice.noticeDetail }}</p>
+              }
+
+              <!-- Card Footer: Attachments Count + View Action -->
+              <div class="notice-card__footer">
+                @if (notice.files?.length) {
+                  <span class="notice-card__attachment-pill">
+                    <mat-icon aria-hidden="true">attachment</mat-icon>
+                    <span>{{ notice.files?.length }} {{ notice.files?.length === 1 ? 'Attachment' : 'Attachments' }}</span>
+                  </span>
+                } @else {
+                  <span class="notice-card__no-attachments">
+                    <mat-icon aria-hidden="true">attach_file</mat-icon>
+                    <span>No attachments</span>
+                  </span>
+                }
+
+                <button
+                  class="student-notice__details-button student-notice__details-button--card"
+                  type="button"
+                  aria-label="View details for notice {{ notice.noticeTitle }}"
+                  (click)="openDetails(notice)">
+                  <mat-icon aria-hidden="true">visibility</mat-icon>
+                  <span>View Notice</span>
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+
+        <!-- Desktop Table View (>= 768px) -->
         <div class="student-notice__table-card">
           <div class="student-notice__table-wrap">
             <table class="student-notice__table">
@@ -57,6 +117,7 @@
                   <th scope="col" class="student-notice__th-num">#</th>
                   <th scope="col">Announcement Title</th>
                   <th scope="col">Published Date</th>
+                  <th scope="col">Attachments</th>
                   <th scope="col" class="student-notice__th-action">Action</th>
                 </tr>
               </thead>
@@ -72,8 +133,21 @@
                     <td data-label="Announcement date" class="student-notice__td-date">
                       <div class="student-notice__date-cell">
                         <mat-icon class="student-notice__date-icon" aria-hidden="true">calendar_today</mat-icon>
-                        <span>{{ row.announcementDate }}</span>
+                        <time>{{ row.announcementDate }}</time>
                       </div>
+                    </td>
+                    <td data-label="Attachments" class="student-notice__td-attachments">
+                      @if (row.files.length > 0) {
+                        <span class="notice-card__attachment-pill">
+                          <mat-icon aria-hidden="true">attachment</mat-icon>
+                          <span>{{ row.files.length }} {{ row.files.length === 1 ? 'Attachment' : 'Attachments' }}</span>
+                        </span>
+                      } @else {
+                        <span class="student-notice__no-files">
+                          <mat-icon aria-hidden="true">attach_file</mat-icon>
+                          <span>No attachments</span>
+                        </span>
+                      }
                     </td>
                     <td data-label="Details" class="student-notice__td-action">
                       <button
@@ -109,7 +183,9 @@
         role="dialog"
         aria-modal="true"
         aria-labelledby="notice-details-title"
-        (click)="$event.stopPropagation()">
+        (click)="$event.stopPropagation()"
+        (keydown.escape)="closeDetails()"
+        tabindex="-1">
         <header class="student-notice__modal-header">
           <div class="student-notice__modal-title-group">
             <mat-icon aria-hidden="true">campaign</mat-icon>
@@ -134,7 +210,7 @@
               <dt>Published Date</dt>
               <dd class="student-notice__detail-date">
                 <mat-icon class="student-notice__date-icon" aria-hidden="true">calendar_today</mat-icon>
-                <span>{{ notice.announcementDate }}</span>
+                <time>{{ notice.announcementDate }}</time>
               </dd>
             </div>
             <div class="student-notice__detail-item student-notice__detail-item--full">

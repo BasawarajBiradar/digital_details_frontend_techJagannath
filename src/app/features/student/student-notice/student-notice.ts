@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { DashboardFooter } from '../../../shared/components/dashboard-footer/das
 @Component({
   selector: 'app-student-notice',
   standalone: true,
-  imports: [CommonModule, MatIconModule, DashboardFooter, DatePipe],
+  imports: [CommonModule, MatIconModule, DashboardFooter],
   templateUrl: './student-notice.html',
   styleUrl: './student-notice.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,9 +27,14 @@ export class StudentNotice {
     noticeTitle: notice.noticeTitle,
     announcementDate: notice.announcementDate,
     noticeDetail: notice.noticeDetail,
+    files: notice.files ?? [],
   })));
 
   constructor() {
+    this.loadNotices();
+  }
+
+  retry(): void {
     this.loadNotices();
   }
 

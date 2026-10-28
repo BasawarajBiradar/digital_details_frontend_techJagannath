@@ -16,6 +16,15 @@ import {
   DataTableRow,
 } from '../../../shared/components/data-table/data-table';
 
+export interface DashboardUpdateItem {
+  label: string;
+  value: string | number;
+  icon: string;
+  link?: string;
+  isStatus?: boolean;
+  statusClass?: string;
+}
+
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
@@ -77,19 +86,62 @@ export class StudentDashboard {
     { initialValue: null }
   );
 
-  readonly todaysUpdateItems = computed(() => {
+  readonly todaysUpdateItems = computed<DashboardUpdateItem[]>(() => {
     const updates = this.todaysUpdates();
     if (!updates) return [];
 
+    const attendanceVal = updates.attendanceStatus ?? '-';
+    const isPresent = typeof attendanceVal === 'string' && attendanceVal.toUpperCase().includes('PRESENT');
+
     return [
-      { label: 'Attendance', value: updates.attendanceStatus ?? '-' },
-      { label: 'Entry time', value: updates.entryTime ?? '-' },
-      { label: 'Photo taps', value: updates.tapPhotoCount ?? 0 },
-      { label: 'Homework', value: updates.pendingHomeWorkCount ?? 0 },
-      { label: 'Notices', value: updates.noticeCount ?? 0 },
-      { label: 'Teacher feedback', value: updates.teacherFeedBack ?? '-' },
-      { label: 'Weekly grade', value: updates.weeklyPerformanceGrade ?? '-' },
-      { label: 'Percentage', value: updates.percentage === null ? '-' : `${updates.percentage}%` },
+      {
+        label: 'Attendance',
+        value: attendanceVal,
+        icon: 'event_available',
+        link: '/student/attendance-details',
+        isStatus: true,
+        statusClass: isPresent ? 'status--present' : 'status--neutral',
+      },
+      {
+        label: 'Entry time',
+        value: updates.entryTime ?? '-',
+        icon: 'schedule',
+      },
+      {
+        label: 'Photo taps',
+        value: updates.tapPhotoCount ?? 0,
+        icon: 'photo_camera',
+        link: '/student/tap-photos',
+      },
+      {
+        label: 'Homework',
+        value: updates.pendingHomeWorkCount ?? 0,
+        icon: 'assignment',
+        link: '/student/homework',
+      },
+      {
+        label: 'Notices',
+        value: updates.noticeCount ?? 0,
+        icon: 'campaign',
+        link: '/student/notice',
+      },
+      {
+        label: 'Teacher feedback',
+        value: updates.teacherFeedBack ?? '-',
+        icon: 'chat_bubble_outline',
+      },
+      {
+        label: 'Weekly grade',
+        value: updates.weeklyPerformanceGrade ?? '-',
+        icon: 'grade',
+        isStatus: true,
+        statusClass: 'status--grade',
+      },
+      {
+        label: 'Percentage',
+        value: updates.percentage === null ? '-' : `${updates.percentage}%`,
+        icon: 'percent',
+      },
     ];
   });
 
