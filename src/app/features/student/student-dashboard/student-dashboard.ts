@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, HostListener, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -32,12 +32,13 @@ export interface DashboardUpdateItem {
   templateUrl: './student-dashboard.html',
   styleUrl:    './student-dashboard.scss',
 })
-export class StudentDashboard {
+export class StudentDashboard implements OnDestroy {
 
   private readonly apiStudent = inject(ApiStudent);
 
   readonly hasError    = signal(false);
   readonly showQr      = signal(false);
+  readonly showDetails = signal(false);
   readonly showImage   = signal(false);
   readonly selectedImageUrl = signal<string | null>(null);
   readonly qrObjectUrl = signal<string | null>(null);
@@ -46,6 +47,9 @@ export class StudentDashboard {
   readonly photoUploading = signal(false);
   readonly photoUploadError = signal(false);
   private readonly toast = inject(ToastService);
+
+  private detailsTriggerElement: HTMLElement | null = null;
+  @ViewChild('detailsCloseBtn') detailsCloseBtn?: ElementRef<HTMLButtonElement>;
 
   // Crop modal state
   readonly showCrop      = signal(false);
@@ -180,6 +184,49 @@ export class StudentDashboard {
     this.todayTaps().map((tap, index) => ({ ...tap, index: index + 1 }))
   );
 
+  // ── Details Modal ─────────────────────────────────────────────────────────
+
+  openDetails(trigger?: HTMLElement): void {
+    this.detailsTriggerElement = trigger ?? (document.activeElement as HTMLElement | null);
+    this.showDetails.set(true);
+    this.setBodyScrollLocked(true);
+    setTimeout(() => {
+      this.detailsCloseBtn?.nativeElement?.focus();
+    }, 50);
+  }
+
+  closeDetails(): void {
+    this.showDetails.set(false);
+    this.setBodyScrollLocked(false);
+    if (this.detailsTriggerElement) {
+      this.detailsTriggerElement.focus();
+      this.detailsTriggerElement = null;
+    }
+  }
+
+  onDetailsBackdropClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('details-modal__backdrop')) {
+      this.closeDetails();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.showDetails()) {
+      this.closeDetails();
+    } else if (this.showQr()) {
+      this.closeQr();
+    } else if (this.showImage()) {
+      this.closeImage();
+    }
+  }
+
+  private setBodyScrollLocked(locked: boolean): void {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = locked ? 'hidden' : '';
+    }
+  }
+
   // ── QR ──────────────────────────────────────────────────────────────────────
 
   openQr() {
@@ -190,6 +237,7 @@ export class StudentDashboard {
     this.qrError.set(false);
     this.qrLoading.set(true);
     this.showQr.set(true);
+    this.setBodyScrollLocked(true);
 
     const uid        = this.student()?.uid;
     const landingUrl = `${window.location.origin}/student/uid/${uid}`;
@@ -200,13 +248,17 @@ export class StudentDashboard {
     });
   }
 
-  closeQr() { this.showQr.set(false); }
+  closeQr() {
+    this.showQr.set(false);
+    this.setBodyScrollLocked(false);
+  }
 
   openImage(url?: string | null) {
     const src = url ?? this.displayPhotoUrl();
     if (!src) return;
     this.selectedImageUrl.set(src);
     this.showImage.set(true);
+    this.setBodyScrollLocked(true);
   }
 
   onTapAction(row: DataTableRow): void {
@@ -222,6 +274,15 @@ export class StudentDashboard {
   closeImage() {
     this.showImage.set(false);
     this.selectedImageUrl.set(null);
+    this.setBodyScrollLocked(false);
+  }
+
+  ngOnDestroy(): void {
+    this.setBodyScrollLocked(false);
+    const prev = this.qrObjectUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    const prevLocal = this.localPhotoUrl();
+    if (prevLocal) URL.revokeObjectURL(prevLocal);
   }
 
   // ── Photo edit ───────────────────────────────────────────────────────────────

@@ -61,12 +61,9 @@
 
           <!-- Photo Container with Accessible Edit Control -->
           <div class="id-card__photo-container">
-            <div class="id-card__photo-wrap id-card__photo-wrap--editable"
-                 (click)="photoFileInput.click()"
-                 role="button"
-                 aria-label="Change student profile photo"
-                 tabindex="0"
-                 (keydown.enter)="photoFileInput.click()">
+            <div class="id-card__photo-wrap id-card__photo-wrap--editable" (click)="photoFileInput.click()"
+              role="button" aria-label="Change student profile photo" tabindex="0"
+              (keydown.enter)="photoFileInput.click()">
 
               @if (displayPhotoUrl()) {
               <img class="id-card__photo" [src]="displayPhotoUrl()" [alt]="student()!.fullName" />
@@ -81,7 +78,8 @@
                 <span class="id-card__photo-edit-hint">Change</span>
               </div>
 
-              <input #photoFileInput type="file" accept="image/*" class="sr-only" (change)="onPhotoFileSelected($event)" />
+              <input #photoFileInput type="file" accept="image/*" class="sr-only"
+                (change)="onPhotoFileSelected($event)" />
             </div>
 
             @if (photoUploading()) {
@@ -99,7 +97,7 @@
             <div class="id-card__tags">
               <span class="badge-pill badge-pill--primary" title="Class and Division">
                 <mat-icon aria-hidden="true">school</mat-icon>
-                <span>Class {{ classDivision() }}</span>
+                <span>{{ classDivision().toLowerCase().startsWith('class') ? classDivision() : ('Class ' + classDivision()) }}</span>
               </span>
               @if (student()!.bloodGroup) {
               <span class="badge-pill badge-pill--blood" title="Blood Group">
@@ -107,115 +105,33 @@
                 <span>{{ student()!.bloodGroup }}</span>
               </span>
               }
-            </div>
-
-            <div class="id-card__hero-dob">
-              <span class="id-card__field-label">
-                <mat-icon aria-hidden="true">cake</mat-icon>
-                <span>DOB</span>
+              @if (student()!.uid) {
+              <span class="badge-pill badge-pill--uid" title="Student UID">
+                <mat-icon aria-hidden="true">tag</mat-icon>
+                <span>{{ student()!.uid }}</span>
               </span>
-              <span class="id-card__field-value">{{ student()!.birthDate || '-' }}</span>
+              }
             </div>
           </div>
 
         </div>
 
-        <!-- Personal Details Section (Phone, Email, Address) -->
-        <div class="id-card__section id-card__section--details">
-          
-          <!-- Contact Phone -->
-          <div class="id-card__field id-card__field--phone">
-            <span class="id-card__field-label">
-              <mat-icon aria-hidden="true">call</mat-icon>
-              <span>Student Contact</span>
-            </span>
-            @if (student()!.contactNumber) {
-            <a [href]="'tel:' + student()!.contactNumber" class="id-card__field-value id-card__field-value--link">
-              {{ student()!.contactNumber }}
-            </a>
-            } @else {
-            <span class="id-card__field-value">-</span>
-            }
-          </div>
-
-          <!-- Email Address (Full Width Row with Safe Wrapping) -->
-          <div class="id-card__field id-card__field--full">
-            <span class="id-card__field-label">
-              <mat-icon aria-hidden="true">mail_outline</mat-icon>
-              <span>Email Address</span>
-            </span>
-            @if (student()!.emailId) {
-            <a [href]="'mailto:' + student()!.emailId" 
-               class="id-card__field-value id-card__field-value--link id-card__field-value--wrap" 
-               [title]="student()!.emailId">
-              {{ student()!.emailId }}
-            </a>
-            } @else {
-            <span class="id-card__field-value">-</span>
-            }
-          </div>
-
-          <!-- Residential Address (Full Width Row with Natural Wrap) -->
-          @if (student()!.address) {
-          <div class="id-card__field id-card__field--full">
-            <span class="id-card__field-label">
-              <mat-icon aria-hidden="true">place</mat-icon>
-              <span>Residential Address</span>
-            </span>
-            <span class="id-card__field-value id-card__field-value--address">
-              {{ student()!.address }}
-            </span>
-          </div>
-          }
-
-        </div>
-
-        <!-- Guardian & Emergency Contact Section -->
-        <div class="id-card__section id-card__section--emergency">
-          <div class="emergency-panel">
-            <div class="emergency-panel__header">
-              <div class="emergency-panel__icon-wrap">
-                <mat-icon aria-hidden="true">shield</mat-icon>
+        <!-- ID Card Actions: View Details & View QR Pass -->
+        <div class="id-card__actions">
+          <button type="button" class="btn-view-details" #detailsTrigger (click)="openDetails(detailsTrigger)"
+            aria-haspopup="dialog" [attr.aria-expanded]="showDetails()" aria-label="View Full Student Details">
+            <div class="btn-view-details__inner">
+              <div class="btn-view-details__icon-box">
+                <mat-icon aria-hidden="true">badge</mat-icon>
               </div>
-              <div class="emergency-panel__title-box">
-                <span class="emergency-panel__title">Emergency Contact</span>
-                <span class="emergency-panel__subtitle">Parent / Guardian Information</span>
+              <div class="btn-view-details__text">
+                <span class="btn-view-details__title">View Details</span>
+                <span class="btn-view-details__subtitle">Personal, guardian & contact information</span>
               </div>
             </div>
+            <mat-icon class="btn-view-details__arrow" aria-hidden="true">chevron_right</mat-icon>
+          </button>
 
-            <div class="emergency-panel__body">
-              <div class="emergency-panel__person">
-                <span class="emergency-panel__name">{{ student()!.emergencyContactName || '-' }}</span>
-                @if (student()!.emergencyContactRelation) {
-                <span class="emergency-panel__relation-badge">{{ student()!.emergencyContactRelation }}</span>
-                }
-              </div>
-
-              <div class="emergency-panel__actions">
-                @if (student()!.emergencyContactNumber) {
-                <a [href]="'tel:' + student()!.emergencyContactNumber"
-                   class="btn-call-emergency"
-                   aria-label="Call emergency contact at {{ student()!.emergencyContactNumber }}">
-                  <mat-icon aria-hidden="true">call</mat-icon>
-                  <span>{{ student()!.emergencyContactNumber }}</span>
-                </a>
-                }
-
-                @if (student()!.alternateContactNumber) {
-                <a [href]="'tel:' + student()!.alternateContactNumber"
-                   class="btn-call-alt"
-                   aria-label="Call alternate contact at {{ student()!.alternateContactNumber }}">
-                  <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
-                  <span>Alt: {{ student()!.alternateContactNumber }}</span>
-                </a>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card Footer: QR Pass Action -->
-        <div class="id-card__footer-action">
           <button type="button" class="btn-qr" (click)="openQr()" aria-label="View Student QR Pass">
             <div class="btn-qr__inner">
               <div class="btn-qr__icon-wrap">
@@ -251,40 +167,41 @@
 
         <div class="todays-updates__grid">
           @for (item of todaysUpdateItems(); track item.label) {
-            @if (item.link) {
-            <a class="update-card update-card--interactive"
-               [routerLink]="item.link"
-               [attr.aria-label]="item.label + ': ' + item.value + '. Click to view details.'">
-              <div class="update-card__top">
-                <div class="update-card__icon-box">
-                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
-                </div>
-                <div class="update-card__action-indicator">
-                  <mat-icon aria-hidden="true">arrow_forward</mat-icon>
-                </div>
+          @if (item.link) {
+          <a class="update-card update-card--interactive" [routerLink]="item.link"
+            [attr.aria-label]="item.label + ': ' + item.value + '. Click to view details.'">
+            <div class="update-card__top">
+              <div class="update-card__icon-box">
+                <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
               </div>
-              <div class="update-card__bottom">
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value" [class.update-card__value--status]="item.isStatus" [ngClass]="item.statusClass || ''">
-                  {{ item.value }}
-                </strong>
+              <div class="update-card__action-indicator">
+                <mat-icon aria-hidden="true">arrow_forward</mat-icon>
               </div>
-            </a>
-            } @else {
-            <article class="update-card update-card--info" [attr.aria-label]="item.label + ': ' + item.value">
-              <div class="update-card__top">
-                <div class="update-card__icon-box">
-                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
-                </div>
+            </div>
+            <div class="update-card__bottom">
+              <span class="update-card__label">{{ item.label }}</span>
+              <strong class="update-card__value" [class.update-card__value--status]="item.isStatus"
+                [ngClass]="item.statusClass || ''">
+                {{ item.value }}
+              </strong>
+            </div>
+          </a>
+          } @else {
+          <article class="update-card update-card--info" [attr.aria-label]="item.label + ': ' + item.value">
+            <div class="update-card__top">
+              <div class="update-card__icon-box">
+                <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
               </div>
-              <div class="update-card__bottom">
-                <span class="update-card__label">{{ item.label }}</span>
-                <strong class="update-card__value" [class.update-card__value--status]="item.isStatus" [ngClass]="item.statusClass || ''">
-                  {{ item.value }}
-                </strong>
-              </div>
-            </article>
-            }
+            </div>
+            <div class="update-card__bottom">
+              <span class="update-card__label">{{ item.label }}</span>
+              <strong class="update-card__value" [class.update-card__value--status]="item.isStatus"
+                [ngClass]="item.statusClass || ''">
+                {{ item.value }}
+              </strong>
+            </div>
+          </article>
+          }
           }
         </div>
       </section>
@@ -294,13 +211,175 @@
   </div>
   }
 
+  <!-- View Details Modal Dialog -->
+  @if (showDetails() && student()) {
+  <div class="details-modal__backdrop" (click)="onDetailsBackdropClick($event)">
+    <div class="details-modal__panel" role="dialog" aria-modal="true" aria-labelledby="student-details-title"
+      (click)="$event.stopPropagation()">
+
+      <!-- Dialog Header -->
+      <div class="details-modal__header">
+        <div class="details-modal__title-group">
+          <div class="details-modal__icon-badge">
+            <mat-icon aria-hidden="true">badge</mat-icon>
+          </div>
+          <div class="details-modal__header-text">
+            <h2 id="student-details-title" class="details-modal__title">Student Details</h2>
+            <span class="details-modal__subtitle">TapAxe Student Identity Record</span>
+          </div>
+        </div>
+        <button #detailsCloseBtn class="details-modal__close" (click)="closeDetails()" aria-label="Close student details dialog">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Dialog Scrollable Body -->
+      <div class="details-modal__body">
+
+        <!-- Section 1: Student Information -->
+        <section class="details-section" aria-labelledby="section-student-info">
+          <div class="details-section__header">
+            <div class="details-section__icon-wrap">
+              <mat-icon aria-hidden="true">person</mat-icon>
+            </div>
+            <h3 id="section-student-info" class="details-section__title">Student Information</h3>
+          </div>
+          <div class="details-section__grid">
+            <div class="details-field">
+              <span class="details-field__label">Full Name</span>
+              <span class="details-field__value">{{ student()!.fullName || '-' }}</span>
+            </div>
+            <div class="details-field">
+              <span class="details-field__label">Student UID / ID</span>
+              <span class="details-field__value details-field__value--uid">{{ student()!.uid || '-' }}</span>
+            </div>
+            <div class="details-field">
+              <span class="details-field__label">Class & Division</span>
+              <span class="details-field__value">{{ classDivision() || '-' }}</span>
+            </div>
+            <div class="details-field">
+              <span class="details-field__label">Blood Group</span>
+              <div class="details-field__value">
+                @if (student()!.bloodGroup) {
+                <span class="badge-pill badge-pill--blood">
+                  <mat-icon aria-hidden="true">water_drop</mat-icon>
+                  <span>{{ student()!.bloodGroup }}</span>
+                </span>
+                } @else {
+                <span>-</span>
+                }
+              </div>
+            </div>
+            <div class="details-field details-field--full">
+              <span class="details-field__label">Date of Birth</span>
+              <span class="details-field__value">{{ student()!.birthDate || '-' }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Parent / Guardian Information -->
+        <section class="details-section" aria-labelledby="section-guardian-info">
+          <div class="details-section__header">
+            <div class="details-section__icon-wrap">
+              <mat-icon aria-hidden="true">shield</mat-icon>
+            </div>
+            <h3 id="section-guardian-info" class="details-section__title">Parent / Guardian Information</h3>
+          </div>
+          <div class="details-section__grid">
+            <div class="details-field">
+              <span class="details-field__label">Guardian Name</span>
+              <div class="details-field__value-group">
+                <span class="details-field__value">{{ student()!.emergencyContactName || '-' }}</span>
+                @if (student()!.emergencyContactRelation) {
+                <span class="badge-pill badge-pill--primary">{{ student()!.emergencyContactRelation }}</span>
+                }
+              </div>
+            </div>
+            <div class="details-field">
+              <span class="details-field__label">Emergency Contact</span>
+              @if (student()!.emergencyContactNumber) {
+              <a [href]="'tel:' + student()!.emergencyContactNumber" class="details-btn-call"
+                aria-label="Call emergency contact at {{ student()!.emergencyContactNumber }}">
+                <mat-icon aria-hidden="true">call</mat-icon>
+                <span>{{ student()!.emergencyContactNumber }}</span>
+              </a>
+              } @else {
+              <span class="details-field__value">-</span>
+              }
+            </div>
+            @if (student()!.alternateContactNumber) {
+            <div class="details-field details-field--full">
+              <span class="details-field__label">Alternate Contact</span>
+              <a [href]="'tel:' + student()!.alternateContactNumber" class="details-btn-call details-btn-call--alt"
+                aria-label="Call alternate contact at {{ student()!.alternateContactNumber }}">
+                <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
+                <span>Alt: {{ student()!.alternateContactNumber }}</span>
+              </a>
+            </div>
+            }
+          </div>
+        </section>
+
+        <!-- Section 3: Contact Information -->
+        <section class="details-section" aria-labelledby="section-contact-info">
+          <div class="details-section__header">
+            <div class="details-section__icon-wrap">
+              <mat-icon aria-hidden="true">contacts</mat-icon>
+            </div>
+            <h3 id="section-contact-info" class="details-section__title">Contact Information</h3>
+          </div>
+          <div class="details-section__grid">
+            <div class="details-field details-field--full">
+              <span class="details-field__label">Student Contact Number</span>
+              @if (student()!.contactNumber) {
+              <a [href]="'tel:' + student()!.contactNumber" class="details-field__link">
+                <mat-icon aria-hidden="true">call</mat-icon>
+                <span>{{ student()!.contactNumber }}</span>
+              </a>
+              } @else {
+              <span class="details-field__value">-</span>
+              }
+            </div>
+            <div class="details-field details-field--full">
+              <span class="details-field__label">Email Address</span>
+              @if (student()!.emailId) {
+              <a [href]="'mailto:' + student()!.emailId" class="details-field__link details-field__link--wrap"
+                [title]="student()!.emailId">
+                <mat-icon aria-hidden="true">mail_outline</mat-icon>
+                <span>{{ student()!.emailId }}</span>
+              </a>
+              } @else {
+              <span class="details-field__value">-</span>
+              }
+            </div>
+            @if (student()!.address) {
+            <div class="details-field details-field--full">
+              <span class="details-field__label">Residential Address</span>
+              <span class="details-field__value details-field__value--address">
+                {{ student()!.address }}
+              </span>
+            </div>
+            }
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="details-modal__footer">
+        <button type="button" class="btn-details-done" (click)="closeDetails()" aria-label="Close details popup">
+          <span>Done</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+
   <!-- QR Modal Dialog -->
   @if (showQr()) {
-  <app-qr-model [studentName]="student()?.fullName ?? ''"
-                [qrObjectUrl]="qrObjectUrl()"
-                [isLoading]="qrLoading()"
-                [hasError]="qrError()"
-                (closed)="closeQr()" />
+  <app-qr-model [studentName]="student()?.fullName ?? ''" [qrObjectUrl]="qrObjectUrl()" [isLoading]="qrLoading()"
+    [hasError]="qrError()" (closed)="closeQr()" />
   }
 
   <!-- Full-size Image Preview Modal -->
@@ -322,10 +401,8 @@
 
   <!-- Crop Modal -->
   @if (showCrop() && cropFile()) {
-  <app-image-crop-modal [file]="cropFile()!"
-                        [cropShape]="'portrait'"
-                        (cropped)="onCropDone($event)"
-                        (cancelled)="onCropCancelled()" />
+  <app-image-crop-modal [file]="cropFile()!" [cropShape]="'portrait'" (cropped)="onCropDone($event)"
+    (cancelled)="onCropCancelled()" />
   }
 
   <!-- Persistent Dashboard Navigation Footer -->
