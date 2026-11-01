@@ -1,114 +1,229 @@
 <main class="tap-photos">
   <div class="tap-photos__container">
 
-    <!-- Filter Card Header -->
-    <header class="tap-photos__filter-card" aria-labelledby="tap-photos-title">
-      <div class="tap-photos__header-row">
+    <!-- Hero Header Card -->
+    <header class="tap-photos__hero-card" aria-labelledby="tap-photos-title">
+      <div class="tap-photos__hero-row">
         <div class="tap-photos__title-group">
-          <span class="tap-photos__kicker">Student Portal</span>
           <h1 id="tap-photos-title" class="tap-photos__title">Tap Photos</h1>
         </div>
 
-        @if (!loading() && !error() && tapPhotos().length > 0) {
-          <div class="tap-photos__count-badge" aria-label="Total records found">
-            <mat-icon aria-hidden="true">photo_library</mat-icon>
-            <span>{{ tapPhotos().length }} {{ tapPhotos().length === 1 ? 'Record' : 'Records' }}</span>
+        <!-- Metric Badges -->
+        <div class="tap-photos__stats-group" aria-label="Tap photo summary statistics">
+          <div class="tap-photos__stat-card">
+            <div class="tap-photos__stat-icon">
+              <mat-icon aria-hidden="true">fingerprint</mat-icon>
+            </div>
+            <div class="tap-photos__stat-meta">
+              <span class="tap-photos__stat-val">{{ tapPhotos().length }}</span>
+              <span class="tap-photos__stat-lbl">Total Taps</span>
+            </div>
           </div>
-        }
-      </div>
 
-      <div class="tap-photos__filter-row" aria-labelledby="tap-photos-filter-title">
-        <div class="tap-photos__filter-caption">
-          <mat-icon aria-hidden="true">date_range</mat-icon>
-          <span id="tap-photos-filter-title">Filter by date</span>
-        </div>
-        <div class="tap-photos__picker-wrap">
-          <app-date-picker
-            [compact]="true"
-            [startDate]="fromDate()"
-            (startDateChange)="onFromDateChanged($event)"
-            [endDate]="toDate()"
-            (endDateChange)="onToDateChanged($event)" />
+          <div class="tap-photos__stat-card tap-photos__stat-card--accent">
+            <div class="tap-photos__stat-icon tap-photos__stat-icon--accent">
+              <mat-icon aria-hidden="true">photo_library</mat-icon>
+            </div>
+            <div class="tap-photos__stat-meta">
+              <span class="tap-photos__stat-val">{{ photosWithUrl().length }}</span>
+              <span class="tap-photos__stat-lbl">Photos Captured</span>
+            </div>
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- Main Results Section -->
-    <section class="tap-photos__content" aria-live="polite">
+    <!-- Filter & Date Range Toolbar -->
+    <section class="tap-photos__filter-section" aria-label="Date range filters">
+      <div class="tap-photos__filter-card">
+        <div class="tap-photos__filter-controls-row">
+          <!-- Quick Presets -->
+          <div class="tap-photos__presets-wrap" role="tablist" aria-label="Quick date presets">
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'today'"
+              [attr.aria-selected]="activePreset() === 'today'"
+              (click)="setFilterPreset('today')">
+              <mat-icon aria-hidden="true">today</mat-icon>
+              <span>Today</span>
+            </button>
 
-      @if (loading()) {
-        <div class="tap-photos__state-card tap-photos__state-card--loading" aria-live="polite">
-          <span class="tap-photos__spinner" aria-hidden="true"></span>
-          <p class="tap-photos__state-text">Loading tap photos...</p>
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === '7days'"
+              [attr.aria-selected]="activePreset() === '7days'"
+              (click)="setFilterPreset('7days')">
+              <mat-icon aria-hidden="true">date_range</mat-icon>
+              <span>Last 7 Days</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'month'"
+              [attr.aria-selected]="activePreset() === 'month'"
+              (click)="setFilterPreset('month')">
+              <mat-icon aria-hidden="true">calendar_month</mat-icon>
+              <span>This Month</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'custom'"
+              [attr.aria-selected]="activePreset() === 'custom'"
+              (click)="setFilterPreset('custom')">
+              <mat-icon aria-hidden="true">edit_calendar</mat-icon>
+              <span>Custom Range</span>
+            </button>
+          </div>
+
+          <span class="tap-photos__range-badge" aria-label="Active date range">
+            <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            <span>{{ activeDateRangeLabel() }}</span>
+          </span>
+
+          <!-- Custom Range Datepicker Input -->
+          <div class="tap-photos__picker-wrap" [class.is-visible]="activePreset() === 'custom'">
+            <app-date-picker
+              [compact]="true"
+              [startDate]="fromDate()"
+              (startDateChange)="onFromDateChanged($event)"
+              [endDate]="toDate()"
+              (endDateChange)="onToDateChanged($event)" />
+          </div>
         </div>
-      } @else if (error()) {
+      </div>
+    </section>
+
+    <!-- Main Content Section -->
+    <section class="tap-photos__content-section" aria-live="polite">
+
+      <!-- 1. Loading Skeletons -->
+      @if (loading()) {
+        <div class="tap-photos__skeletons-grid" aria-label="Loading tap photos...">
+          @for (item of skeletonCards; track item) {
+            <div class="tap-photos__skeleton-card" aria-hidden="true">
+              <div class="tap-photos__skeleton-thumb shimmer"></div>
+              <div class="tap-photos__skeleton-info">
+                <div class="tap-photos__skeleton-line shimmer tap-photos__skeleton-line--lg"></div>
+                <div class="tap-photos__skeleton-line shimmer tap-photos__skeleton-line--sm"></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 2. API Error State -->
+      @else if (error()) {
         <div class="tap-photos__state-card tap-photos__state-card--error" role="alert">
           <div class="tap-photos__state-icon tap-photos__state-icon--error">
             <mat-icon aria-hidden="true">error_outline</mat-icon>
           </div>
           <h2 class="tap-photos__state-heading">Unable to Load Tap Photos</h2>
-          <p class="tap-photos__state-subtext">There was an issue fetching records for the selected period.</p>
+          <p class="tap-photos__state-subtext">
+            There was an issue fetching tap records for the selected period. Please verify your connection and try again.
+          </p>
           <button class="tap-photos__retry-btn" type="button" (click)="retry()">
             <mat-icon aria-hidden="true">refresh</mat-icon>
-            Retry
+            <span>Retry</span>
           </button>
         </div>
-      } @else if (tapPhotos().length === 0) {
+      }
+
+      <!-- 3. Empty State -->
+      @else if (tapPhotos().length === 0) {
         <div class="tap-photos__state-card tap-photos__state-card--empty">
           <div class="tap-photos__state-icon">
             <mat-icon aria-hidden="true">photo_camera</mat-icon>
           </div>
           <h2 class="tap-photos__state-heading">No Tap Photos Found</h2>
-          <p class="tap-photos__state-subtext">No attendance photo entries were recorded in the selected date range.</p>
+          <p class="tap-photos__state-subtext">
+            No gate-tap check-in entries were recorded between {{ activeDateRangeLabel() }}.
+          </p>
+          <button
+            class="tap-photos__reset-filter-btn"
+            type="button"
+            (click)="setFilterPreset('month')">
+            <mat-icon aria-hidden="true">calendar_month</mat-icon>
+            <span>View This Month's Records</span>
+          </button>
         </div>
-      } @else {
-        <div class="tap-photos__table-card">
-          <div class="tap-photos__table-wrap">
-            <table class="tap-photos__table">
-              <caption class="visually-hidden">Tap photos between the selected dates</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Time</th>
-                  <th scope="col" class="tap-photos__th-action">Photo Record</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (photo of tapPhotos(); track photo.date + photo.time) {
-                  <tr class="tap-photos__row">
-                    <td class="tap-photos__td-date">
-                      <div class="tap-photos__cell-with-icon">
-                        <mat-icon class="tap-photos__cell-icon" aria-hidden="true">calendar_today</mat-icon>
-                        <span class="tap-photos__cell-value">{{ formatDate(photo.date) }}</span>
-                      </div>
-                    </td>
-                    <td class="tap-photos__td-time">
-                      <div class="tap-photos__cell-with-icon">
-                        <mat-icon class="tap-photos__cell-icon" aria-hidden="true">schedule</mat-icon>
-                        <span class="tap-photos__cell-value">{{ formatTime(photo.time) }}</span>
-                      </div>
-                    </td>
-                    <td class="tap-photos__td-action">
-                      @if (photo.photoUrl) {
-                        <button
-                          class="tap-photos__view-btn"
-                          type="button"
-                          aria-label="View photo captured on {{ formatDate(photo.date) }} at {{ formatTime(photo.time) }}"
-                          (click)="openPhoto(photo.photoUrl!)">
-                          <mat-icon aria-hidden="true">visibility</mat-icon>
-                          <span>View photo</span>
-                        </button>
-                      } @else {
-                        <span class="tap-photos__unavailable">
-                          <mat-icon aria-hidden="true">photo_size_select_actual</mat-icon>
-                          Unavailable
-                        </span>
-                      }
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+      }
+
+      <!-- 4. Photo Cards Gallery Grid -->
+      @else {
+        <div class="tap-photos__gallery-wrap">
+          <div class="tap-photos__gallery-grid" role="list" aria-label="Tap photos list">
+            @for (photo of tapPhotos(); track photo.date + photo.time + $index) {
+              <article
+                class="tap-card"
+                role="listitem"
+                [class.tap-card--has-photo]="photo.photoUrl && !isImageFailed(photo.photoUrl)"
+                (click)="photo.photoUrl && !isImageFailed(photo.photoUrl) ? openPhoto(photo) : null">
+
+                <!-- Media Box -->
+                <div class="tap-card__media">
+                  @if (photo.photoUrl && !isImageFailed(photo.photoUrl)) {
+                    <img
+                      class="tap-card__image"
+                      [src]="photo.photoUrl"
+                      [alt]="'Student tap snapshot on ' + formatDate(photo.date) + ' at ' + formatTime(photo.time)"
+                      loading="lazy"
+                      (error)="onImageError(photo.photoUrl)" />
+                  } @else if (photo.photoUrl && isImageFailed(photo.photoUrl)) {
+                    <div class="tap-card__fallback tap-card__fallback--error" aria-label="Image failed to load">
+                      <mat-icon aria-hidden="true">broken_image</mat-icon>
+                      <span class="tap-card__fallback-text">Photo Load Failed</span>
+                    </div>
+                  } @else {
+                    <div class="tap-card__fallback" aria-label="No photo captured">
+                      <mat-icon aria-hidden="true">no_photography</mat-icon>
+                      <span class="tap-card__fallback-text">No Photo Captured</span>
+                    </div>
+                  }
+                </div>
+
+                <!-- Card Details Body -->
+                <div class="tap-card__body">
+                  <div class="tap-card__meta-group">
+                    <div class="tap-card__meta-item">
+                      <mat-icon class="tap-card__meta-icon" aria-hidden="true">calendar_today</mat-icon>
+                      <span class="tap-card__meta-text">{{ formatDate(photo.date) }}</span>
+                    </div>
+                    <div class="tap-card__meta-item tap-card__meta-item--time">
+                      <mat-icon class="tap-card__meta-icon" aria-hidden="true">schedule</mat-icon>
+                      <span class="tap-card__meta-text tap-card__meta-text--bold">{{ formatTime(photo.time) }}</span>
+                    </div>
+                  </div>
+
+                  <div class="tap-card__action-row">
+                    @if (photo.photoUrl && !isImageFailed(photo.photoUrl)) {
+                      <button
+                        type="button"
+                        class="tap-card__view-btn"
+                        [attr.aria-label]="'Enlarge tap photo from ' + formatDate(photo.date) + ' at ' + formatTime(photo.time)"
+                        (click)="$event.stopPropagation(); openPhoto(photo)">
+                        <mat-icon aria-hidden="true">visibility</mat-icon>
+                        <span>View Photo</span>
+                      </button>
+                    } @else {
+                      <span class="tap-card__status-tag">
+                        <mat-icon aria-hidden="true">check_circle</mat-icon>
+                        <span>Tap Logged</span>
+                      </span>
+                    }
+                  </div>
+                </div>
+
+              </article>
+            }
           </div>
         </div>
       }
@@ -119,37 +234,129 @@
 
   <app-dashboard-footer role="student" />
 
-  <!-- Photo Modal / Lightbox -->
-  @if (showPhoto() && selectedPhotoUrl(); as photoUrl) {
+  <!-- Premium Lightbox Modal -->
+  @if (showPhotoModal() && activePhoto(); as current) {
     <div
-      class="tap-photos__modal-backdrop"
+      class="tap-lightbox"
       role="presentation"
       (click)="closePhoto()">
+
       <div
-        class="tap-photos__modal"
+        class="tap-lightbox__panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Tap photo preview"
+        aria-labelledby="tap-lightbox-title"
         (click)="$event.stopPropagation()">
-        <header class="tap-photos__modal-header">
-          <div class="tap-photos__modal-title-group">
-            <mat-icon aria-hidden="true">photo</mat-icon>
-            <span class="tap-photos__modal-title">Attendance Photo</span>
+
+        <!-- Lightbox Header -->
+        <header class="tap-lightbox__header">
+          <div class="tap-lightbox__title-wrap">
+            <div class="tap-lightbox__icon-badge">
+              <mat-icon aria-hidden="true">verified_user</mat-icon>
+            </div>
+            <div>
+              <h2 id="tap-lightbox-title" class="tap-lightbox__title">Gate Tap Photo Verification</h2>
+              <p class="tap-lightbox__meta-subtitle">
+                {{ formatDate(current.date) }} at {{ formatTime(current.time) }}
+              </p>
+            </div>
           </div>
-          <button
-            class="tap-photos__modal-close"
-            type="button"
-            aria-label="Close photo preview"
-            (click)="closePhoto()">
-            <mat-icon aria-hidden="true">close</mat-icon>
-          </button>
+
+          <div class="tap-lightbox__header-actions">
+            @if (photosWithUrl().length > 1) {
+              <span class="tap-lightbox__counter-badge">
+                {{ selectedPhotoIndex() + 1 }} / {{ photosWithUrl().length }}
+              </span>
+            }
+
+            <button
+              class="tap-lightbox__close-btn"
+              type="button"
+              aria-label="Close photo preview"
+              (click)="closePhoto()">
+              <mat-icon aria-hidden="true">close</mat-icon>
+            </button>
+          </div>
         </header>
-        <div class="tap-photos__modal-body">
-          <img
-            class="tap-photos__modal-image"
-            [src]="photoUrl"
-            alt="Student tap photo preview" />
+
+        <!-- Lightbox Stage / Canvas -->
+        <div class="tap-lightbox__stage">
+          <div class="tap-lightbox__stage-inner">
+            <img
+              class="tap-lightbox__img"
+              [src]="current.photoUrl"
+              [alt]="'Gate tap capture on ' + formatDate(current.date) + ' at ' + formatTime(current.time)"
+              [style.transform]="'scale(' + modalZoom() + ')'" />
+          </div>
+
+          <!-- Previous / Next Floating Arrows -->
+          @if (photosWithUrl().length > 1) {
+            <button
+              type="button"
+              class="tap-lightbox__arrow-btn tap-lightbox__arrow-btn--prev"
+              aria-label="View previous photo"
+              [disabled]="selectedPhotoIndex() === 0"
+              (click)="previousPhoto()">
+              <mat-icon aria-hidden="true">chevron_left</mat-icon>
+            </button>
+
+            <button
+              type="button"
+              class="tap-lightbox__arrow-btn tap-lightbox__arrow-btn--next"
+              aria-label="View next photo"
+              [disabled]="selectedPhotoIndex() >= photosWithUrl().length - 1"
+              (click)="nextPhoto()">
+              <mat-icon aria-hidden="true">chevron_right</mat-icon>
+            </button>
+          }
         </div>
+
+        <!-- Lightbox Footer Controls -->
+        <footer class="tap-lightbox__footer">
+          <div class="tap-lightbox__zoom-controls" aria-label="Photo zoom controls">
+            <button
+              type="button"
+              class="tap-lightbox__control-btn"
+              aria-label="Zoom out"
+              [disabled]="modalZoom() <= 1"
+              (click)="zoomOut()">
+              <mat-icon aria-hidden="true">remove</mat-icon>
+            </button>
+
+            <button
+              type="button"
+              class="tap-lightbox__control-btn tap-lightbox__control-btn--text"
+              aria-label="Reset zoom level"
+              (click)="resetZoom()">
+              <span>{{ modalZoom() * 100 }}%</span>
+            </button>
+
+            <button
+              type="button"
+              class="tap-lightbox__control-btn"
+              aria-label="Zoom in"
+              [disabled]="modalZoom() >= 3"
+              (click)="zoomIn()">
+              <mat-icon aria-hidden="true">add</mat-icon>
+            </button>
+          </div>
+
+          <div class="tap-lightbox__footer-actions">
+            <button
+              type="button"
+              class="tap-lightbox__download-btn"
+              aria-label="Open original image in new tab"
+              (click)="downloadPhoto(current.photoUrl!)">
+              <mat-icon aria-hidden="true">open_in_new</mat-icon>
+              <span>Open Original</span>
+            </button>
+          </div>
+
+          <div class="tap-lightbox__kbd-hint">
+            <span>Esc to close • ← → to browse</span>
+          </div>
+        </footer>
+
       </div>
     </div>
   }
