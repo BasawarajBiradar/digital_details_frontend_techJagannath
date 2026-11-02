@@ -1,4 +1,4 @@
-<div class="landing-page">
+<main class="landing-page">
   <div class="landing-page__container">
 
     @if (isLoading()) {
@@ -16,131 +16,192 @@
       </div>
     } @else if (student(); as s) {
 
-      <!-- Student Digital Identity Card -->
-      <article class="id-card" aria-label="Student ID Card">
-        <header class="id-card__band">
-          @if (s.schoolLogoUrl) {
-            <img
-              class="id-card__band-logo"
-              [src]="s.schoolLogoUrl"
-              alt="{{ s.schoolName }} logo" />
-          }
-          <div class="id-card__band-text">
-            <span class="id-card__band-title">{{ s.schoolName }}</span>
-            <span class="id-card__band-subtitle">Student Identity Card</span>
+      <!-- Unified Student Digital Credential Pass -->
+      <article class="credential-card" aria-label="Student Identity Card">
+
+        <!-- Institutional Header -->
+        <header class="credential-card__header">
+          <div class="credential-card__school-brand">
+            @if (s.schoolLogoUrl) {
+              <img
+                class="credential-card__school-logo"
+                [src]="s.schoolLogoUrl"
+                alt="{{ s.schoolName }} logo" />
+            } @else {
+              <div class="credential-card__school-logo credential-card__school-logo--fallback" aria-hidden="true">
+                <mat-icon>school</mat-icon>
+              </div>
+            }
+            <div class="credential-card__school-meta">
+              <span class="credential-card__school-name">{{ s.schoolName }}</span>
+              <span class="credential-card__school-badge">Student Identity Card</span>
+            </div>
           </div>
         </header>
 
-        <div class="id-card__body">
-          <div class="id-card__photo-wrap">
+        <!-- Student Hero Section -->
+        <section class="credential-card__hero">
+          <div class="credential-card__photo-frame">
             @if (s.photoUrl) {
               <img
-                class="id-card__photo"
+                class="credential-card__photo"
                 [src]="s.photoUrl"
                 alt="Photo of {{ s.fullName }}" />
             } @else {
-              <div class="id-card__photo-fallback">
-                <mat-icon aria-hidden="true">person</mat-icon>
+              <div class="credential-card__photo-fallback" aria-hidden="true">
+                <mat-icon>person</mat-icon>
               </div>
             }
           </div>
 
-          <div class="id-card__details">
-            <h1 class="id-card__name">{{ s.fullName }}</h1>
-            <div class="id-card__class-chip">
-              <span>{{ classDivision() }}</span>
-            </div>
-
-            <div class="id-card__divider"></div>
-
-            <div class="id-card__info-grid">
-              <div class="id-card__info-item">
-                <span class="id-card__info-label">Blood</span>
-                <span class="id-card__info-val id-card__info-val--blood">{{ s.bloodGroup || '—' }}</span>
-              </div>
-              <div class="id-card__info-item">
-                <span class="id-card__info-label">DOB</span>
-                <span class="id-card__info-val">{{ s.birthDate || '—' }}</span>
-              </div>
-              <div class="id-card__info-item">
-                <span class="id-card__info-label">Contact</span>
-                <span class="id-card__info-val">
-                  @if (s.contactNumber) {
-                    <a class="id-card__link" href="tel:{{ s.contactNumber }}">
-                      <mat-icon class="id-card__link-icon" aria-hidden="true">phone</mat-icon>
-                      {{ s.contactNumber }}
-                    </a>
-                  } @else {
-                    —
-                  }
+          <div class="credential-card__identity">
+            <h1 class="credential-card__name">{{ s.fullName }}</h1>
+            <div class="credential-card__tags">
+              @if (classDivision()) {
+                <span class="credential-card__chip credential-card__chip--class">
+                  <mat-icon aria-hidden="true">school</mat-icon>
+                  <span>Class {{ classDivision() }}</span>
                 </span>
-              </div>
-              <div class="id-card__info-item">
-                <span class="id-card__info-label">Email</span>
-                <span class="id-card__info-val">
-                  @if (s.emailId) {
-                    <a class="id-card__link" href="mailto:{{ s.emailId }}">
-                      <mat-icon class="id-card__link-icon" aria-hidden="true">mail</mat-icon>
-                      {{ s.emailId }}
-                    </a>
-                  } @else {
-                    —
-                  }
+              }
+              @if (s.bloodGroup) {
+                <span class="credential-card__chip credential-card__chip--blood">
+                  <mat-icon aria-hidden="true">bloodtype</mat-icon>
+                  <span>Blood: {{ s.bloodGroup }}</span>
                 </span>
-              </div>
+              }
             </div>
           </div>
-        </div>
+        </section>
 
-        @if (s.address) {
-          <footer class="id-card__address">
-            <span class="id-card__address-label">Address</span>
-            <span class="id-card__address-val">{{ s.address }}</span>
-          </footer>
-        }
-      </article>
+        <!-- Student Information Grid -->
+        <section class="credential-card__section" aria-label="Student Details">
+          <h2 class="credential-card__section-title">
+            <mat-icon aria-hidden="true">badge</mat-icon>
+            <span>Student Information</span>
+          </h2>
 
-      <!-- Emergency Contact Card -->
-      <article class="id-card id-card--emergency" aria-label="Emergency Contact Details">
-        <header class="id-card__band id-card__band--emergency">
-          <mat-icon aria-hidden="true">contact_emergency</mat-icon>
-          <div class="id-card__band-text">
-            <span class="id-card__band-title">Emergency Contact</span>
+          <div class="credential-card__info-grid">
+            <!-- Date of Birth -->
+            <div class="credential-card__info-tile">
+              <div class="credential-card__info-icon">
+                <mat-icon aria-hidden="true">calendar_today</mat-icon>
+              </div>
+              <div class="credential-card__info-content">
+                <span class="credential-card__info-label">Date of Birth</span>
+                <span class="credential-card__info-value">{{ s.birthDate || '—' }}</span>
+              </div>
+            </div>
+
+            <!-- Student Contact -->
+            <div class="credential-card__info-tile">
+              <div class="credential-card__info-icon">
+                <mat-icon aria-hidden="true">phone</mat-icon>
+              </div>
+              <div class="credential-card__info-content">
+                <span class="credential-card__info-label">Contact Number</span>
+                @if (s.contactNumber) {
+                  <a class="credential-card__link" href="tel:{{ s.contactNumber }}" aria-label="Call student contact">
+                    {{ s.contactNumber }}
+                  </a>
+                } @else {
+                  <span class="credential-card__info-value">—</span>
+                }
+              </div>
+            </div>
+
+            <!-- Student Email -->
+            <div class="credential-card__info-tile credential-card__info-tile--full">
+              <div class="credential-card__info-icon">
+                <mat-icon aria-hidden="true">mail_outline</mat-icon>
+              </div>
+              <div class="credential-card__info-content">
+                <span class="credential-card__info-label">Email Address</span>
+                @if (s.emailId) {
+                  <a class="credential-card__link" href="mailto:{{ s.emailId }}" aria-label="Email student">
+                    {{ s.emailId }}
+                  </a>
+                } @else {
+                  <span class="credential-card__info-value">—</span>
+                }
+              </div>
+            </div>
+
+            <!-- Address -->
+            @if (s.address) {
+              <div class="credential-card__info-tile credential-card__info-tile--full">
+                <div class="credential-card__info-icon">
+                  <mat-icon aria-hidden="true">location_on</mat-icon>
+                </div>
+                <div class="credential-card__info-content">
+                  <span class="credential-card__info-label">Residential Address</span>
+                  <span class="credential-card__info-value credential-card__info-value--address">
+                    {{ s.address }}
+                  </span>
+                </div>
+              </div>
+            }
           </div>
-        </header>
+        </section>
 
-        <div class="id-card__body">
-          <div class="id-card__details">
-            <div class="id-card__emergency-row">
-              <span class="id-card__info-label">Guardian</span>
-              <span class="id-card__emergency-name">{{ s.emergencyContactName || '—' }}</span>
+        <!-- Emergency Contact Section -->
+        <section class="credential-card__emergency" aria-label="Emergency Contact Details">
+          <div class="credential-card__emergency-header">
+            <div class="credential-card__emergency-icon">
+              <mat-icon aria-hidden="true">health_and_safety</mat-icon>
+            </div>
+            <div class="credential-card__emergency-title-group">
+              <h2 class="credential-card__emergency-title">Emergency Contact</h2>
+              <p class="credential-card__emergency-subtitle">Immediate assistance and guardian details</p>
+            </div>
+          </div>
+
+          <div class="credential-card__guardian-box">
+            <div class="credential-card__guardian-row">
+              <span class="credential-card__guardian-label">Guardian:</span>
+              <span class="credential-card__guardian-name">{{ s.emergencyContactName || '—' }}</span>
               @if (s.emergencyContactRelation) {
-                <span class="id-card__relation-chip">({{ s.emergencyContactRelation }})</span>
-              }
-            </div>
-
-            <div class="id-card__divider"></div>
-
-            <div class="id-card__emergency-actions">
-              @if (s.emergencyContactNumber) {
-                <a class="id-card__call-btn" href="tel:{{ s.emergencyContactNumber }}" aria-label="Call emergency contact">
-                  <mat-icon aria-hidden="true">call</mat-icon>
-                  <span>Primary: {{ s.emergencyContactNumber }}</span>
-                </a>
-              }
-
-              @if (s.alternateContactNumber) {
-                <a class="id-card__call-btn id-card__call-btn--secondary" href="tel:{{ s.alternateContactNumber }}" aria-label="Call alternate contact">
-                  <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
-                  <span>Alternate: {{ s.alternateContactNumber }}</span>
-                </a>
+                <span class="credential-card__guardian-relation">({{ s.emergencyContactRelation }})</span>
               }
             </div>
           </div>
-        </div>
+
+          <div class="credential-card__call-actions">
+            @if (s.emergencyContactNumber) {
+              <a
+                class="credential-card__call-btn credential-card__call-btn--primary"
+                href="tel:{{ s.emergencyContactNumber }}"
+                aria-label="Call Primary Emergency Contact: {{ s.emergencyContactNumber }}">
+                <mat-icon aria-hidden="true">call</mat-icon>
+                <div class="credential-card__call-btn-text">
+                  <span class="credential-card__call-btn-tag">Primary Emergency</span>
+                  <span class="credential-card__call-btn-number">{{ s.emergencyContactNumber }}</span>
+                </div>
+              </a>
+            }
+
+            @if (s.alternateContactNumber) {
+              <a
+                class="credential-card__call-btn credential-card__call-btn--secondary"
+                href="tel:{{ s.alternateContactNumber }}"
+                aria-label="Call Alternate Emergency Contact: {{ s.alternateContactNumber }}">
+                <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
+                <div class="credential-card__call-btn-text">
+                  <span class="credential-card__call-btn-tag">Alternate Contact</span>
+                  <span class="credential-card__call-btn-number">{{ s.alternateContactNumber }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        </section>
+
+        <!-- Attribution Footer -->
+        <footer class="credential-card__footer">
+          <span class="credential-card__footer-brand">TapAxe Student Identity System</span>
+        </footer>
+
       </article>
 
     }
 
   </div>
-</div>
+</main>
