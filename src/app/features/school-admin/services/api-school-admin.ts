@@ -57,6 +57,31 @@ export interface StudentsResponse {
   timestamp: string;
 }
 
+export interface StudentDetail {
+  photoUrl: string | null;
+  fullName: string;
+  classLevel: string;
+  div: string;
+  bloodGroup: string;
+  contactNumber: string;
+  emailId: string;
+  birthDate: string;
+  address: string;
+  emergencyContactName: string;
+  emergencyContactNumber: string;
+  emergencyContactRelation: string;
+  alternateContactNumber: string;
+}
+
+export interface StudentDetailResponse {
+  success: boolean;
+  message?: string;
+  code?: string;
+  data: StudentDetail;
+  errors?: unknown | null;
+  timestamp?: string;
+}
+
 export interface SchoolNoticePayload {
   noticeTitle: string;
   noticeDescription: string;
@@ -180,4 +205,9 @@ export class ApiSchoolAdmin {
     );
   }
 
+  getStudentDetail(studentId: number): Observable<StudentDetailResponse> {
+    return this.http.get<StudentDetailResponse>(
+      `${this.base}/api/school-admin/dashboard/student/${studentId}`,
+    );
+  }
 }

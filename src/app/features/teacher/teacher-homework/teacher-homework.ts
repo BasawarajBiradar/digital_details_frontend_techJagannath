@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
 import { CropResult, ImageCropModal } from '../../../shared/components/image-crop-modal/image-crop-modal';
+import { ToastService } from '../../../core/services/toast-service';
 import {
   ApiTeacher,
   AddTeacherHomeworkPayload,
@@ -21,6 +22,7 @@ import { DashboardFooter } from '../../../shared/components/dashboard-footer/das
 export class TeacherHomework implements OnDestroy {
   private readonly apiTeacher = inject(ApiTeacher);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly toast = inject(ToastService);
   readonly classLevels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
   readonly divisions = ['A', 'B', 'C', 'D', 'E'];
   readonly subjects = [{ id: 1, name: 'Mathematics' }];
@@ -140,10 +142,12 @@ export class TeacherHomework implements OnDestroy {
       this.addHomeworkSaving.set(false);
       if (!result?.savedHomeworkTitle) {
         this.addHomeworkError.set(true);
+        this.toast.error('Unable to add homework. Please verify all inputs and try again.');
         return;
       }
 
       this.addHomeworkSuccess.set(`Homework "${result.savedHomeworkTitle}" added.`);
+      this.toast.success(`Homework "${result.savedHomeworkTitle}" added successfully.`);
       this.clearHomeworkImages();
       this.imageSelectionError.set('');
       this.addHomeworkForm.reset({
@@ -175,9 +179,11 @@ export class TeacherHomework implements OnDestroy {
       this.statusUpdating.set(null);
       if (!result?.responseStatus) {
         this.statusError.set(request.reviewRequestId);
+        this.toast.error('Failed to update review status.');
         return;
       }
 
+      this.toast.success('Review status updated successfully.');
       this.fetchOverview();
       this.fetchReviewRequests();
     });

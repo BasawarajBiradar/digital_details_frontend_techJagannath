@@ -1,129 +1,250 @@
-<div class="scanner-wrap">
+<div class="scanner-container" [class.scanner-container--standalone]="isStandalone()">
 
-  <!-- Header -->
-  <div class="scanner-header">
+  <!-- Standalone Breadcrumb / Navigation Return -->
+  @if (isStandalone()) {
+    <div class="standalone-nav-bar">
+      <a routerLink="/tapaxe-admin-dashboard" class="standalone-back-link">
+        <mat-icon aria-hidden="true">arrow_back</mat-icon>
+        <span>Back to Super Admin Hub</span>
+      </a>
+      <span class="standalone-badge">Direct Scanner Mode</span>
+    </div>
+  }
+
+  <!-- Header Card -->
+  <header class="scanner-header">
     <div class="scanner-header__icon">
-      <mat-icon>nfc</mat-icon>
+      <mat-icon aria-hidden="true">contactless</mat-icon>
     </div>
-    <div>
-      <h2 class="scanner-header__title">NFC Scanner</h2>
-      <p class="scanner-header__sub">Tap a card to register and get its link</p>
+    <div class="scanner-header__meta">
+      <h2 class="scanner-header__title">NFC Card Provisioning</h2>
+      <p class="scanner-header__subtitle">Register smart NFC card credentials and generate instant identity endpoints</p>
     </div>
-    <div class="active-badge" *ngIf="isScanning">
-      <span class="active-badge__dot"></span>
-      Live
-    </div>
-  </div>
-
-  <!-- Not supported -->
-  <div class="alert alert--warn" *ngIf="!isSupported">
-    <mat-icon>warning</mat-icon>
-    <span>Web NFC not supported. Use Chrome on Android over HTTPS.</span>
-  </div>
-
-  <!-- Scanning indicator -->
-  <div class="scan-indicator" *ngIf="isScanning">
-    <mat-spinner diameter="22"></mat-spinner>
-    <span>Ready — tap your NFC card now…</span>
-  </div>
-
-  <!-- Error -->
-  <div class="alert alert--error" *ngIf="errorMessage">
-    <mat-icon>error_outline</mat-icon>
-    <span>{{ errorMessage }}</span>
-  </div>
-
-  <!-- Latest scan -->
-  <div class="latest-scan surface-card" *ngIf="scanHistory.length > 0">
-    <p class="section-label">Latest scan</p>
-
-    <div class="field-block">
-      <label>Serial / UID</label>
-      <p>{{ scanHistory[0].serialNumber }}</p>
-    </div>
-
-    <!-- Saving spinner -->
-    <div class="saving-row" *ngIf="scanHistory[0].saving">
-      <div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>
-      <span>Saving to database…</span>
-    </div>
-
-    <!-- Save error -->
-    <div class="alert alert--error" *ngIf="scanHistory[0].saveError" style="margin-top:10px;">
-      <mat-icon>error_outline</mat-icon>
-      <span>{{ scanHistory[0].saveError }}</span>
-    </div>
-
-    <!-- URL result -->
-    <div class="url-result" *ngIf="scanHistory[0].url">
-      <div class="url-result__label">
-        <mat-icon class="url-result__icon">link</mat-icon>
-        Profile URL
+    @if (isScanning()) {
+      <div class="live-pulse-badge" aria-live="polite">
+        <span class="live-pulse-dot" aria-hidden="true"></span>
+        <span>Scanning Active</span>
       </div>
-      <div class="url-result__row">
-        <span class="url-result__text">{{ scanHistory[0].url }}</span>
-        <button class="url-result__copy"
-                [class.url-result__copy--copied]="copiedIndex === 0"
+    }
+  </header>
+
+  <!-- Hardware NFC Detection & Control -->
+  <section class="hardware-scanner-section" aria-label="Hardware NFC Reader">
+    @if (isSupported()) {
+      <div class="hardware-box hardware-box--ready">
+        <div class="hardware-box__status">
+          <mat-icon class="hardware-box__status-icon">check_circle</mat-icon>
+          <div>
+            <strong>Web NFC Hardware Ready</strong>
+            <p>Compatible Android NFC reader detected and active.</p>
+          </div>
+        </div>
+
+        @if (isScanning()) {
+          <div class="scan-active-box">
+            <mat-spinner diameter="24"></mat-spinner>
+            <div class="scan-active-text">
+              <strong>Listening for card tap…</strong>
+              <p>Hold the physical NFC card against the back of your device</p>
+            </div>
+            <button type="button" class="btn-scan btn-scan--stop" (click)="stopScan()">
+              <mat-icon aria-hidden="true">stop</mat-icon>
+              <span>Stop</span>
+            </button>
+          </div>
+        } @else {
+          <button type="button" class="btn-scan btn-scan--start" (click)="startScan()">
+            <mat-icon aria-hidden="true">nfc</mat-icon>
+            <span>Start NFC Scan</span>
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="hardware-box hardware-box--unsupported">
+        <mat-icon class="hardware-box__unsupported-icon">info</mat-icon>
+        <div class="hardware-box__info">
+          <strong>Direct Browser NFC Unavailable</strong>
+          <p>Web NFC hardware reading is natively supported on Chrome for Android. On desktop or iOS, use the verified Manual UID Provisioner below.</p>
+        </div>
+      </div>
+    }
+
+    <!-- Scan Error Alert -->
+    @if (errorMessage()) {
+      <div class="scanner-alert scanner-alert--error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+  </section>
+
+  <!-- Manual UID Provisioning Fallback -->
+  <section class="manual-provision-section" aria-label="Manual UID Provisioning">
+    <div class="section-divider">
+      <span class="section-divider__text">Manual UID Provisioner</span>
+    </div>
+
+    <div class="manual-card">
+      <div class="manual-card__desc">
+        <p>Enter or paste the hexadecimal Serial UID from your desktop card reader or NFC package label.</p>
+      </div>
+
+      <div class="manual-form-row">
+        <div class="manual-input-wrap" [class.manual-input-wrap--error]="manualError()">
+          <mat-icon class="manual-input-icon">pin</mat-icon>
+          <input
+            type="text"
+            class="manual-input"
+            placeholder="e.g. 04A1B2C3D4E5F6 or 04:A1:B2:C3"
+            maxlength="32"
+            spellcheck="false"
+            [value]="manualUid()"
+            (input)="onManualInput($event)"
+            (keydown.enter)="submitManualUid()" />
+          @if (manualUid()) {
+            <button type="button" class="manual-clear-btn" aria-label="Clear input" (click)="manualUid.set(''); manualError.set(null)">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="btn-provision"
+          [disabled]="isManualSubmitting() || !manualUid().trim()"
+          (click)="submitManualUid()">
+          @if (isManualSubmitting()) {
+            <span class="spinner-sm" aria-hidden="true"></span>
+            <span>Saving…</span>
+          } @else {
+            <mat-icon aria-hidden="true">add_link</mat-icon>
+            <span>Provision UID</span>
+          }
+        </button>
+      </div>
+
+      @if (manualError()) {
+        <span class="manual-error-text">{{ manualError() }}</span>
+      }
+    </div>
+  </section>
+
+  <!-- Latest Scan / Provisioning Result -->
+  @if (scanHistory.length > 0) {
+    <section class="results-section" aria-label="Provisioning History">
+      <div class="section-divider">
+        <span class="section-divider__text">Provisioning Activity</span>
+      </div>
+
+      <!-- Latest Item Surface -->
+      <article class="latest-card" aria-label="Latest Registered Card">
+        <div class="latest-card__top">
+          <div class="latest-card__identity">
+            <span class="latest-card__label">Latest Credential</span>
+            <code class="latest-card__uid">{{ scanHistory[0].serialNumber }}</code>
+          </div>
+
+          <!-- Strict truth-in-UI badge: NFC Tap vs Manual Entry -->
+          <div class="latest-card__badges">
+            @if (scanHistory[0].method === 'manual') {
+              <span class="method-tag method-tag--manual" title="Registered via Manual UID entry">
+                <mat-icon>edit_note</mat-icon> Manual Entry
+              </span>
+            } @else {
+              <span class="method-tag method-tag--nfc" title="Scanned via physical NFC hardware">
+                <mat-icon>contactless</mat-icon> NFC Hardware
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Saving progress -->
+        @if (scanHistory[0].saving) {
+          <div class="saving-progress">
+            <span class="spinner-sm"></span>
+            <span>Provisioning UID in TapAxe database…</span>
+          </div>
+        }
+
+        <!-- Save Error -->
+        @if (scanHistory[0].saveError) {
+          <div class="scanner-alert scanner-alert--error" style="margin-top: 10px;">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ scanHistory[0].saveError }}</span>
+          </div>
+        }
+
+        <!-- Generated URL Result -->
+        @if (scanHistory[0].url) {
+          <div class="url-surface">
+            <div class="url-surface__header">
+              <mat-icon class="url-surface__icon">link</mat-icon>
+              <span>Generated Profile URL</span>
+            </div>
+            <div class="url-surface__row">
+              <span class="url-surface__link">{{ scanHistory[0].url }}</span>
+              <button
+                type="button"
+                class="copy-btn"
+                [class.copy-btn--copied]="copiedIndex === 0"
                 (click)="copyUrl(scanHistory[0].url!, 0)"
-                matTooltip="Copy URL">
-          <mat-icon>{{ copiedIndex === 0 ? 'check' : 'content_copy' }}</mat-icon>
-          <span>{{ copiedIndex === 0 ? 'Copied!' : 'Copy' }}</span>
-        </button>
-      </div>
-    </div>
+                aria-label="Copy Profile URL">
+                <mat-icon aria-hidden="true">{{ copiedIndex === 0 ? 'check' : 'content_copy' }}</mat-icon>
+                <span>{{ copiedIndex === 0 ? 'Copied' : 'Copy' }}</span>
+              </button>
+            </div>
+          </div>
+        }
 
-    <div class="scan-time">
-      <mat-icon style="font-size:13px;width:13px;height:13px;">schedule</mat-icon>
-      {{ scanHistory[0].scannedAt | date:'medium' }}
-    </div>
-  </div>
+        <div class="latest-card__footer">
+          <span class="latest-card__time">
+            <mat-icon>schedule</mat-icon>
+            {{ scanHistory[0].scannedAt | date:'medium' }}
+          </span>
+        </div>
+      </article>
 
-  <!-- History -->
-  <div *ngIf="scanHistory.length > 1" style="margin-top: 20px;">
-    <p class="section-label">Previous scans</p>
-    <div class="history-item surface-card surface-card--hoverable"
-         *ngFor="let scan of scanHistory.slice(1); let i = index">
-      <div class="history-item__left">
-        <code class="history-item__uid">{{ scan.serialNumber }}</code>
-        <span class="scan-time">
-          <mat-icon style="font-size:12px;width:12px;height:12px;">schedule</mat-icon>
-          {{ scan.scannedAt | date:'HH:mm:ss' }}
-        </span>
-      </div>
-      <div class="history-item__right">
-        <div class="spinner" style="width:16px;height:16px;border-width:2px;" *ngIf="scan.saving"></div>
-        <span class="badge badge--primary" *ngIf="scan.url && !scan.saving">Saved</span>
-        <button class="url-result__copy url-result__copy--sm"
-                *ngIf="scan.url"
-                [class.url-result__copy--copied]="copiedIndex === (i + 1)"
-                (click)="copyUrl(scan.url!, i + 1)"
-                matTooltip="{{ scan.url }}">
-          <mat-icon>{{ copiedIndex === (i + 1) ? 'check' : 'content_copy' }}</mat-icon>
-        </button>
-      </div>
-    </div>
-  </div>
+      <!-- History Log (2+ items) -->
+      @if (scanHistory.length > 1) {
+        <div class="history-list">
+          <div class="history-list__header">
+            <span class="history-list__title">Session History ({{ scanHistory.length - 1 }})</span>
+            <button type="button" class="history-clear-btn" (click)="clearHistory()">
+              <mat-icon>delete_outline</mat-icon> Clear Log
+            </button>
+          </div>
 
-  <!-- Actions -->
-  <div class="scanner-actions">
-    <button mat-raised-button color="primary"
-            *ngIf="!isScanning"
-            [disabled]="!isSupported"
-            (click)="startScan()">
-      <mat-icon>nfc</mat-icon> Start Scan
-    </button>
+          @for (scan of scanHistory.slice(1); track scan.serialNumber + scan.scannedAt; let i = $index) {
+            <div class="history-row">
+              <div class="history-row__meta">
+                <code class="history-row__uid">{{ scan.serialNumber }}</code>
+                <span class="history-row__time">{{ scan.scannedAt | date:'HH:mm:ss' }}</span>
+              </div>
 
-    <button mat-stroked-button color="warn"
-            *ngIf="isScanning"
-            (click)="stopScan()">
-      <mat-icon>stop</mat-icon> Stop
-    </button>
+              <div class="history-row__actions">
+                @if (scan.method === 'manual') {
+                  <span class="method-tag method-tag--sm method-tag--manual">Manual</span>
+                } @else {
+                  <span class="method-tag method-tag--sm method-tag--nfc">NFC</span>
+                }
 
-    <button mat-stroked-button
-            *ngIf="scanHistory.length > 0"
-            (click)="clearHistory()">
-      <mat-icon>delete_outline</mat-icon> Clear
-    </button>
-  </div>
-
+                @if (scan.saving) {
+                  <span class="spinner-sm"></span>
+                } @else if (scan.url) {
+                  <button
+                    type="button"
+                    class="copy-btn copy-btn--icon-only"
+                    [class.copy-btn--copied]="copiedIndex === (i + 1)"
+                    (click)="copyUrl(scan.url!, i + 1)"
+                    title="Copy URL">
+                    <mat-icon>{{ copiedIndex === (i + 1) ? 'check' : 'content_copy' }}</mat-icon>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
 </div>

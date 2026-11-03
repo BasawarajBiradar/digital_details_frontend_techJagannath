@@ -1,332 +1,563 @@
-<div class="tapaxe-dashboard">
+<div class="super-admin-layout">
+  <div class="super-admin-container">
 
-  <!-- Top Nav -->
-  <header class="tapaxe-topnav">
-    <div class="tapaxe-topnav__brand">
-      <div class="tapaxe-topnav__brand-icon">
-        <mat-icon>contactless</mat-icon>
+    <!-- ================================================================= -->
+    <!-- BATCH 4: SUPER ADMIN OVERVIEW & SYSTEM HUB                        -->
+    <!-- ================================================================= -->
+    <header class="super-hub-card" aria-label="Super Admin Hub Overview">
+      <div class="super-hub-card__leading">
+        <div class="super-hub-card__badge" aria-hidden="true">
+          <mat-icon>admin_panel_settings</mat-icon>
+        </div>
+        <div class="super-hub-card__info">
+          <div class="super-hub-card__meta-bar">
+            <span class="super-hub-card__role-tag">Super Administration</span>
+            <div class="super-hub-card__live-pill">
+              <span class="super-hub-card__live-dot" aria-hidden="true"></span>
+              <span>Platform Online • Master Access</span>
+            </div>
+          </div>
+          <h1 class="super-hub-card__title">Central Platform Control</h1>
+          <p class="super-hub-card__subtitle">
+            Enterprise institution provisioning, school administrator enrollment, and smart NFC credentials
+          </p>
+        </div>
       </div>
-      <span class="tapaxe-topnav__brand-name">Tapaxe Admin</span>
-    </div>
 
-    <nav class="tapaxe-tabs">
-      <button class="tapaxe-tabs__item"
-              [class.tapaxe-tabs__item--active]="activeTab() === 'school'"
-              (click)="setTab('school')">
-        <mat-icon>domain</mat-icon>
+      <!-- Real Verified Metric Cards -->
+      <div class="super-hub-metrics" aria-label="System Metrics">
+        <div class="kpi-bubble">
+          <div class="kpi-bubble__icon kpi-bubble__icon--blue">
+            <mat-icon aria-hidden="true">domain</mat-icon>
+          </div>
+          <div class="kpi-bubble__data">
+            <span class="kpi-bubble__label">Registered Schools</span>
+            @if (schoolsLoading()) {
+              <div class="kpi-bubble__loading">
+                <span class="spinner-sm" aria-hidden="true"></span>
+                <span>Fetching…</span>
+              </div>
+            } @else {
+              <span class="kpi-bubble__value">{{ schools().length }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="kpi-bubble">
+          <div class="kpi-bubble__icon kpi-bubble__icon--green">
+            <mat-icon aria-hidden="true">security</mat-icon>
+          </div>
+          <div class="kpi-bubble__data">
+            <span class="kpi-bubble__label">Access Level</span>
+            <span class="kpi-bubble__value kpi-bubble__value--text">Root Admin</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================================================================= -->
+    <!-- BATCH 1: PROFESSIONAL SEGMENTED NAVIGATION CONTROL               -->
+    <!-- ================================================================= -->
+    <nav class="super-segmented-nav" aria-label="Super Admin Workspaces">
+      <button
+        type="button"
+        class="super-segmented-nav__tab"
+        [class.super-segmented-nav__tab--active]="activeTab() === 'school'"
+        (click)="setTab('school')">
+        <mat-icon aria-hidden="true">domain_add</mat-icon>
         <span>Add School</span>
       </button>
-      <button class="tapaxe-tabs__item"
-              [class.tapaxe-tabs__item--active]="activeTab() === 'admin'"
-              (click)="setTab('admin')">
-        <mat-icon>manage_accounts</mat-icon>
+
+      <button
+        type="button"
+        class="super-segmented-nav__tab"
+        [class.super-segmented-nav__tab--active]="activeTab() === 'admin'"
+        (click)="setTab('admin')">
+        <mat-icon aria-hidden="true">person_add</mat-icon>
         <span>Add Admin</span>
       </button>
-      <button class="tapaxe-tabs__item"
-              [class.tapaxe-tabs__item--active]="activeTab() === 'nfc'"
-              (click)="setTab('nfc')">
-        <mat-icon>nfc</mat-icon>
-        <span>NFC Scanner</span>
+
+      <button
+        type="button"
+        class="super-segmented-nav__tab"
+        [class.super-segmented-nav__tab--active]="activeTab() === 'nfc'"
+        (click)="setTab('nfc')">
+        <mat-icon aria-hidden="true">contactless</mat-icon>
+        <span>NFC Provision</span>
       </button>
     </nav>
-  </header>
 
-  <!-- Main Content -->
-  <main class="tapaxe-main">
+    <!-- ================================================================= -->
+    <!-- MAIN WORKSPACE CONTENT PANELS                                     -->
+    <!-- ================================================================= -->
+    <main class="super-workspace-stage">
 
-    <!-- Add School -->
-    @if (activeTab() === 'school') {
-      <div class="tapaxe-panel">
-        <div class="tapaxe-panel__header">
-          <div class="tapaxe-panel__header-icon">
-            <mat-icon>domain</mat-icon>
-          </div>
-          <div>
-            <h2 class="tapaxe-panel__title">Add School</h2>
-            <p class="tapaxe-panel__subtitle">Register a new school to the platform</p>
-          </div>
-        </div>
-
-        @if (schoolSuccess()) {
-          <div class="tapaxe-success">
-            <div class="tapaxe-success__icon"><mat-icon>check_circle</mat-icon></div>
+      <!-- ── TAB 1: ADD SCHOOL ──────────────────────────────────────── -->
+      @if (activeTab() === 'school') {
+        <section class="super-card" aria-labelledby="add-school-heading">
+          <div class="super-card__header">
+            <div class="super-card__header-icon">
+              <mat-icon aria-hidden="true">domain</mat-icon>
+            </div>
             <div>
-              <strong>School added successfully!</strong>
-              <p>The school has been registered.</p>
+              <h2 id="add-school-heading" class="super-card__title">Add New School</h2>
+              <p class="super-card__subtitle">Enroll a school or institution into the TapAxe identity cloud</p>
             </div>
-            <button class="tapaxe-success__btn" (click)="schoolSuccess.set(false)">Add Another</button>
           </div>
-        } @else {
-          <form [formGroup]="schoolForm" (ngSubmit)="submitSchool()" novalidate>
-            <p class="section-label">School Details</p>
 
-            <div class="form-field">
-              <label>School Name <span class="req">*</span></label>
-              <input formControlName="schoolName" type="text" placeholder="e.g. Saraswati English Medium School" />
-              @if (sf['schoolName'].touched && sf['schoolName'].errors?.['required']) {
-                <span class="form-field__error">Required</span>
-              }
-            </div>
-
-            <div class="form-row">
-              <div class="form-field">
-                <label>Contact Number <span class="req">*</span></label>
-                <input formControlName="schoolContact" type="tel" placeholder="10-digit number" />
-                @if (sf['schoolContact'].touched && sf['schoolContact'].errors) {
-                  <span class="form-field__error">Valid 10-digit number required</span>
-                }
+          @if (schoolSuccess()) {
+            <div class="success-banner" role="status">
+              <div class="success-banner__icon">
+                <mat-icon aria-hidden="true">check_circle</mat-icon>
               </div>
-              <div class="form-field">
-                <label>Email ID <span class="req">*</span></label>
-                <input formControlName="schoolEmailId" type="email" placeholder="school@example.com" />
-                @if (sf['schoolEmailId'].touched && sf['schoolEmailId'].errors) {
-                  <span class="form-field__error">Valid email required</span>
-                }
+              <div class="success-banner__content">
+                <strong>Institution Added Successfully!</strong>
+                <p>The school has been registered in the database and is ready for administrator provisioning.</p>
               </div>
-            </div>
-
-            <p class="section-label" style="margin-top:20px;">Address</p>
-
-            <div class="form-field">
-              <label>Address Line 1 <span class="req">*</span></label>
-              <input formControlName="addressLineOne" type="text" placeholder="House / Building / Area" />
-              @if (sf['addressLineOne'].touched && sf['addressLineOne'].errors?.['required']) {
-                <span class="form-field__error">Required</span>
-              }
-            </div>
-
-            <div class="form-field">
-              <label>Address Line 2</label>
-              <input formControlName="addressLineTwo" type="text" placeholder="Street / Landmark (optional)" />
-            </div>
-
-            <div class="form-row">
-              <div class="form-field">
-                <label>City <span class="req">*</span></label>
-                <input formControlName="city" type="text" placeholder="Pune" />
-                @if (sf['city'].touched && sf['city'].errors?.['required']) {
-                  <span class="form-field__error">Required</span>
-                }
-              </div>
-              <div class="form-field">
-                <label>PIN Code <span class="req">*</span></label>
-                <input formControlName="pinCode" type="text" placeholder="411001" />
-                @if (sf['pinCode'].touched && sf['pinCode'].errors?.['required']) {
-                  <span class="form-field__error">Required</span>
-                }
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-field">
-                <label>State <span class="req">*</span></label>
-                <input formControlName="state" type="text" placeholder="Maharashtra" />
-                @if (sf['state'].touched && sf['state'].errors?.['required']) {
-                  <span class="form-field__error">Required</span>
-                }
-              </div>
-              <div class="form-field">
-                <label>Country <span class="req">*</span></label>
-                <input formControlName="country" type="text" placeholder="India" />
-                @if (sf['country'].touched && sf['country'].errors?.['required']) {
-                  <span class="form-field__error">Required</span>
-                }
-              </div>
-            </div>
-
-            @if (schoolError()) {
-              <div class="tapaxe-alert tapaxe-alert--error">
-                <mat-icon>error_outline</mat-icon>
-                <span>{{ schoolError() }}</span>
-              </div>
-            }
-
-            <div class="form-submit-row">
-              <button type="submit" class="btn-submit" [disabled]="schoolLoading()">
-                @if (schoolLoading()) {
-                  <span class="spinner spinner--sm"></span> Saving…
-                } @else {
-                  <mat-icon>domain_add</mat-icon> Add School
-                }
+              <button type="button" class="success-banner__btn" (click)="schoolSuccess.set(false)">
+                Add Another School
               </button>
             </div>
-          </form>
-        }
-      </div>
-    }
+          } @else {
+            <form [formGroup]="schoolForm" (ngSubmit)="submitSchool()" novalidate>
+              <div class="form-section-title">
+                <mat-icon>info</mat-icon>
+                <span>Institutional Details</span>
+              </div>
 
-    <!-- Add School Admin -->
-    @if (activeTab() === 'admin') {
-      <div class="tapaxe-panel">
-        <div class="tapaxe-panel__header">
-          <div class="tapaxe-panel__header-icon">
-            <mat-icon>manage_accounts</mat-icon>
-          </div>
-          <div>
-            <h2 class="tapaxe-panel__title">Add School Admin</h2>
-            <p class="tapaxe-panel__subtitle">Create a new administrator account for a school</p>
-          </div>
-        </div>
-
-        @if (adminSuccess()) {
-          <div class="tapaxe-success">
-            <div class="tapaxe-success__icon"><mat-icon>check_circle</mat-icon></div>
-            <div>
-              <strong>Admin added successfully!</strong>
-              <p>The school administrator has been created.</p>
-            </div>
-            <button class="tapaxe-success__btn" (click)="adminSuccess.set(false)">Add Another</button>
-          </div>
-        } @else {
-          <form [formGroup]="adminForm" (ngSubmit)="submitAdmin()" novalidate>
-            <p class="section-label">Personal Details</p>
-
-            <div class="form-row">
-              <div class="form-field">
-                <label>First Name <span class="req">*</span></label>
-                <input formControlName="firstName" type="text" placeholder="First" />
-                @if (af['firstName'].touched && af['firstName'].errors?.['required']) {
-                  <span class="form-field__error">Required</span>
+              <div class="field-group">
+                <label for="schoolName">School Name <span class="required-star">*</span></label>
+                <div class="field-input-box" [class.field-input-box--error]="sf['schoolName'].touched && sf['schoolName'].invalid">
+                  <mat-icon class="field-icon">school</mat-icon>
+                  <input
+                    id="schoolName"
+                    formControlName="schoolName"
+                    type="text"
+                    placeholder="e.g. St. Xavier International Academy" />
+                </div>
+                @if (sf['schoolName'].touched && sf['schoolName'].errors?.['required']) {
+                  <span class="field-error-msg">School name is required</span>
                 }
               </div>
-              <div class="form-field">
-                <label>Middle Name</label>
-                <input formControlName="middleName" type="text" placeholder="Optional" />
-              </div>
-            </div>
 
-            <div class="form-field">
-              <label>Last Name <span class="req">*</span></label>
-              <input formControlName="lastName" type="text" placeholder="Last" />
-              @if (af['lastName'].touched && af['lastName'].errors?.['required']) {
-                <span class="form-field__error">Required</span>
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="schoolContact">Contact Number <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['schoolContact'].touched && sf['schoolContact'].invalid">
+                    <mat-icon class="field-icon">phone</mat-icon>
+                    <input
+                      id="schoolContact"
+                      formControlName="schoolContact"
+                      type="tel"
+                      inputmode="numeric"
+                      maxlength="10"
+                      (input)="sanitizePhone($event, 'schoolContact', schoolForm)"
+                      placeholder="10-digit number (e.g. 9876543210)" />
+                  </div>
+                  @if (sf['schoolContact'].touched && sf['schoolContact'].invalid) {
+                    <span class="field-error-msg">Valid 10-digit Indian mobile number required</span>
+                  }
+                </div>
+
+                <div class="field-group">
+                  <label for="schoolEmailId">Official Email <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['schoolEmailId'].touched && sf['schoolEmailId'].invalid">
+                    <mat-icon class="field-icon">mail</mat-icon>
+                    <input
+                      id="schoolEmailId"
+                      formControlName="schoolEmailId"
+                      type="email"
+                      placeholder="admin@school.edu.in" />
+                  </div>
+                  @if (sf['schoolEmailId'].touched && sf['schoolEmailId'].invalid) {
+                    <span class="field-error-msg">Valid official email address required</span>
+                  }
+                </div>
+              </div>
+
+              <div class="form-section-title" style="margin-top: 24px;">
+                <mat-icon>place</mat-icon>
+                <span>Campus Location & Address</span>
+              </div>
+
+              <div class="field-group">
+                <label for="addressLineOne">Address Line 1 <span class="required-star">*</span></label>
+                <div class="field-input-box" [class.field-input-box--error]="sf['addressLineOne'].touched && sf['addressLineOne'].invalid">
+                  <mat-icon class="field-icon">location_on</mat-icon>
+                  <input
+                    id="addressLineOne"
+                    formControlName="addressLineOne"
+                    type="text"
+                    placeholder="Campus Building, Street, Area" />
+                </div>
+                @if (sf['addressLineOne'].touched && sf['addressLineOne'].invalid) {
+                  <span class="field-error-msg">Address line 1 is required</span>
+                }
+              </div>
+
+              <div class="field-group">
+                <label for="addressLineTwo">Address Line 2 (Optional)</label>
+                <div class="field-input-box">
+                  <mat-icon class="field-icon">near_me</mat-icon>
+                  <input
+                    id="addressLineTwo"
+                    formControlName="addressLineTwo"
+                    type="text"
+                    placeholder="Landmark or Sector (optional)" />
+                </div>
+              </div>
+
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="city">City <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['city'].touched && sf['city'].invalid">
+                    <mat-icon class="field-icon">apartment</mat-icon>
+                    <input
+                      id="city"
+                      formControlName="city"
+                      type="text"
+                      placeholder="e.g. Pune" />
+                  </div>
+                  @if (sf['city'].touched && sf['city'].invalid) {
+                    <span class="field-error-msg">City is required</span>
+                  }
+                </div>
+
+                <div class="field-group">
+                  <label for="pinCode">PIN Code (6 digits) <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['pinCode'].touched && sf['pinCode'].invalid">
+                    <mat-icon class="field-icon">pin</mat-icon>
+                    <input
+                      id="pinCode"
+                      formControlName="pinCode"
+                      type="text"
+                      inputmode="numeric"
+                      maxlength="6"
+                      (input)="sanitizePinCode($event)"
+                      placeholder="e.g. 411001" />
+                  </div>
+                  @if (sf['pinCode'].touched && sf['pinCode'].invalid) {
+                    <span class="field-error-msg">Valid 6-digit Indian PIN code required</span>
+                  }
+                </div>
+              </div>
+
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="state">State <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['state'].touched && sf['state'].invalid">
+                    <mat-icon class="field-icon">map</mat-icon>
+                    <input
+                      id="state"
+                      formControlName="state"
+                      type="text"
+                      placeholder="e.g. Maharashtra" />
+                  </div>
+                  @if (sf['state'].touched && sf['state'].invalid) {
+                    <span class="field-error-msg">State is required</span>
+                  }
+                </div>
+
+                <div class="field-group">
+                  <label for="country">Country <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="sf['country'].touched && sf['country'].invalid">
+                    <mat-icon class="field-icon">public</mat-icon>
+                    <input
+                      id="country"
+                      formControlName="country"
+                      type="text"
+                      placeholder="India" />
+                  </div>
+                  @if (sf['country'].touched && sf['country'].invalid) {
+                    <span class="field-error-msg">Country is required</span>
+                  }
+                </div>
+              </div>
+
+              @if (schoolError()) {
+                <div class="error-banner" role="alert">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ schoolError() }}</span>
+                </div>
               }
-            </div>
 
-            <div class="form-row">
-              <div class="form-field">
-                <label>Mobile <span class="req">*</span></label>
-                <input formControlName="mobileNo" type="tel" placeholder="9876543210" />
-                @if (af['mobileNo'].touched && af['mobileNo'].errors) {
-                  <span class="form-field__error">Valid 10-digit number required</span>
-                }
-              </div>
-              <div class="form-field">
-                <label>Email ID <span class="req">*</span></label>
-                <input formControlName="emailId" type="email" placeholder="admin@school.com" />
-                @if (af['emailId'].touched && af['emailId'].errors) {
-                  <span class="form-field__error">Valid email required</span>
-                }
-              </div>
-            </div>
-
-            <p class="section-label" style="margin-top:20px;">Security & School</p>
-
-            <div class="form-field">
-              <label>Password <span class="req">*</span></label>
-              <div class="input-eye">
-                <input formControlName="password"
-                       [type]="showAdminPassword() ? 'text' : 'password'"
-                       placeholder="Min. 8 characters" />
-                <button type="button" class="input-eye__btn" (click)="showAdminPassword.set(!showAdminPassword())">
-                  <mat-icon>{{ showAdminPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <div class="form-actions-row">
+                <button type="submit" class="super-btn-submit" [disabled]="schoolLoading()">
+                  @if (schoolLoading()) {
+                    <span class="spinner-sm spinner-sm--white" aria-hidden="true"></span>
+                    <span>Registering School…</span>
+                  } @else {
+                    <mat-icon aria-hidden="true">domain_add</mat-icon>
+                    <span>Add School</span>
+                  }
                 </button>
               </div>
-              @if (af['password'].touched && af['password'].errors?.['minlength']) {
-                <span class="form-field__error">Minimum 8 characters</span>
-              }
-              @if (af['password'].touched && af['password'].errors?.['required']) {
-                <span class="form-field__error">Required</span>
-              }
-            </div>
-
-            <div class="form-field">
-              <label>Confirm Password <span class="req">*</span></label>
-              <div class="input-eye">
-                <input formControlName="confirmPassword"
-                       [type]="showAdminPassword() ? 'text' : 'password'"
-                       placeholder="Re-enter password" />
-                <button type="button" class="input-eye__btn" (click)="showAdminPassword.set(!showAdminPassword())">
-                  <mat-icon>{{ showAdminPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
-              </div>
-              @if (af['confirmPassword'].touched &&
-                   af['confirmPassword'].value &&
-                   af['confirmPassword'].value !== af['password'].value) {
-                <span class="form-field__error">Passwords do not match</span>
-              }
-            </div>
-
-<!-- School field — custom dropdown replacing native select -->
-<div class="form-field">
-  <label>School <span class="req">*</span></label>
-
-  @if (schoolsLoading()) {
-    <div class="schools-loading">
-      <span class="spinner" style="width:16px;height:16px;border-width:2px;"></span>
-      <span>Loading schools…</span>
-    </div>
-  } @else {
-    <div class="custom-select" [class.custom-select--open]="schoolDropdownOpen()"
-         [class.custom-select--error]="af['schoolId'].touched && af['schoolId'].errors?.['required']">
-      <button type="button" class="custom-select__trigger"
-              (click)="toggleSchoolDropdown()">
-        <span [class.custom-select__placeholder]="!af['schoolId'].value">
-          {{ selectedSchoolName() }}
-        </span>
-        <mat-icon class="custom-select__arrow">expand_more</mat-icon>
-      </button>
-
-      @if (schoolDropdownOpen()) {
-        <div class="custom-select__menu">
-          <button type="button" class="custom-select__option custom-select__option--placeholder"
-                  (click)="selectSchool(null)">
-            Select a school
-          </button>
-          @for (s of schools(); track s.id) {
-            <button type="button" class="custom-select__option"
-                    [class.custom-select__option--selected]="af['schoolId'].value === s.id"
-                    (click)="selectSchool(s.id)">
-              {{ s.name }}
-            </button>
+            </form>
           }
-        </div>
+        </section>
       }
-    </div>
-  }
 
-  @if (af['schoolId'].touched && af['schoolId'].errors?.['required']) {
-    <span class="form-field__error">Please select a school</span>
-  }
-</div>
+      <!-- ── TAB 2: ADD SCHOOL ADMIN ────────────────────────────────── -->
+      @if (activeTab() === 'admin') {
+        <section class="super-card" aria-labelledby="add-admin-heading">
+          <div class="super-card__header">
+            <div class="super-card__header-icon">
+              <mat-icon aria-hidden="true">manage_accounts</mat-icon>
+            </div>
+            <div>
+              <h2 id="add-admin-heading" class="super-card__title">Create School Administrator</h2>
+              <p class="super-card__subtitle">Assign and provision an administrative account for an enrolled school</p>
+            </div>
+          </div>
 
-            @if (adminError()) {
-              <div class="tapaxe-alert tapaxe-alert--error">
-                <mat-icon>error_outline</mat-icon>
-                <span>{{ adminError() }}</span>
+          @if (adminSuccess()) {
+            <div class="success-banner" role="status">
+              <div class="success-banner__icon">
+                <mat-icon aria-hidden="true">check_circle</mat-icon>
               </div>
-            }
-
-            <div class="form-submit-row">
-              <button type="submit" class="btn-submit" [disabled]="adminLoading()">
-                @if (adminLoading()) {
-                  <span class="spinner spinner--sm"></span> Saving…
-                } @else {
-                  <mat-icon>person_add</mat-icon> Add Admin
-                }
+              <div class="success-banner__content">
+                <strong>Administrator Account Created!</strong>
+                <p>The school admin credentials have been created. The administrator can now sign in to their School Admin Portal.</p>
+              </div>
+              <button type="button" class="success-banner__btn" (click)="adminSuccess.set(false)">
+                Add Another Administrator
               </button>
             </div>
-          </form>
-        }
-      </div>
-    }
+          } @else {
+            <form [formGroup]="adminForm" (ngSubmit)="submitAdmin()" novalidate>
+              <div class="form-section-title">
+                <mat-icon>badge</mat-icon>
+                <span>Administrator Identity</span>
+              </div>
 
-    <!-- NFC Scanner -->
-    @if (activeTab() === 'nfc') {
-      <div class="tapaxe-panel tapaxe-panel--wide">
-        <app-nfc-scanner />
-      </div>
-    }
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="firstName">First Name <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="af['firstName'].touched && af['firstName'].invalid">
+                    <mat-icon class="field-icon">person</mat-icon>
+                    <input id="firstName" formControlName="firstName" type="text" placeholder="First Name" />
+                  </div>
+                  @if (af['firstName'].touched && af['firstName'].invalid) {
+                    <span class="field-error-msg">First name is required</span>
+                  }
+                </div>
 
-  </main>
+                <div class="field-group">
+                  <label for="middleName">Middle Name (Optional)</label>
+                  <div class="field-input-box">
+                    <mat-icon class="field-icon">person_outline</mat-icon>
+                    <input id="middleName" formControlName="middleName" type="text" placeholder="Middle Name" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="lastName">Last Name <span class="required-star">*</span></label>
+                <div class="field-input-box" [class.field-input-box--error]="af['lastName'].touched && af['lastName'].invalid">
+                  <mat-icon class="field-icon">person</mat-icon>
+                  <input id="lastName" formControlName="lastName" type="text" placeholder="Last Name" />
+                </div>
+                @if (af['lastName'].touched && af['lastName'].invalid) {
+                  <span class="field-error-msg">Last name is required</span>
+                }
+              </div>
+
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="mobileNo">Mobile Number <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="af['mobileNo'].touched && af['mobileNo'].invalid">
+                    <mat-icon class="field-icon">phone_android</mat-icon>
+                    <input
+                      id="mobileNo"
+                      formControlName="mobileNo"
+                      type="tel"
+                      inputmode="numeric"
+                      maxlength="10"
+                      (input)="sanitizePhone($event, 'mobileNo', adminForm)"
+                      placeholder="10-digit mobile (e.g. 9876543210)" />
+                  </div>
+                  @if (af['mobileNo'].touched && af['mobileNo'].invalid) {
+                    <span class="field-error-msg">Valid 10-digit Indian mobile number required</span>
+                  }
+                </div>
+
+                <div class="field-group">
+                  <label for="adminEmailId">Email Address (Login ID) <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="af['emailId'].touched && af['emailId'].invalid">
+                    <mat-icon class="field-icon">email</mat-icon>
+                    <input
+                      id="adminEmailId"
+                      formControlName="emailId"
+                      type="email"
+                      placeholder="admin@school.com" />
+                  </div>
+                  @if (af['emailId'].touched && af['emailId'].invalid) {
+                    <span class="field-error-msg">Valid email address required</span>
+                  }
+                </div>
+              </div>
+
+              <div class="form-section-title" style="margin-top: 24px;">
+                <mat-icon>domain</mat-icon>
+                <span>Institutional Affiliation</span>
+              </div>
+
+              <!-- Custom Select with Click-Outside & Escape Dismissal -->
+              <div class="field-group">
+                <label>Assigned School <span class="required-star">*</span></label>
+
+                @if (schoolsLoading()) {
+                  <div class="schools-loading-state">
+                    <span class="spinner-sm" aria-hidden="true"></span>
+                    <span>Retrieving registered schools from cloud…</span>
+                  </div>
+                } @else {
+                  <div class="custom-select" [class.custom-select--open]="schoolDropdownOpen()"
+                       [class.custom-select--error]="af['schoolId'].touched && af['schoolId'].invalid">
+                    <button
+                      type="button"
+                      class="custom-select__trigger"
+                      (click)="toggleSchoolDropdown()"
+                      aria-haspopup="listbox"
+                      [attr.aria-expanded]="schoolDropdownOpen()">
+                      <span class="custom-select__selected-text" [class.custom-select__selected-text--placeholder]="!af['schoolId'].value">
+                        {{ selectedSchoolName() }}
+                      </span>
+                      <mat-icon class="custom-select__arrow" aria-hidden="true">expand_more</mat-icon>
+                    </button>
+
+                    @if (schoolDropdownOpen()) {
+                      <div class="custom-select__menu" role="listbox">
+                        <div class="custom-select__search-wrap">
+                          <mat-icon class="custom-select__search-icon">search</mat-icon>
+                          <input
+                            type="text"
+                            class="custom-select__search-input"
+                            placeholder="Filter schools…"
+                            [value]="schoolSearchTerm()"
+                            (input)="schoolSearchTerm.set($any($event.target).value)"
+                            (click)="$event.stopPropagation()" />
+                        </div>
+
+                        <button
+                          type="button"
+                          class="custom-select__option custom-select__option--placeholder"
+                          (click)="selectSchool(null)">
+                          Select a school
+                        </button>
+
+                        @for (s of filteredSchools(); track s.id) {
+                          <button
+                            type="button"
+                            class="custom-select__option"
+                            [class.custom-select__option--selected]="af['schoolId'].value === s.id"
+                            (click)="selectSchool(s.id)">
+                            <span>{{ s.name }}</span>
+                            @if (af['schoolId'].value === s.id) {
+                              <mat-icon class="custom-select__check">check</mat-icon>
+                            }
+                          </button>
+                        } @empty {
+                          <div class="custom-select__empty">No schools found matching filter</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+                @if (af['schoolId'].touched && af['schoolId'].invalid) {
+                  <span class="field-error-msg">Please select an assigned school</span>
+                }
+              </div>
+
+              <div class="form-section-title" style="margin-top: 24px;">
+                <mat-icon>lock</mat-icon>
+                <span>Security Credentials</span>
+              </div>
+
+              <!-- Independent Password Toggles -->
+              <div class="fields-grid-2">
+                <div class="field-group">
+                  <label for="adminPassword">Password (Min. 8 characters) <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="af['password'].touched && af['password'].invalid">
+                    <mat-icon class="field-icon">lock</mat-icon>
+                    <input
+                      id="adminPassword"
+                      formControlName="password"
+                      [type]="showPassword() ? 'text' : 'password'"
+                      placeholder="Minimum 8 characters" />
+                    <button
+                      type="button"
+                      class="field-eye-btn"
+                      (click)="toggleShowPassword()"
+                      [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+                      <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                  </div>
+                  @if (af['password'].touched && af['password'].errors?.['required']) {
+                    <span class="field-error-msg">Password is required</span>
+                  }
+                  @if (af['password'].touched && af['password'].errors?.['minlength']) {
+                    <span class="field-error-msg">Password must be at least 8 characters long</span>
+                  }
+                </div>
+
+                <div class="field-group">
+                  <label for="adminConfirmPassword">Confirm Password <span class="required-star">*</span></label>
+                  <div class="field-input-box" [class.field-input-box--error]="af['confirmPassword'].touched && (af['confirmPassword'].invalid || (af['confirmPassword'].value && af['confirmPassword'].value !== af['password'].value))">
+                    <mat-icon class="field-icon">lock_clock</mat-icon>
+                    <input
+                      id="adminConfirmPassword"
+                      formControlName="confirmPassword"
+                      [type]="showConfirmPassword() ? 'text' : 'password'"
+                      placeholder="Re-enter password" />
+                    <button
+                      type="button"
+                      class="field-eye-btn"
+                      (click)="toggleShowConfirmPassword()"
+                      [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'">
+                      <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                  </div>
+                  @if (af['confirmPassword'].touched && af['confirmPassword'].errors?.['required']) {
+                    <span class="field-error-msg">Password confirmation is required</span>
+                  }
+                  @if (af['confirmPassword'].touched && af['confirmPassword'].value && af['confirmPassword'].value !== af['password'].value) {
+                    <span class="field-error-msg">Passwords do not match</span>
+                  }
+                </div>
+              </div>
+
+              @if (adminError()) {
+                <div class="error-banner" role="alert">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ adminError() }}</span>
+                </div>
+              }
+
+              <div class="form-actions-row">
+                <button type="submit" class="super-btn-submit" [disabled]="adminLoading()">
+                  @if (adminLoading()) {
+                    <span class="spinner-sm spinner-sm--white" aria-hidden="true"></span>
+                    <span>Creating Administrator…</span>
+                  } @else {
+                    <mat-icon aria-hidden="true">person_add</mat-icon>
+                    <span>Create Administrator</span>
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </section>
+      }
+
+      <!-- ── TAB 3: NFC PROVISIONING ────────────────────────────────── -->
+      @if (activeTab() === 'nfc') {
+        <section class="super-card super-card--wide" aria-label="NFC Provisioning Card">
+          <app-nfc-scanner />
+        </section>
+      }
+
+    </main>
+
+  </div>
 </div>

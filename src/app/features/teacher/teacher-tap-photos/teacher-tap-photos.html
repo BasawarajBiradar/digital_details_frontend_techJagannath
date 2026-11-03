@@ -1,37 +1,107 @@
 <main class="tap-photos">
   <div class="tap-photos__container">
 
-    <!-- Filter Card Header -->
-    <header class="tap-photos__filter-card" aria-labelledby="teacher-photos-title">
-      <div class="tap-photos__header-row">
+    <!-- Hero Header Card -->
+    <header class="tap-photos__hero-card" aria-labelledby="teacher-photos-title">
+      <div class="tap-photos__hero-row">
         <div class="tap-photos__title-group">
           <span class="tap-photos__kicker">Teacher Portal</span>
           <h1 id="teacher-photos-title" class="tap-photos__title">Teacher Tap Photos</h1>
         </div>
 
-        @if (!loading() && !error() && records().length > 0) {
-          <div class="tap-photos__count-badge" aria-label="Total records found">
-            <mat-icon aria-hidden="true">photo_library</mat-icon>
-            <span>{{ records().length }} {{ records().length === 1 ? 'Record' : 'Records' }}</span>
+        <!-- Metric Badges -->
+        <div class="tap-photos__stats-group" aria-label="Tap photo summary statistics">
+          <div class="tap-photos__stat-card">
+            <div class="tap-photos__stat-icon">
+              <mat-icon aria-hidden="true">fingerprint</mat-icon>
+            </div>
+            <div class="tap-photos__stat-meta">
+              <span class="tap-photos__stat-val">{{ totalTaps() }}</span>
+              <span class="tap-photos__stat-lbl">Total Taps</span>
+            </div>
           </div>
-        }
-      </div>
 
-      <div class="tap-photos__filter-row" aria-labelledby="teacher-photos-filter-title">
-        <div class="tap-photos__filter-caption">
-          <mat-icon aria-hidden="true">date_range</mat-icon>
-          <span id="teacher-photos-filter-title">Filter by date</span>
-        </div>
-        <div class="tap-photos__picker-wrap">
-          <app-date-picker
-            [compact]="true"
-            [startDate]="fromDate()"
-            (startDateChange)="onFromDateChanged($event)"
-            [endDate]="toDate()"
-            (endDateChange)="onToDateChanged($event)" />
+          <div class="tap-photos__stat-card tap-photos__stat-card--accent">
+            <div class="tap-photos__stat-icon tap-photos__stat-icon--accent">
+              <mat-icon aria-hidden="true">photo_library</mat-icon>
+            </div>
+            <div class="tap-photos__stat-meta">
+              <span class="tap-photos__stat-val">{{ photosWithUrl() }}</span>
+              <span class="tap-photos__stat-lbl">Photos Captured</span>
+            </div>
+          </div>
         </div>
       </div>
     </header>
+
+    <!-- Filter & Date Range Toolbar -->
+    <section class="tap-photos__filter-section" aria-label="Date range filters">
+      <div class="tap-photos__filter-card">
+        <div class="tap-photos__filter-controls-row">
+          <!-- Quick Presets -->
+          <div class="tap-photos__presets-wrap" role="tablist" aria-label="Quick date presets">
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'today'"
+              [attr.aria-selected]="activePreset() === 'today'"
+              (click)="setFilterPreset('today')">
+              <mat-icon aria-hidden="true">today</mat-icon>
+              <span>Today</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === '7days'"
+              [attr.aria-selected]="activePreset() === '7days'"
+              (click)="setFilterPreset('7days')">
+              <mat-icon aria-hidden="true">date_range</mat-icon>
+              <span>Last 7 Days</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'month'"
+              [attr.aria-selected]="activePreset() === 'month'"
+              (click)="setFilterPreset('month')">
+              <mat-icon aria-hidden="true">calendar_month</mat-icon>
+              <span>This Month</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              class="tap-photos__preset-btn"
+              [class.is-active]="activePreset() === 'custom'"
+              [attr.aria-selected]="activePreset() === 'custom'"
+              (click)="setFilterPreset('custom')">
+              <mat-icon aria-hidden="true">edit_calendar</mat-icon>
+              <span>Custom</span>
+            </button>
+          </div>
+
+          <span class="tap-photos__range-badge" aria-label="Active date range">
+            <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            <span>{{ activeDateRangeLabel() }}</span>
+          </span>
+
+          <!-- Custom Range Datepicker Input -->
+          <div class="tap-photos__picker-wrap" [class.is-visible]="activePreset() === 'custom'">
+            <app-date-picker
+              [compact]="true"
+              [startDate]="fromDate()"
+              (startDateChange)="onFromDateChanged($event)"
+              [endDate]="toDate()"
+              (endDateChange)="onToDateChanged($event)" />
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Main Results Section -->
     <section class="tap-photos__content" aria-live="polite">
@@ -62,6 +132,7 @@
           <p class="tap-photos__state-subtext">No tap photos were recorded for your profile in the selected period.</p>
         </div>
       } @else {
+        <!-- Desktop Table View (Hidden on mobile) -->
         <div class="tap-photos__table-card">
           <div class="tap-photos__table-wrap">
             <table class="tap-photos__table">
@@ -94,9 +165,9 @@
                           class="tap-photos__view-btn"
                           type="button"
                           aria-label="View photo captured on {{ formatDate(record.date) }} at {{ formatTime(record.time) }}"
-                          (click)="openPhoto(record.photoUrl!)">
+                          (click)="openPhoto(record.photoUrl)">
                           <mat-icon aria-hidden="true">visibility</mat-icon>
-                          <span>View photo</span>
+                          <span>View Photo</span>
                         </button>
                       } @else {
                         <span class="tap-photos__unavailable">
@@ -111,6 +182,43 @@
             </table>
           </div>
         </div>
+
+        <!-- Mobile Responsive Cards (Hidden on desktop) -->
+        <div class="tap-photos__mobile-cards" aria-label="Tap photo records list">
+          @for (record of records(); track record.date + record.time) {
+            <article class="tap-photos__mobile-card">
+              <div class="tap-photos__mobile-meta">
+                <div class="tap-photos__mobile-row">
+                  <div class="tap-photos__cell-with-icon">
+                    <mat-icon class="tap-photos__cell-icon" aria-hidden="true">calendar_today</mat-icon>
+                    <span class="tap-photos__mobile-date">{{ formatDate(record.date) }}</span>
+                  </div>
+                  <div class="tap-photos__cell-with-icon">
+                    <mat-icon class="tap-photos__cell-icon" aria-hidden="true">schedule</mat-icon>
+                    <span class="tap-photos__mobile-time">{{ formatTime(record.time) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tap-photos__mobile-action">
+                @if (record.photoUrl) {
+                  <button
+                    class="tap-photos__view-btn tap-photos__view-btn--mobile"
+                    type="button"
+                    (click)="openPhoto(record.photoUrl)">
+                    <mat-icon aria-hidden="true">visibility</mat-icon>
+                    <span>View Photo</span>
+                  </button>
+                } @else {
+                  <span class="tap-photos__unavailable tap-photos__unavailable--mobile">
+                    <mat-icon aria-hidden="true">photo_size_select_actual</mat-icon>
+                    No Photo
+                  </span>
+                }
+              </div>
+            </article>
+          }
+        </div>
       }
 
     </section>
@@ -124,7 +232,8 @@
     <div
       class="tap-photos__modal-backdrop"
       role="presentation"
-      (click)="closePhoto()">
+      (click)="closePhoto()"
+      (keydown.escape)="closePhoto()">
       <div
         class="tap-photos__modal"
         role="dialog"

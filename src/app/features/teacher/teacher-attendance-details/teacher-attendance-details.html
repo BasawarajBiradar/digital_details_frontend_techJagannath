@@ -9,14 +9,55 @@
           <h1 id="teacher-attendance-title" class="attendance-page__title">Teacher Attendance</h1>
         </div>
 
-        <div class="attendance-page__date-control" aria-labelledby="teacher-attendance-filter-title">
-          <span id="teacher-attendance-filter-title" class="attendance-page__filter-label">Filter Period</span>
-          <app-date-picker
-            [compact]="true"
-            [startDate]="fromDate()"
-            (startDateChange)="onFromDateChanged($event)"
-            [endDate]="toDate()"
-            (endDateChange)="onToDateChanged($event)" />
+        <div class="attendance-page__controls-wrap">
+          <!-- Quick Presets -->
+          <div class="attendance-page__presets" role="tablist" aria-label="Attendance filter presets">
+            <button
+              type="button"
+              role="tab"
+              class="attendance-page__preset-btn"
+              [class.is-active]="activePreset() === '7days'"
+              [attr.aria-selected]="activePreset() === '7days'"
+              (click)="setFilterPreset('7days')">
+              Last 7 Days
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="attendance-page__preset-btn"
+              [class.is-active]="activePreset() === 'month'"
+              [attr.aria-selected]="activePreset() === 'month'"
+              (click)="setFilterPreset('month')">
+              This Month
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="attendance-page__preset-btn"
+              [class.is-active]="activePreset() === '30days'"
+              [attr.aria-selected]="activePreset() === '30days'"
+              (click)="setFilterPreset('30days')">
+              Last 30 Days
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="attendance-page__preset-btn"
+              [class.is-active]="activePreset() === 'custom'"
+              [attr.aria-selected]="activePreset() === 'custom'"
+              (click)="setFilterPreset('custom')">
+              Custom Range
+            </button>
+          </div>
+
+          <div class="attendance-page__date-control" [class.is-visible]="activePreset() === 'custom'">
+            <app-date-picker
+              [compact]="true"
+              [startDate]="fromDate()"
+              (startDateChange)="onFromDateChanged($event)"
+              [endDate]="toDate()"
+              (endDateChange)="onToDateChanged($event)" />
+          </div>
         </div>
       </div>
     </header>

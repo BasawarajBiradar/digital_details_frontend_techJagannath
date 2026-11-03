@@ -9,6 +9,7 @@ export interface NfcScanResult {
   url?: string;
   saving?: boolean;
   saveError?: string;
+  method?: 'nfc' | 'manual';
 }
 
 interface AddNfcUidResponse {

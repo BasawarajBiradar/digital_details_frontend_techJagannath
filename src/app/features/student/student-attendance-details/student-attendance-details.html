@@ -1,118 +1,593 @@
-<main class="attendance-page">
+<main class="sa-root">
+  <div class="sa-container">
 
-  <div class="attendance-page__layout">
+    <!-- Header Card -->
+    <header class="sa-header-card" aria-labelledby="attendance-page-title">
+      <div class="sa-title-row">
+        <div class="sa-title-group">
+          <span class="sa-kicker">Student Portal</span>
+          <h1 id="attendance-page-title" class="sa-title">Attendance Details</h1>
+          <p class="sa-subtitle">Official Academic Presence &amp; Tap Tracking</p>
+        </div>
 
-    <section class="attendance-overview" aria-labelledby="attendance-overview-title">
-      <div class="attendance-overview__header">
-        <div>
-          <span class="attendance-page__section-kicker">Overview</span>
-          <h2 id="attendance-overview-title">Attendance summary</h2>
+        <div class="sa-header-actions">
+          <div class="sa-year-badge">
+            <mat-icon aria-hidden="true">school</mat-icon>
+            <span>Academic Year 2026–2027</span>
+          </div>
+          <div class="sa-icon-badge" aria-hidden="true">
+            <mat-icon>event_available</mat-icon>
+          </div>
         </div>
       </div>
 
+      <!-- KPI Summary Section -->
       @if (overviewLoading()) {
-        <div class="attendance-overview__loading" aria-live="polite">
-          <span class="attendance-overview__spinner" aria-hidden="true"></span>
-          Loading attendance summary...
+        <div class="sa-overview-loading" aria-live="polite">
+          <span class="sa-spinner" aria-hidden="true"></span>
+          <span>Loading attendance summary...</span>
         </div>
       } @else if (overviewError()) {
-        <div class="attendance-overview__error" role="alert">
-          <mat-icon aria-hidden="true">error_outline</mat-icon>
-          <div>
-            <strong>Unable to load attendance</strong>
-            <span>Please check the selected dates and try again.</span>
+        <div class="sa-overview-error" role="alert">
+          <div class="sa-error-content">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            <div class="sa-error-text">
+              <strong>Unable to load attendance summary</strong>
+              <span>Please check your network connection and try again.</span>
+            </div>
           </div>
-          <button type="button" (click)="retryOverview()">Retry</button>
+          <button class="sa-retry-btn" type="button" (click)="retryOverview()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            <span>Retry</span>
+          </button>
         </div>
       } @else if (overview(); as data) {
-        <div class="attendance-overview__content">
-          <div
-            class="attendance-overview__donut"
-            [style.--attendance-percent]="attendancePercentage() + '%'"
-            role="img"
-            [attr.aria-label]="attendancePercentage() + '% attendance'">
-            <div class="attendance-overview__donut-label">
-              <strong>{{ attendancePercentage() | number: '1.1-1' }}%</strong>
-              <span>attendance</span>
-            </div>
-          </div>
+        <div class="sa-kpi-grid">
 
-          <div class="attendance-overview__stats" aria-label="Attendance day counts">
-            <div class="attendance-overview__stat attendance-overview__stat--present">
-              <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">check_circle</mat-icon></span>
-              <span class="attendance-overview__stat-copy"><b>Present days</b><small>Days attended</small></span>
-              <strong>{{ data.presentDays }}</strong>
+          <!-- Rate Donut Card -->
+          <article class="sa-kpi-card sa-kpi-card--rate">
+            <div
+              class="sa-donut"
+              [style.--attendance-percent]="attendancePercentage() + '%'"
+              role="img"
+              [attr.aria-label]="attendancePercentage() + '% attendance rate'">
+              <div class="sa-donut-label">
+                <strong>{{ attendancePercentage() | number: '1.0-0' }}%</strong>
+              </div>
             </div>
-            <div class="attendance-overview__stat attendance-overview__stat--absent">
-              <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">cancel</mat-icon></span>
-              <span class="attendance-overview__stat-copy"><b>Absent days</b><small>Days missed</small></span>
-              <strong>{{ data.absentDays }}</strong>
+            <div class="sa-kpi-info">
+              <span class="sa-kpi-label">OVERALL RATE</span>
+              <div class="sa-health-badge" [class]="'sa-health-badge--' + attendanceHealth().color">
+                <mat-icon aria-hidden="true">{{ attendanceHealth().color === 'success' ? 'check' : attendanceHealth().color === 'danger' ? 'close' : 'info' }}</mat-icon>
+                <span>{{ attendanceHealth().label }}</span>
+              </div>
+              <span class="sa-kpi-sub">Target: 85%+</span>
             </div>
-            <div class="attendance-overview__stat attendance-overview__stat--late">
-              <span class="attendance-overview__stat-icon"><mat-icon aria-hidden="true">schedule</mat-icon></span>
-              <span class="attendance-overview__stat-copy"><b>Late days</b><small>Late arrivals</small></span>
-              <strong>{{ data.lateDays ?? 0 }}</strong>
+          </article>
+
+          <!-- Present Days KPI -->
+          <article class="sa-kpi-card sa-kpi-card--present">
+            <div class="sa-kpi-icon-wrap sa-kpi-icon-wrap--present">
+              <mat-icon aria-hidden="true">check</mat-icon>
             </div>
-          </div>
+            <div class="sa-kpi-info">
+              <span class="sa-kpi-label">PRESENT</span>
+              <strong class="sa-kpi-value text-present">{{ data.presentDays }}</strong>
+              <span class="sa-kpi-sub">Days attended</span>
+            </div>
+          </article>
+
+          <!-- Absent Days KPI -->
+          <article class="sa-kpi-card sa-kpi-card--absent">
+            <div class="sa-kpi-icon-wrap sa-kpi-icon-wrap--absent">
+              <mat-icon aria-hidden="true">close</mat-icon>
+            </div>
+            <div class="sa-kpi-info">
+              <span class="sa-kpi-label">ABSENT</span>
+              <strong class="sa-kpi-value text-absent">{{ data.absentDays }}</strong>
+              <span class="sa-kpi-sub">Days missed</span>
+            </div>
+          </article>
+
+          <!-- Late Days KPI -->
+          <article class="sa-kpi-card sa-kpi-card--late">
+            <div class="sa-kpi-icon-wrap sa-kpi-icon-wrap--late">
+              <mat-icon aria-hidden="true">schedule</mat-icon>
+            </div>
+            <div class="sa-kpi-info">
+              <span class="sa-kpi-label">LATE</span>
+              <strong class="sa-kpi-value text-late">{{ data.lateDays ?? 0 }}</strong>
+              <span class="sa-kpi-sub">Tardy arrivals</span>
+            </div>
+          </article>
+
         </div>
-        <p class="attendance-overview__footnote">
-          <mat-icon aria-hidden="true">info</mat-icon>
-          Summary reflects the daily view month.
-        </p>
       }
-    </section>
+    </header>
 
-    <section class="attendance-calendar" aria-labelledby="attendance-calendar-title">
-      <div class="attendance-calendar__header">
-        <div>
-          <span class="attendance-page__section-kicker">Daily view</span>
-          <h2 id="attendance-calendar-title">{{ calendarMonthLabel() }}</h2>
-        </div>
-        <div class="attendance-calendar__navigation">
-          <button type="button" aria-label="Previous month" (click)="previousMonth()">
-            <mat-icon aria-hidden="true">chevron_left</mat-icon>
+    <!-- Main Attendance Workspace Card -->
+    <section class="sa-workspace-card" aria-labelledby="workspace-section-title">
+
+      <!-- Workspace Top Toolbar: View Switcher & Month Navigation -->
+      <div class="sa-toolbar">
+
+        <h2 id="workspace-section-title" class="sa-workspace-title">
+          <mat-icon aria-hidden="true">calendar_month</mat-icon>
+          <span>{{ calendarMonthLabel() }}</span>
+        </h2>
+
+        <!-- View Mode Toggle -->
+        <div class="sa-view-tabs" role="tablist" aria-label="Attendance view mode">
+          <button
+            type="button"
+            role="tab"
+            class="sa-tab-btn"
+            [class.is-active]="activeTab() === 'calendar'"
+            [attr.aria-selected]="activeTab() === 'calendar'"
+            (click)="setActiveTab('calendar')">
+            <mat-icon aria-hidden="true">calendar_view_month</mat-icon>
+            <span>Calendar</span>
           </button>
-          <button type="button" aria-label="Next month" [disabled]="isCurrentMonth()" (click)="nextMonth()">
-            <mat-icon aria-hidden="true">chevron_right</mat-icon>
+          <button
+            type="button"
+            role="tab"
+            class="sa-tab-btn"
+            [class.is-active]="activeTab() === 'records'"
+            [attr.aria-selected]="activeTab() === 'records'"
+            (click)="setActiveTab('records')">
+            <mat-icon aria-hidden="true">format_list_bulleted</mat-icon>
+            <span>Records List</span>
           </button>
         </div>
+
+        <div class="sa-toolbar-nav">
+          @if (!isCurrentMonth()) {
+            <button
+              type="button"
+              class="sa-today-btn"
+              (click)="jumpToCurrentMonth()"
+              title="Return to current month">
+              <mat-icon aria-hidden="true">today</mat-icon>
+              <span>Today</span>
+            </button>
+          }
+
+          <div class="sa-nav-group">
+            <button
+              type="button"
+              class="sa-nav-btn"
+              aria-label="Previous month"
+              (click)="previousMonth()">
+              <mat-icon aria-hidden="true">chevron_left</mat-icon>
+            </button>
+            <button
+              type="button"
+              class="sa-nav-btn"
+              aria-label="Next month"
+              [disabled]="isCurrentMonth()"
+              (click)="nextMonth()">
+              <mat-icon aria-hidden="true">chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
       </div>
 
+      <!-- Workspace Body: Loading, Error, or Views -->
       @if (calendarLoading()) {
-        <div class="attendance-calendar__loading" aria-live="polite">Loading daily attendance...</div>
-      } @else if (calendarError()) {
-        <div class="attendance-calendar__error" role="alert">Unable to load daily attendance.</div>
-      } @else {
-        <div class="attendance-calendar__weekdays" aria-hidden="true">
-          @for (weekday of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track weekday) {
-            <span>{{ weekday }}</span>
-          }
+        <div class="sa-calendar-loading" aria-live="polite">
+          <span class="sa-spinner" aria-hidden="true"></span>
+          <span>Loading monthly attendance...</span>
         </div>
-        <div class="attendance-calendar__grid" aria-label="Daily attendance calendar">
-          @for (cell of calendarCells(); track cell?.date ?? $index) {
-            @if (cell; as day) {
-              <div class="attendance-calendar__day"
-                [class.attendance-calendar__day--present]="day.status === 'PRESENT'"
-                [class.attendance-calendar__day--absent]="day.status === 'ABSENT'"
-                [class.attendance-calendar__day--holiday]="day.status === 'HOLIDAY'"
-                [attr.aria-label]="day.ariaLabel">
-                <span>{{ day.dayNumber }}</span>
+      } @else if (calendarError()) {
+        <div class="sa-state-card sa-calendar-error" role="alert">
+          <div class="sa-state-icon sa-state-icon--error">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+          </div>
+          <h3 class="sa-state-heading">Unable to Load Attendance</h3>
+          <p class="sa-state-subtext">There was an issue fetching attendance records for {{ calendarMonthLabel() }}.</p>
+          <button class="sa-retry-btn" type="button" (click)="retryCalendar()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            <span>Retry</span>
+          </button>
+        </div>
+      } @else {
+
+        <!-- TAB 1: CALENDAR VIEW WITH TWO-COLUMN DASHBOARD WORKSPACE -->
+        @if (activeTab() === 'calendar') {
+          <div class="sa-workspace-grid">
+
+            <!-- LEFT: Monthly Calendar Section -->
+            <section class="sa-calendar-section" aria-label="Monthly Attendance Calendar">
+
+              <!-- Weekday Column Headers -->
+              <div class="sa-weekdays" aria-hidden="true">
+                @for (weekday of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track weekday) {
+                  <span class="sa-weekday">{{ weekday }}</span>
+                }
+              </div>
+
+              <!-- 7-Column Days Grid -->
+              <div class="sa-grid" aria-label="Monthly attendance days">
+                @for (cell of calendarCells(); track cell?.date ?? $index) {
+                  @if (cell; as day) {
+                    <button
+                      type="button"
+                      class="sa-day-cell"
+                      [class.sa-day-cell--present]="day.status === 'PRESENT'"
+                      [class.sa-day-cell--absent]="day.status === 'ABSENT'"
+                      [class.sa-day-cell--holiday]="day.status === 'HOLIDAY'"
+                      [class.sa-day-cell--unrecorded]="!day.status"
+                      [class.sa-day-cell--today]="day.isToday"
+                      [class.sa-day-cell--selected]="selectedDay()?.date === day.date"
+                      [attr.aria-label]="day.ariaLabel"
+                      (click)="selectDay(day)">
+
+                      <span class="sa-day-number">{{ day.dayNumber }}</span>
+
+                      @if (day.status) {
+                        <span
+                          class="sa-day-bar"
+                          [class.sa-day-bar--present]="day.status === 'PRESENT'"
+                          [class.sa-day-bar--absent]="day.status === 'ABSENT'"
+                          [class.sa-day-bar--holiday]="day.status === 'HOLIDAY'"
+                          aria-hidden="true"></span>
+                      } @else {
+                        <span class="sa-day-bar sa-day-bar--empty" aria-hidden="true"></span>
+                      }
+                    </button>
+                  } @else {
+                    <div class="sa-day-cell sa-day-cell--empty" aria-hidden="true"></div>
+                  }
+                }
+              </div>
+
+              <!-- Calendar Status Legend -->
+              <footer class="sa-legend" aria-label="Attendance calendar legend">
+                <div class="sa-legend-item">
+                  <span class="sa-legend-dot sa-legend-dot--present" aria-hidden="true"></span>
+                  <span class="sa-legend-label">Present</span>
+                </div>
+                <div class="sa-legend-item">
+                  <span class="sa-legend-dot sa-legend-dot--absent" aria-hidden="true"></span>
+                  <span class="sa-legend-label">Absent</span>
+                </div>
+                <div class="sa-legend-item">
+                  <span class="sa-legend-dot sa-legend-dot--holiday" aria-hidden="true"></span>
+                  <span class="sa-legend-label">Holiday / Weekend</span>
+                </div>
+                <div class="sa-legend-item">
+                  <span class="sa-legend-dot sa-legend-dot--unrecorded" aria-hidden="true"></span>
+                  <span class="sa-legend-label">Not Recorded</span>
+                </div>
+              </footer>
+            </section>
+
+            <!-- RIGHT: Selected Date Details Panel (Inspired by Reference Dashboard) -->
+            <aside class="sa-details-panel" aria-labelledby="day-details-title">
+              <header class="sa-panel-header">
+                <h3 id="day-details-title" class="sa-panel-title">
+                  <mat-icon aria-hidden="true">event_note</mat-icon>
+                  <span>Date Details</span>
+                </h3>
+
+                @if (selectedDay()) {
+                  <button
+                    type="button"
+                    class="sa-clear-selection-btn"
+                    aria-label="Clear selected date"
+                    (click)="clearSelectedDay()">
+                    <mat-icon aria-hidden="true">close</mat-icon>
+                    <span>Clear</span>
+                  </button>
+                }
+              </header>
+
+              @if (selectedDayDetails(); as details) {
+                <div class="sa-details-content" role="status" aria-live="polite">
+
+                  <!-- Date Hero Card -->
+                  <div class="sa-date-hero">
+                    <div class="sa-date-hero-badge" aria-hidden="true">
+                      <span class="hero-day">{{ details.dayNumber }}</span>
+                      <span class="hero-month">{{ details.monthShort }}</span>
+                    </div>
+
+                    <div class="sa-date-hero-info">
+                      <div class="hero-title-row">
+                        <strong class="hero-weekday">{{ details.dayOfWeek }}</strong>
+                        @if (details.isToday) {
+                          <span class="hero-today-tag">Today</span>
+                        }
+                      </div>
+                      <span class="hero-full-date">{{ details.fullDate }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Status Banner -->
+                  <div class="sa-status-card">
+                    <span class="details-section-label">Attendance Status</span>
+                    <div class="status-pill-wrap">
+                      @if (details.status === 'PRESENT') {
+                        <span class="status-badge status-badge--present">
+                          <mat-icon aria-hidden="true">check</mat-icon>
+                          <span>Present</span>
+                        </span>
+                      } @else if (details.status === 'ABSENT') {
+                        <span class="status-badge status-badge--absent">
+                          <mat-icon aria-hidden="true">close</mat-icon>
+                          <span>Absent</span>
+                        </span>
+                      } @else if (details.status === 'HOLIDAY') {
+                        <span class="status-badge status-badge--holiday">
+                          <mat-icon aria-hidden="true">wb_sunny</mat-icon>
+                          <span>Holiday / Weekend</span>
+                        </span>
+                      } @else {
+                        <span class="status-badge status-badge--neutral">
+                          <mat-icon aria-hidden="true">remove</mat-icon>
+                          <span>Not Recorded</span>
+                        </span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Scheme / Activity Details (Matching Reference Image) -->
+                  <div class="sa-activity-card">
+                    <div class="activity-card-header">
+                      <span class="details-section-label">Session Details</span>
+                      <mat-icon aria-hidden="true">badge</mat-icon>
+                    </div>
+
+                    <div class="activity-grid">
+                      <div class="activity-item">
+                        <span class="activity-label">Session Type</span>
+                        <strong class="activity-value">{{ details.dayType }}</strong>
+                      </div>
+                      <div class="activity-item">
+                        <span class="activity-label">Academic Calendar</span>
+                        <strong class="activity-value">Day {{ details.dayNumber }} of {{ details.monthYear }}</strong>
+                      </div>
+                      <div class="activity-item activity-item--full">
+                        <span class="activity-label">Verification</span>
+                        <strong class="activity-value">{{ details.verificationNote }}</strong>
+                      </div>
+                    </div>
+
+                    <!-- Timing Information (Displayed if returned by existing API) -->
+                    @if (details.entryTime || details.exitTime) {
+                      <div class="sa-timing-section">
+                        <div class="timing-box">
+                          <span class="timing-label">First In</span>
+                          <strong class="timing-value">{{ details.entryTime ?? '--:--' }}</strong>
+                        </div>
+                        <div class="timing-box">
+                          <span class="timing-label">Last Out</span>
+                          <strong class="timing-value">{{ details.exitTime ?? '--:--' }}</strong>
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                </div>
+              } @else {
+                <!-- Empty State (When no date is selected) -->
+                <div class="sa-panel-empty">
+                  <div class="empty-icon-wrap" aria-hidden="true">
+                    <mat-icon>touch_app</mat-icon>
+                  </div>
+                  <h4 class="empty-title">Select a Date</h4>
+                  <p class="empty-desc">Click any calendar day to inspect its attendance status, academic session details, and tap records.</p>
+                  @if (isCurrentMonth()) {
+                    <button
+                      type="button"
+                      class="empty-shortcut-btn"
+                      (click)="selectToday()">
+                      <mat-icon aria-hidden="true">today</mat-icon>
+                      <span>View Today's Details</span>
+                    </button>
+                  }
+                </div>
+              }
+            </aside>
+
+          </div>
+        }
+
+        <!-- TAB 2: DETAILED RECORDS LIST / TABLE -->
+        @if (activeTab() === 'records') {
+          <div class="sa-records-view">
+
+            <!-- Filter Chips Bar -->
+            <div class="sa-filter-bar" role="group" aria-label="Filter records by status">
+              <span class="sa-filter-label">Filter:</span>
+
+              <div class="sa-filter-chips">
+                <button
+                  type="button"
+                  class="sa-filter-chip"
+                  [class.is-active]="statusFilter() === 'ALL'"
+                  (click)="setStatusFilter('ALL')">
+                  <span>All</span>
+                  <span class="chip-count">{{ statusCounts().all }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="sa-filter-chip"
+                  [class.is-active]="statusFilter() === 'PRESENT'"
+                  (click)="setStatusFilter('PRESENT')">
+                  <mat-icon aria-hidden="true">check</mat-icon>
+                  <span>Present</span>
+                  <span class="chip-count">{{ statusCounts().present }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="sa-filter-chip"
+                  [class.is-active]="statusFilter() === 'ABSENT'"
+                  (click)="setStatusFilter('ABSENT')">
+                  <mat-icon aria-hidden="true">close</mat-icon>
+                  <span>Absent</span>
+                  <span class="chip-count">{{ statusCounts().absent }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="sa-filter-chip"
+                  [class.is-active]="statusFilter() === 'HOLIDAY'"
+                  (click)="setStatusFilter('HOLIDAY')">
+                  <mat-icon aria-hidden="true">wb_sunny</mat-icon>
+                  <span>Holiday</span>
+                  <span class="chip-count">{{ statusCounts().holiday }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Desktop Records Table -->
+            @if (filteredRecords().length > 0) {
+              <div class="sa-table-wrapper" tabindex="0" role="region" aria-label="Attendance records table">
+                <table class="sa-table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="th-date">Date</th>
+                      <th scope="col" class="th-day">Day</th>
+                      <th scope="col" class="th-status">Attendance Status</th>
+                      <th scope="col" class="th-type">Classification</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (rec of filteredRecords(); track rec.date) {
+                      <tr class="sa-table-row">
+                        <td class="td-date">
+                          <div class="date-cell">
+                            <span class="date-day-num">{{ rec.dayNumber }}</span>
+                            <span class="date-full">{{ rec.formattedDate }}</span>
+                          </div>
+                        </td>
+                        <td class="td-day">
+                          <span class="day-pill">{{ rec.dayOfWeek }}</span>
+                        </td>
+                        <td class="td-status">
+                          @if (rec.status === 'PRESENT') {
+                            <span class="status-badge status-badge--present">
+                              <mat-icon aria-hidden="true">check</mat-icon>
+                              Present
+                            </span>
+                          } @else if (rec.status === 'ABSENT') {
+                            <span class="status-badge status-badge--absent">
+                              <mat-icon aria-hidden="true">close</mat-icon>
+                              Absent
+                            </span>
+                          } @else if (rec.status === 'HOLIDAY') {
+                            <span class="status-badge status-badge--holiday">
+                              <mat-icon aria-hidden="true">wb_sunny</mat-icon>
+                              Holiday
+                            </span>
+                          } @else {
+                            <span class="status-badge status-badge--neutral">
+                              <mat-icon aria-hidden="true">remove</mat-icon>
+                              Not Recorded
+                            </span>
+                          }
+                        </td>
+                        <td class="td-type">
+                          <span class="type-text">
+                            @if (rec.status === 'PRESENT') {
+                              Regular Session Tap
+                            } @else if (rec.status === 'ABSENT') {
+                              Unexcused Absence
+                            } @else if (rec.status === 'HOLIDAY') {
+                              School Scheduled Holiday
+                            } @else {
+                              Scheduled Academic Day
+                            }
+                          </span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Mobile Records Cards (< 640px) -->
+              <div class="sa-cards-list" aria-label="Attendance day cards">
+                @for (rec of filteredRecords(); track rec.date) {
+                  <article class="attendance-card">
+                    <div class="attendance-card__date-box">
+                      <span class="attendance-card__day-num">{{ rec.dayNumber }}</span>
+                      <span class="attendance-card__day-name">{{ rec.dayOfWeek }}</span>
+                    </div>
+
+                    <div class="attendance-card__details">
+                      <span class="attendance-card__formatted-date">{{ rec.formattedDate }}</span>
+                      <span class="attendance-card__classification">
+                        @if (rec.status === 'PRESENT') {
+                          Regular Session Tap
+                        } @else if (rec.status === 'ABSENT') {
+                          Unexcused Absence
+                        } @else if (rec.status === 'HOLIDAY') {
+                          Official Holiday
+                        } @else {
+                          Scheduled Session
+                        }
+                      </span>
+                    </div>
+
+                    <div class="attendance-card__badge-wrap">
+                      @if (rec.status === 'PRESENT') {
+                        <span class="status-badge status-badge--present">
+                          <mat-icon aria-hidden="true">check</mat-icon>
+                          Present
+                        </span>
+                      } @else if (rec.status === 'ABSENT') {
+                        <span class="status-badge status-badge--absent">
+                          <mat-icon aria-hidden="true">close</mat-icon>
+                          Absent
+                        </span>
+                      } @else if (rec.status === 'HOLIDAY') {
+                        <span class="status-badge status-badge--holiday">
+                          <mat-icon aria-hidden="true">wb_sunny</mat-icon>
+                          Holiday
+                        </span>
+                      } @else {
+                        <span class="status-badge status-badge--neutral">
+                          <mat-icon aria-hidden="true">remove</mat-icon>
+                          Not Recorded
+                        </span>
+                      }
+                    </div>
+                  </article>
+                }
               </div>
             } @else {
-              <div class="attendance-calendar__day attendance-calendar__day--empty" aria-hidden="true"></div>
+              <!-- Empty Filter State -->
+              <div class="sa-state-card sa-state-card--empty">
+                <div class="sa-state-icon">
+                  <mat-icon aria-hidden="true">event_busy</mat-icon>
+                </div>
+                <h3 class="sa-state-heading">No Records Found</h3>
+                <p class="sa-state-subtext">No attendance records match the selected status filter for {{ calendarMonthLabel() }}.</p>
+                <button
+                  type="button"
+                  class="sa-reset-filter-btn"
+                  (click)="setStatusFilter('ALL')">
+                  Show All Days
+                </button>
+              </div>
             }
-          }
-        </div>
-        <div class="attendance-calendar__legend" aria-label="Attendance status legend">
-          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--present"><i></i>Present</span>
-          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--absent"><i></i>Absent</span>
-          <span class="attendance-calendar__legend-item attendance-calendar__legend-item--holiday"><i></i>Holiday</span>
-        </div>
+
+          </div>
+        }
+
       }
+
+      <!-- Footnote Guarantee -->
+      <footer class="sa-footnote">
+        <mat-icon aria-hidden="true">verified_user</mat-icon>
+        <span>Attendance records verified via TapAxe 256-bit encrypted NFC campus reader network.</span>
+      </footer>
+
     </section>
 
   </div>
 
   <app-dashboard-footer role="student" />
-
 </main>

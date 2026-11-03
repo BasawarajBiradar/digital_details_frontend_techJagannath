@@ -86,37 +86,43 @@
         }
 
         <!-- Emergency Contact Subsection -->
-        <div class="id-card__body id-card__body--emergency">
-          <div class="id-card__details">
-            <div class="id-card__row-label id-card__row-label--heading">Emergency Contact</div>
-            <div class="id-card__row">
-              <span class="id-card__row-label">Name</span>
-              <span class="id-card__row-value">{{ profile.emergencyContactName ?? '-' }}</span>
-            </div>
-            <div class="id-card__row">
-              <span class="id-card__row-label">Relation</span>
-              <span class="id-card__row-value">{{ profile.emergencyContactRelation ?? '-' }}</span>
-            </div>
-            <div class="id-card__row">
-              <span class="id-card__row-label">Contact</span>
-              <span class="id-card__row-value">
-                @if (profile.emergencyContactNumber) {
-                  <a class="id-card__link" href="tel:{{ profile.emergencyContactNumber }}">{{ profile.emergencyContactNumber }}</a>
-                } @else {
-                  -
-                }
-              </span>
-            </div>
-            @if (profile.alternateContactNumber) {
+        @if (profile.emergencyContactName || profile.emergencyContactNumber || profile.alternateContactNumber) {
+          <div class="id-card__body id-card__body--emergency">
+            <div class="id-card__details">
+              <div class="id-card__emergency-header">
+                <mat-icon aria-hidden="true">health_and_safety</mat-icon>
+                <span class="id-card__row-label--heading">Emergency Contact</span>
+              </div>
               <div class="id-card__row">
-                <span class="id-card__row-label">Alt. No</span>
+                <span class="id-card__row-label">Name</span>
                 <span class="id-card__row-value">
-                  <a class="id-card__link" href="tel:{{ profile.alternateContactNumber }}">{{ profile.alternateContactNumber }}</a>
+                  {{ profile.emergencyContactName ?? '-' }}
+                  @if (profile.emergencyContactRelation) {
+                    <span class="id-card__relation-tag">({{ profile.emergencyContactRelation }})</span>
+                  }
                 </span>
               </div>
-            }
+              <div class="id-card__row">
+                <span class="id-card__row-label">Contact</span>
+                <span class="id-card__row-value">
+                  @if (profile.emergencyContactNumber) {
+                    <a class="id-card__link" href="tel:{{ profile.emergencyContactNumber }}">{{ profile.emergencyContactNumber }}</a>
+                  } @else {
+                    -
+                  }
+                </span>
+              </div>
+              @if (profile.alternateContactNumber) {
+                <div class="id-card__row">
+                  <span class="id-card__row-label">Alt. No</span>
+                  <span class="id-card__row-value">
+                    <a class="id-card__link" href="tel:{{ profile.alternateContactNumber }}">{{ profile.alternateContactNumber }}</a>
+                  </span>
+                </div>
+              }
+            </div>
           </div>
-        </div>
+        }
       </article>
 
       <!-- Today's Updates Card -->

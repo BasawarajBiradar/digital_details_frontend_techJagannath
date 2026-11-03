@@ -97,7 +97,8 @@
             <div class="id-card__tags">
               <span class="badge-pill badge-pill--primary" title="Class and Division">
                 <mat-icon aria-hidden="true">school</mat-icon>
-                <span>{{ classDivision().toLowerCase().startsWith('class') ? classDivision() : ('Class ' + classDivision()) }}</span>
+                <span>{{ classDivision().toLowerCase().startsWith('class') ? classDivision() : ('Class ' +
+                  classDivision()) }}</span>
               </span>
               @if (student()!.bloodGroup) {
               <span class="badge-pill badge-pill--blood" title="Blood Group">
@@ -228,7 +229,8 @@
             <span class="details-modal__subtitle">TapAxe Student Identity Record</span>
           </div>
         </div>
-        <button #detailsCloseBtn class="details-modal__close" (click)="closeDetails()" aria-label="Close student details dialog">
+        <button #detailsCloseBtn class="details-modal__close" (click)="closeDetails()"
+          aria-label="Close student details dialog">
           <mat-icon aria-hidden="true">close</mat-icon>
         </button>
       </div>

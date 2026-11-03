@@ -1,123 +1,164 @@
-<div class="sdd">
+<div class="sdd" role="dialog" aria-modal="true" aria-labelledby="sdd-title">
 
-  <button class="sdd__close" mat-icon-button (click)="close()">
-    <mat-icon>close</mat-icon>
-  </button>
+  <!-- Modal Header -->
+  <header class="sdd__header">
+    <div class="sdd__header-copy">
+      <span class="sdd__kicker">TapAxe Identity Verification</span>
+      <h2 id="sdd-title" class="sdd__title">Student Identity Profile</h2>
+    </div>
+    <button
+      class="sdd__close-btn"
+      type="button"
+      aria-label="Close student detail modal"
+      (click)="close()">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </header>
 
+  <!-- Loading State -->
   @if (isLoading()) {
-    <div class="sdd__loading">
+    <div class="sdd__state" aria-live="polite">
       <span class="spinner"></span>
+      <p>Loading student credentials...</p>
     </div>
   }
 
+  <!-- Error State -->
   @else if (hasError()) {
-    <div class="surface-card sdd__error">
-      <mat-icon>error_outline</mat-icon>
-      <p>Could not load student info. Please try again later.</p>
+    <div class="sdd__state sdd__state--error" role="alert">
+      <div class="error-bubble">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+      </div>
+      <h3>Unable to Load Student Info</h3>
+      <p>There was an issue fetching credentials for this student.</p>
+      <button type="button" class="btn-retry" (click)="fetchStudentDetail()">
+        <mat-icon aria-hidden="true">refresh</mat-icon>
+        <span>Retry</span>
+      </button>
     </div>
   }
 
-  @else if (student()) {
-
-    <!-- Primary card -->
-    <div class="id-card">
-      <div class="id-card__band">
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">Student Profile</span>
-        </div>
-      </div>
-
-      <div class="id-card__body">
-        <div class="id-card__photo-wrap">
-          @if (student()!.photoUrl) {
-            <img class="id-card__photo"
-                 [src]="student()!.photoUrl"
-                 [alt]="student()!.fullName" />
+  <!-- Data Display: Unified Enterprise Credential Card -->
+  @else if (student(); as data) {
+    <div class="credential-card">
+      
+      <!-- Top Hero Surface -->
+      <div class="credential-hero">
+        <div class="credential-photo-wrap">
+          @if (data.photoUrl) {
+            <img
+              class="credential-photo"
+              [src]="data.photoUrl"
+              [alt]="data.fullName + ' photo'" />
           } @else {
-            <div class="id-card__photo-fallback">
-              <mat-icon>person</mat-icon>
+            <div class="credential-photo-fallback">
+              <mat-icon aria-hidden="true">person</mat-icon>
             </div>
           }
         </div>
 
-        <div class="id-card__details">
-          <div class="id-card__name">{{ student()!.fullName }}</div>
-          <div class="id-card__class">Class {{ student()!.classLevel }} – Div {{ student()!.div }}</div>
-
-          <div class="id-card__divider"></div>
-
-          <div class="id-card__row">
-            <span class="id-card__row-label">Blood</span>
-            <span class="id-card__row-value id-card__row-value--blood">{{ student()!.bloodGroup }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">DOB</span>
-            <span class="id-card__row-value">{{ student()!.birthDate }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">
-              <a href="tel:{{ student()!.contactNumber }}">{{ student()!.contactNumber }}</a>
+        <div class="credential-hero-info">
+          <h3 class="credential-name">{{ data.fullName }}</h3>
+          
+          <div class="credential-meta-chips">
+            <span class="academic-chip">
+              <mat-icon aria-hidden="true">school</mat-icon>
+              <span>Class {{ data.classLevel }} &middot; Div {{ data.div }}</span>
             </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Email</span>
-            <span class="id-card__row-value">
-              <a href="mailto:{{ student()!.emailId }}">{{ student()!.emailId }}</a>
-            </span>
+
+            @if (data.bloodGroup) {
+              <span class="blood-chip" title="Medical Blood Group">
+                <mat-icon aria-hidden="true">bloodtype</mat-icon>
+                <span>{{ data.bloodGroup }}</span>
+              </span>
+            }
           </div>
         </div>
       </div>
 
-      <div class="id-card__address">
-        <span class="id-card__row-label">Address</span>
-        <span class="id-card__address-value">{{ student()!.address }}</span>
-      </div>
-    </div>
+      <!-- Core Information Grid -->
+      <div class="info-section">
+        <span class="section-label">Student Details</span>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Date of Birth</span>
+            <span class="info-value">{{ data.birthDate || '&mdash;' }}</span>
+          </div>
 
-    <!-- Emergency card -->
-    <div class="id-card">
-      <div class="id-card__band id-card__band--emergency">
-        <div class="id-card__band-text">
-          <span class="id-card__band-title">Emergency Contact</span>
-        </div>
-      </div>
-      <div class="id-card__body">
-        <div class="id-card__details">
-          <div class="id-card__row">
-            <span class="id-card__row-label">Name</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactName }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Relation</span>
-            <span class="id-card__row-value">{{ student()!.emergencyContactRelation }}</span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Contact</span>
-            <span class="id-card__row-value">
-              <a class="id-card__link" href="tel:{{ student()!.emergencyContactNumber }}">
-              @if (student()!.emergencyContactNumber) {
-                <mat-icon class="id-card__link-icon">phone</mat-icon>
-               }
-                {{ student()!.emergencyContactNumber }}
-              </a>
-            </span>
-          </div>
-          <div class="id-card__row">
-            <span class="id-card__row-label">Alt. No</span>
-            <span class="id-card__row-value">
-              <a class="id-card__link" href="tel:{{ student()!.alternateContactNumber }}">
-              @if (student()!.alternateContactNumber) {
-                <mat-icon class="id-card__link-icon">phone</mat-icon>
+          <div class="info-item">
+            <span class="info-label">Direct Contact</span>
+            <span class="info-value">
+              @if (data.contactNumber) {
+                <a class="contact-link" href="tel:{{ data.contactNumber }}">
+                  <mat-icon aria-hidden="true">call</mat-icon>
+                  <span>{{ data.contactNumber }}</span>
+                </a>
+              } @else {
+                <span>&mdash;</span>
               }
-                {{ student()!.alternateContactNumber }}
-              </a>
             </span>
+          </div>
+
+          <div class="info-item info-item--wide">
+            <span class="info-label">Email Address</span>
+            <span class="info-value">
+              @if (data.emailId) {
+                <a class="contact-link" href="mailto:{{ data.emailId }}">
+                  <mat-icon aria-hidden="true">mail</mat-icon>
+                  <span class="email-text">{{ data.emailId }}</span>
+                </a>
+              } @else {
+                <span>&mdash;</span>
+              }
+            </span>
+          </div>
+
+          <div class="info-item info-item--wide">
+            <span class="info-label">Residential Address</span>
+            <span class="info-value address-text">{{ data.address || 'Address not registered' }}</span>
           </div>
         </div>
       </div>
-    </div>
 
+      <!-- Emergency Section -->
+      <div class="emergency-section">
+        <div class="emergency-header">
+          <div class="emergency-bubble">
+            <mat-icon aria-hidden="true">emergency</mat-icon>
+          </div>
+          <div>
+            <span class="section-label section-label--emergency">Emergency Contact</span>
+            <strong class="emergency-name">{{ data.emergencyContactName || 'Primary Contact' }}</strong>
+            <span class="emergency-relation">Relation: {{ data.emergencyContactRelation || 'Guardian' }}</span>
+          </div>
+        </div>
+
+        <!-- High-Contrast Direct Call Buttons (Min 48px touch targets) -->
+        <div class="emergency-actions">
+          @if (data.emergencyContactNumber) {
+            <a
+              class="btn-call btn-call--primary"
+              href="tel:{{ data.emergencyContactNumber }}"
+              [attr.aria-label]="'Call emergency contact ' + data.emergencyContactName + ' at ' + data.emergencyContactNumber">
+              <mat-icon aria-hidden="true">phone</mat-icon>
+              <span>Call Primary: {{ data.emergencyContactNumber }}</span>
+            </a>
+          }
+
+          @if (data.alternateContactNumber) {
+            <a
+              class="btn-call btn-call--alt"
+              href="tel:{{ data.alternateContactNumber }}"
+              [attr.aria-label]="'Call alternate contact at ' + data.alternateContactNumber">
+              <mat-icon aria-hidden="true">phone_forwarded</mat-icon>
+              <span>Call Alternate: {{ data.alternateContactNumber }}</span>
+            </a>
+          }
+        </div>
+      </div>
+
+    </div>
   }
 
 </div>

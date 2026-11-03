@@ -6,6 +6,8 @@ import { ApiTeacher, TeacherAttendanceCalendarRecord, TeacherAttendanceOverview 
 import { DatePickerComponent } from '../../../shared/components/date-picker/date-picker';
 import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 
+export type AttendancePreset = '7days' | 'month' | '30days' | 'custom';
+
 interface CalendarCell {
   date: string;
   dayNumber: number;
@@ -25,6 +27,7 @@ export class TeacherAttendanceDetails {
   readonly today = this.startOfDay(new Date());
   readonly fromDate = signal<Date | null>(this.addDays(this.today, -7));
   readonly toDate = signal<Date | null>(this.today);
+  readonly activePreset = signal<AttendancePreset>('7days');
   readonly overview = signal<TeacherAttendanceOverview | null>(null);
   readonly records = signal<TeacherAttendanceCalendarRecord[]>([]);
   readonly loading = signal(true);
@@ -33,6 +36,17 @@ export class TeacherAttendanceDetails {
 
   readonly percentage = computed(() => Math.max(0, Math.min(100, this.overview()?.attendancePercentage ?? 0)));
   readonly monthLabel = computed(() => this.calendarMonth().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+
+  readonly activeDateRangeLabel = computed(() => {
+    const from = this.fromDate();
+    const to = this.toDate();
+    if (!from || !to) return 'Select range';
+    const opt: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
+    const fromStr = from.toLocaleDateString('en-US', opt);
+    const toStr = to.toLocaleDateString('en-US', { ...opt, year: 'numeric' });
+    return `${fromStr} – ${toStr}`;
+  });
+
   readonly calendarCells = computed<(CalendarCell | null)[]>(() => {
     const month = this.calendarMonth();
     const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
@@ -52,11 +66,42 @@ export class TeacherAttendanceDetails {
     return cells;
   });
 
-  constructor() { this.fetchAttendance(); }
+  constructor() {
+    this.fetchAttendance();
+  }
 
-  onFromDateChanged(date: Date | null): void { this.fromDate.set(date); this.fetchAttendance(); }
-  onToDateChanged(date: Date | null): void { this.toDate.set(date); this.fetchAttendance(); }
-  retry(): void { this.fetchAttendance(); }
+  setFilterPreset(preset: AttendancePreset): void {
+    this.activePreset.set(preset);
+    if (preset === '7days') {
+      this.fromDate.set(this.addDays(this.today, -7));
+      this.toDate.set(this.today);
+      this.fetchAttendance();
+    } else if (preset === 'month') {
+      this.fromDate.set(this.startOfMonth(this.today));
+      this.toDate.set(this.today);
+      this.fetchAttendance();
+    } else if (preset === '30days') {
+      this.fromDate.set(this.addDays(this.today, -30));
+      this.toDate.set(this.today);
+      this.fetchAttendance();
+    }
+  }
+
+  onFromDateChanged(date: Date | null): void {
+    this.activePreset.set('custom');
+    this.fromDate.set(date);
+    this.fetchAttendance();
+  }
+
+  onToDateChanged(date: Date | null): void {
+    this.activePreset.set('custom');
+    this.toDate.set(date);
+    this.fetchAttendance();
+  }
+
+  retry(): void {
+    this.fetchAttendance();
+  }
 
   previousMonth(): void {
     const month = this.calendarMonth();
@@ -99,8 +144,20 @@ export class TeacherAttendanceDetails {
       .subscribe(records => this.records.set(records));
   }
 
-  private startOfDay(date: Date): Date { return new Date(date.getFullYear(), date.getMonth(), date.getDate()); }
-  private addDays(date: Date, days: number): Date { const result = new Date(date); result.setDate(result.getDate() + days); return result; }
+  private startOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  private startOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
   private toApiDate(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }

@@ -1,16 +1,455 @@
-@use '../../student/student-dashboard/student-dashboard.scss';
+// teacher-dashboard.scss
+// Dedicated enterprise styling for TapAxe Teacher Dashboard
 
-.id-card__body--emergency {
-  border-top: 1px solid var(--color-border);
-  background: #FCFDFE;
-  padding: 14px 20px;
+.dashboard {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: clamp(14px, 3vw, 24px);
+  padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: 60px 16px;
+  }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 36px 20px;
+    text-align: center;
+    background: var(--color-surface, #FFFFFF);
+    border: 1px solid var(--color-border, #DCE5F1);
+    border-radius: 18px;
+    color: var(--color-text-muted, #4B617E);
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: #DC2626;
+    }
+  }
 }
 
-.id-card__row-label--heading {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary-dark);
-  margin-bottom: 4px;
+// ── ID Card ─────────────────────────────────────────────────────────────────
+.id-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #DCE5F1);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(11, 31, 58, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__band {
+    background: linear-gradient(135deg, #1677F8 0%, #0B4AB2 100%);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #FFFFFF;
+  }
+
+  &__band-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #FFFFFF;
+    padding: 2px;
+  }
+
+  &__band-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__band-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  &__body {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    align-items: flex-start;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  &__photo-wrap {
+    width: 90px;
+    height: 110px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid var(--color-border, #DCE5F1);
+    background: var(--color-surface-inset, #F0F6FF);
+    box-shadow: 0 4px 12px rgba(11, 31, 58, 0.08);
+    flex-shrink: 0;
+
+    &--editable {
+      position: relative;
+      cursor: pointer;
+
+      &:hover .id-card__photo-edit-overlay {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__photo-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary, #1677F8);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  &__photo-edit-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 31, 58, 0.65);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--color-text, #0B1F3A);
+    line-height: 1.25;
+  }
+
+  &__class {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary-dark, #0B4AB2);
+  }
+
+  &__divider {
+    height: 1px;
+    background: var(--color-border, #DCE5F1);
+    margin: 4px 0;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+
+    @media (max-width: 480px) {
+      justify-content: space-between;
+    }
+  }
+
+  &__row-label {
+    min-width: 65px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #4B617E);
+  }
+
+  &__row-value {
+    font-weight: 600;
+    color: var(--color-text, #0B1F3A);
+    word-break: break-word;
+
+    &--blood {
+      color: #E11D48;
+      font-weight: 700;
+    }
+  }
+
+  &__link {
+    color: var(--color-primary, #1677F8);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__address {
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border, #DCE5F1);
+    background: #FAFCFE;
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  &__address-value {
+    color: var(--color-text, #0B1F3A);
+    line-height: 1.4;
+  }
+
+  // Emergency Subsection
+  &__body--emergency {
+    border-top: 1px solid var(--color-border, #DCE5F1);
+    background: #FFFDFD;
+    padding: 16px 20px;
+  }
+
+  &__emergency-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #E11D48;
+    }
+  }
+
+  &__row-label--heading {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9F1239;
+  }
+
+  &__relation-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted, #4B617E);
+    margin-left: 6px;
+  }
+}
+
+// ── Today's Updates ─────────────────────────────────────────────────────────
+.todays-updates {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #DCE5F1);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(11, 31, 58, 0.05);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--color-text, #0B1F3A);
+    }
+
+    mat-icon {
+      color: var(--color-primary, #1677F8);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.update-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border, #DCE5F1);
+  background: var(--color-surface-inset, #F0F6FF);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  &--link {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-primary, #1677F8);
+      background: #E8F2FF;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-primary, #1677F8);
+    margin-bottom: 2px;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted, #4B617E);
+  }
+
+  &__value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text, #0B1F3A);
+    line-height: 1.2;
+  }
+}
+
+// ── Modal Lightbox ──────────────────────────────────────────────────────────
+.image-modal {
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 31, 58, 0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  &__panel {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px;
+    border-bottom: 1px solid var(--color-border, #DCE5F1);
+  }
+
+  &__close {
+    background: transparent;
+    border: 0;
+    color: var(--color-text-muted, #4B617E);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    padding: 4px;
+    border-radius: 6px;
+
+    &:hover {
+      background: #F1F5F9;
+      color: #DC2626;
+    }
+  }
+
+  &__body {
+    padding: 16px;
+    display: grid;
+    place-items: center;
+    background: #0B1F3A;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 65vh;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(22, 119, 248, 0.15);
+  border-top-color: var(--color-primary, #1677F8);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

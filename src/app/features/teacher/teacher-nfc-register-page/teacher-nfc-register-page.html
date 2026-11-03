@@ -134,7 +134,7 @@
               </div>
               @if (f['confirmPassword'].touched && f['confirmPassword'].value && f['confirmPassword'].value !== f['password'].value) { <span class="form-field__error">Passwords do not match</span> }
             </div>
-            <p class="section-label" style="margin-top: 20px;">Emergency Contact</p>
+            <p class="section-label section-label--emergency">Emergency Contact</p>
             <div class="form-field">
               <label>Contact Name <span class="req">*</span></label>
               <input formControlName="emergencyContactName" type="text" placeholder="Emergency contact" />

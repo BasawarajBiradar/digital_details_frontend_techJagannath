@@ -100,6 +100,7 @@
   position: relative;
   z-index: 2;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Brand Header */
@@ -114,6 +115,19 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.brand-wordmark-img {
+  height: 44px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 }
 
 .brand-logo-badge {
@@ -384,8 +398,17 @@
   font-weight: 500;
   color: #0B1F3A;
   font-family: inherit;
+  padding-right: 8px;
 
   &::placeholder { color: #7E92A9; }
+
+  // Suppress browser-native reveal and clear controls (Microsoft Edge, IE)
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 .toggle-password-btn {
@@ -493,6 +516,8 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: #0F63D8;
+  max-width: 100%;
+  box-sizing: border-box;
 
   mat-icon {
     font-size: 14px;
@@ -842,7 +867,7 @@
 /* Responsive Breakpoints */
 @media (max-width: 1024px) {
   .login-split-card {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     max-width: 540px;
     min-height: auto;
   }
@@ -852,11 +877,42 @@
 
 @media (max-width: 600px) {
   .login-viewport { padding: 12px; }
-  .login-split-card { border-radius: 20px; }
-  .auth-panel { padding: 28px 18px; }
-  .greeting-title { font-size: 1.55rem; }
+  .login-split-card {
+    border-radius: 20px;
+    width: 100%;
+    min-width: 0;
+  }
+  .auth-panel {
+    padding: 24px 14px;
+    min-width: 0;
+  }
+  .brand-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .brand-wordmark-img {
+    height: 36px;
+    max-width: 175px;
+  }
+  .greeting-title { font-size: 1.45rem; }
+  .greeting-subtitle { font-size: 0.82rem; }
   .mascot-wrapper { width: 80px; height: 70px; }
-  .roles-bar { gap: 6px; padding: 5px 10px; }
+  .roles-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 5px 10px;
+  }
   .role-tag { font-size: 0.68rem; }
   .submit-btn { height: 48px; }
+  .security-badge {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+    font-size: 0.72rem;
+  }
+  .company-tagline {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
 }

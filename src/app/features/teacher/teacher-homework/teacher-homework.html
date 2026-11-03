@@ -246,6 +246,7 @@
               <span>No pending review requests found.</span>
             </div>
           } @else {
+            <!-- Desktop Table View -->
             <div class="teacher-homework__table-wrap">
               <table class="teacher-homework__table">
                 <thead>
@@ -304,6 +305,59 @@
                   }
                 </tbody>
               </table>
+            </div>
+
+            <!-- Mobile Responsive Card View -->
+            <div class="teacher-homework__cards-wrap" aria-label="Review requests mobile cards">
+              @for (request of reviewRequests(); track request.reviewRequestId) {
+                <article class="teacher-homework__review-card">
+                  <div class="teacher-homework__review-card-header">
+                    <strong class="teacher-homework__student-name">{{ request.studentName }}</strong>
+                    <span class="teacher-homework__badge-class">{{ request.classLevel }}{{ request.division ? ' - ' + request.division : '' }}</span>
+                  </div>
+                  <div class="teacher-homework__review-card-body">
+                    <strong class="teacher-homework__request-title">{{ request.homeworkTitle }}</strong>
+                    <span class="teacher-homework__request-desc">{{ request.homeworkDetails }}</span>
+                    <div class="teacher-homework__review-dates">
+                      <div class="teacher-homework__review-date-item">
+                        <span class="teacher-homework__review-date-lbl">Assigned:</span>
+                        <span>{{ formatDate(request.homeworkAssignedDate) }}</span>
+                      </div>
+                      <div class="teacher-homework__review-date-item">
+                        <span class="teacher-homework__review-date-lbl">Deadline:</span>
+                        <span>{{ formatDate(request.homeworkDeadlineDate) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="teacher-homework__review-card-footer">
+                    <div class="teacher-homework__status-control teacher-homework__status-control--mobile">
+                      <select
+                        class="teacher-homework__status-select"
+                        [value]="selectedStatuses()[request.reviewRequestId]"
+                        [disabled]="statusUpdating() !== null"
+                        [attr.aria-label]="'Status for ' + request.homeworkTitle"
+                        (change)="setStatus(request.reviewRequestId, $event)">
+                        <option value="2">COMPLETED</option>
+                        <option value="3">UNDER REVIEW</option>
+                      </select>
+                      <button
+                        class="teacher-homework__status-btn"
+                        type="button"
+                        [disabled]="statusUpdating() !== null"
+                        (click)="updateStatus(request)">
+                        @if (statusUpdating() === request.reviewRequestId) {
+                          Updating...
+                        } @else {
+                          Update
+                        }
+                      </button>
+                    </div>
+                    @if (statusError() === request.reviewRequestId) {
+                      <span class="teacher-homework__field-error" role="alert">Update failed. Try again.</span>
+                    }
+                  </div>
+                </article>
+              }
             </div>
           }
         </div>

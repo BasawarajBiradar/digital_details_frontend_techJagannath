@@ -45,10 +45,10 @@ export class TeacherDashboard {
     const data = this.updates();
     if (!data) return [];
     return [
-      { label: 'Attendance', value: data.attendanceStatus ?? '-' },
-      { label: 'Entry time', value: data.entryTime ?? '-' },
+      { label: 'Attendance', value: data.attendanceStatus ?? '-', icon: 'how_to_reg', link: '/teacher/attendance-details' },
+      { label: 'Entry time', value: data.entryTime ?? '-', icon: 'schedule' },
       { label: 'Photo taps', value: data.tapPhotoCount ?? 0, icon: 'photo_camera', link: '/teacher/tap-photos' },
-      { label: 'Notices', value: data.noticeCount ?? 0 },
+      { label: 'Notices', value: data.noticeCount ?? 0, icon: 'notifications', link: '/teacher/notice' },
       { label: 'Pending tasks', value: data.pendingTaskCount ?? 0, icon: 'assignment', link: '/teacher/homework' },
     ];
   });
@@ -96,7 +96,7 @@ export class TeacherDashboard {
     this.apiTeacher.uploadPhoto(form).subscribe({
       next: () => {
         this.photoUploading.set(false);
-        window.location.reload();
+        this.toast.success('Profile photo updated successfully.');
       },
       error: () => {
         this.photoUploading.set(false);

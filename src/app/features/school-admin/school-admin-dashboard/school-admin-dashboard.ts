@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,30 +9,29 @@ import { PieChart, PieChartApiResponse } from '../../../shared/components/pie-ch
 import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
 import { Router } from '@angular/router';
 
-
-
 @Component({
   selector: 'app-school-admin-dashboard',
   imports: [CommonModule, MatIconModule, MatDialogModule, DatePipe, ImageCropModal, PieChart, DashboardFooter],
   templateUrl: './school-admin-dashboard.html',
   styleUrl: './school-admin-dashboard.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SchoolAdminDashboard implements OnInit {
-  students       = signal<StudentSummary[]>([]);
-  isLoading      = signal(true);
-  hasError       = signal(false);
-  schoolName     = signal<string>('');
-  schoolLogoUrl  = signal<string>('');
-  attendanceData = signal<PieChartApiResponse | null>(null);
+  readonly students       = signal<StudentSummary[]>([]);
+  readonly isLoading      = signal(true);
+  readonly hasError       = signal(false);
+  readonly schoolName     = signal<string>('');
+  readonly schoolLogoUrl  = signal<string>('');
+  readonly attendanceData = signal<PieChartApiResponse | null>(null);
 
   // Logo upload state
-  pendingLogoFile = signal<File | null>(null);
-  isUploadingLogo = signal(false);
+  readonly pendingLogoFile = signal<File | null>(null);
+  readonly isUploadingLogo = signal(false);
 
   // ── Filter state ────────────────────────────────────────────────────────────
-  selectedRoleId   = signal<number | null>(null);
-  selectedClass    = signal<string | null>(null);
-  selectedDivision = signal<string | null>(null);
+  readonly selectedRoleId   = signal<number | null>(null);
+  readonly selectedClass    = signal<string | null>(null);
+  readonly selectedDivision = signal<string | null>(null);
 
   // ── Static filter options ───────────────────────────────────────────────────
   readonly availableClasses  = Array.from({ length: 12 }, (_, i) => i + 1);   // [1..12]
@@ -59,7 +58,6 @@ export class SchoolAdminDashboard implements OnInit {
 
   setRole(roleId: number | null): void {
     this.selectedRoleId.set(roleId);
-    // Clear sub-filters when role changes; they're only relevant for students
     this.selectedClass.set(null);
     this.selectedDivision.set(null);
     this.fetchTableData();
@@ -74,6 +72,11 @@ export class SchoolAdminDashboard implements OnInit {
 
   setDivision(div: string | null): void {
     this.selectedDivision.set(div);
+    this.fetchTableData();
+    this.fetchChartData();
+  }
+
+  retry(): void {
     this.fetchTableData();
     this.fetchChartData();
   }
@@ -144,7 +147,6 @@ export class SchoolAdminDashboard implements OnInit {
         if (res.success) {
           this.schoolLogoUrl.set(res.data.fileUrl);
           this.schoolName.set(res.data.schoolName);
-          window.location.reload();
         }
         this.isUploadingLogo.set(false);
       },
@@ -163,7 +165,7 @@ export class SchoolAdminDashboard implements OnInit {
   openStudentDetail(studentId: number): void {
     this.dialog.open(StudentDetailDialog, {
       data: { studentId },
-      width: '480px',
+      width: '520px',
       maxWidth: '95vw',
       maxHeight: '90vh',
       panelClass: 'student-detail-dialog-panel',

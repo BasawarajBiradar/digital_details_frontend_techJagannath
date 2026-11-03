@@ -59,7 +59,12 @@ export class DashboardFooter {
     const baseItems: FooterOption[] = [
       { label: 'Home', icon: 'home', route: roleRoutes.home },
       { label: 'Attendance', icon: 'event_available', route: roleRoutes.attendance },
-      { label: 'Photos', icon: 'photo_library', route: roleRoutes.photos },
+      {
+        label: 'Photos',
+        icon: 'photo_library',
+        route: roleRoutes.photos,
+        disabled: isSchoolAdmin,
+      },
     ];
 
     if (!isSchoolAdmin) {

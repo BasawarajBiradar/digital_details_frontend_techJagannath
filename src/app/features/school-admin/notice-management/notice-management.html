@@ -1,118 +1,211 @@
 <main class="notice-management">
   <div class="notice-management__container">
 
-    <section class="notice-management__card surface-card" aria-labelledby="create-notice-title">
-      <header class="notice-management__header">
-        <div class="notice-management__title-group">
-          <span class="notice-management__kicker">School Administration</span>
-          <h1 id="create-notice-title" class="notice-management__title">Publish School Notice</h1>
-          <p class="notice-management__subtitle">Broadcast announcements, circulars, and updates to students and faculty</p>
+    <!-- Card Container -->
+    <section class="notice-card surface-card" aria-labelledby="create-notice-title">
+      
+      <!-- Header with Back Button -->
+      <header class="notice-card__header">
+        <button
+          class="btn-back"
+          type="button"
+          aria-label="Back to School Admin Dashboard"
+          (click)="goBack()">
+          <mat-icon aria-hidden="true">arrow_back</mat-icon>
+          <span>Back to Dashboard</span>
+        </button>
+
+        <div class="notice-card__title-group">
+          <span class="notice-card__kicker">School Administration</span>
+          <h1 id="create-notice-title" class="notice-card__title">Publish School Notice</h1>
+          <p class="notice-card__subtitle">Broadcast announcements, circulars, and official updates to students, parents, and faculty</p>
         </div>
       </header>
 
-      <form class="notice-management__form" [formGroup]="noticeForm" (ngSubmit)="submitNotice()" novalidate>
+      <!-- Form -->
+      <form class="notice-form" [formGroup]="noticeForm" (ngSubmit)="submitNotice()" novalidate>
         
-        <label class="notice-management__field notice-management__field--wide">
-          <span class="notice-management__label-text">Notice Title <span class="notice-management__req">*</span></span>
+        <!-- Notice Title -->
+        <div class="form-field form-field--wide">
+          <label class="form-label" for="notice-title">
+            <span>Notice Title</span>
+            <span class="req-star">*</span>
+          </label>
           <input
+            id="notice-title"
             formControlName="noticeTitle"
             type="text"
-            class="notice-management__input"
-            placeholder="e.g. Annual Sports Meet Schedule 2026"
+            class="form-input"
+            placeholder="e.g. Annual Sports Meet 2026 Schedule &amp; Guidelines"
             maxlength="120" />
           @if (noticeForm.controls.noticeTitle.touched && noticeForm.controls.noticeTitle.invalid) {
-            <small class="notice-management__field-error" role="alert">Please enter a valid notice title (min. 3 characters).</small>
+            <small class="field-error" role="alert">Please enter a notice title (minimum 3 characters).</small>
           }
-        </label>
+        </div>
 
-        <label class="notice-management__field notice-management__field--wide">
-          <span class="notice-management__label-text">Notice Description <span class="notice-management__req">*</span></span>
-          <textarea
-            formControlName="noticeDescription"
-            rows="5"
-            class="notice-management__textarea"
-            placeholder="Provide comprehensive details, timings, instructions, or guidelines for the announcement..."
-            maxlength="500"></textarea>
-          @if (noticeForm.controls.noticeDescription.touched && noticeForm.controls.noticeDescription.invalid) {
-            <small class="notice-management__field-error" role="alert">Please enter a detailed description (min. 10 characters).</small>
-          }
-        </label>
-
-        <div class="notice-management__paired-fields">
-          <label class="notice-management__field notice-management__field--compact">
-            <span class="notice-management__label-text">Target Class (Optional)</span>
-            <input
-              formControlName="classLevel"
-              type="text"
-              class="notice-management__input"
-              placeholder="e.g. 10 (Leave blank for all classes)" />
-            @if (noticeForm.controls.classLevel.touched && noticeForm.controls.classLevel.invalid) {
-              <small class="notice-management__field-error" role="alert">Class level must be 1 or greater.</small>
-            }
+        <!-- Target Audience Segmented Selector -->
+        <div class="form-field form-field--wide">
+          <label class="form-label">
+            <span>Target Audience</span>
+            <span class="req-star">*</span>
           </label>
-
-          <div class="notice-management__field notice-management__field--compact">
-            <span class="notice-management__label-text">Target Audience</span>
-            <label class="notice-management__toggle" for="notice-is-staff">
-              <input id="notice-is-staff" type="checkbox" formControlName="isStaff" />
-              <span class="notice-management__toggle-badge" [class.notice-management__toggle-badge--staff]="noticeForm.controls.isStaff.value">
-                {{ noticeForm.controls.isStaff.value ? 'Staff Only' : 'Students & Parents' }}
-              </span>
-            </label>
+          <div class="audience-toggle-group" role="group" aria-label="Select target audience">
+            <button
+              type="button"
+              class="audience-toggle-btn"
+              [class.audience-toggle-btn--active]="!noticeForm.controls.isStaff.value"
+              (click)="setAudience(false)">
+              <mat-icon aria-hidden="true">school</mat-icon>
+              <div class="audience-text">
+                <strong>Students &amp; Parents</strong>
+                <span>Broadcast to school students and their guardians</span>
+              </div>
+            </button>
+            <button
+              type="button"
+              class="audience-toggle-btn"
+              [class.audience-toggle-btn--active]="noticeForm.controls.isStaff.value"
+              (click)="setAudience(true)">
+              <mat-icon aria-hidden="true">badge</mat-icon>
+              <div class="audience-text">
+                <strong>Faculty &amp; Staff Only</strong>
+                <span>Internal staff circulars and faculty instructions</span>
+              </div>
+            </button>
           </div>
         </div>
 
-        <div class="notice-management__field notice-management__field--wide">
-          <span class="notice-management__label-text">Attachments (Optional)</span>
-          <div class="notice-management__file-upload-wrap">
+        <!-- Target Class Dropdown -->
+        <div class="form-field form-field--wide">
+          <label class="form-label" for="notice-class">
+            <span>Target Class (Optional)</span>
+          </label>
+          <div class="select-wrap">
+            <select
+              id="notice-class"
+              formControlName="classLevel"
+              class="select-control">
+              <option value="">All Classes (School-wide Circular)</option>
+              @for (cls of availableClasses; track cls) {
+                <option [value]="cls">Class {{ cls }} Only</option>
+              }
+            </select>
+            <mat-icon class="select-arrow" aria-hidden="true">expand_more</mat-icon>
+          </div>
+          <span class="field-hint">Leave as "All Classes" if this circular applies to the entire school.</span>
+        </div>
+
+        <!-- Notice Description -->
+        <div class="form-field form-field--wide">
+          <label class="form-label" for="notice-description">
+            <span>Notice Description &amp; Details</span>
+            <span class="req-star">*</span>
+          </label>
+          <textarea
+            id="notice-description"
+            formControlName="noticeDescription"
+            rows="6"
+            class="form-textarea"
+            placeholder="Provide comprehensive details, timings, instructions, or guidelines for this announcement..."
+            maxlength="2000"></textarea>
+          @if (noticeForm.controls.noticeDescription.touched && noticeForm.controls.noticeDescription.invalid) {
+            <small class="field-error" role="alert">Please provide comprehensive notice details (minimum 10 characters).</small>
+          }
+        </div>
+
+        <!-- Attachment Upload Area -->
+        <div class="form-field form-field--wide">
+          <label class="form-label">
+            <span>Attachments (Optional)</span>
+          </label>
+          
+          <div class="upload-dropzone">
             <input
               type="file"
               id="notice-file-input"
-              class="notice-management__file-input"
+              class="upload-input"
               multiple
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
               (change)="onNoticeFilesSelected($event)" />
-            <label for="notice-file-input" class="notice-management__file-label">
-              <span>Choose Files to Attach (PDF, Images, Documents)</span>
+            
+            <label for="notice-file-input" class="upload-label">
+              <div class="upload-bubble">
+                <mat-icon aria-hidden="true">cloud_upload</mat-icon>
+              </div>
+              <strong class="upload-title">Click or browse to attach files</strong>
+              <span class="upload-meta">PDF, JPEG, PNG, DOC up to 10MB each (max 5 files)</span>
             </label>
           </div>
+
           @if (attachmentError()) {
-            <small class="notice-management__field-error" role="alert">{{ attachmentError() }}</small>
+            <small class="field-error" role="alert">{{ attachmentError() }}</small>
           }
         </div>
 
+        <!-- Attached Files List -->
         @if (attachedFiles().length) {
-          <div class="notice-management__field notice-management__field--wide">
-            <span class="notice-management__label-text">Attached Files ({{ attachedFiles().length }})</span>
-            <ul class="notice-management__attachments">
+          <div class="form-field form-field--wide">
+            <span class="attached-header">Attached Files ({{ attachedFiles().length }})</span>
+            <ul class="attached-list">
               @for (file of attachedFiles(); track file.name; let i = $index) {
-                <li class="notice-management__attachment-item">
-                  <span class="notice-management__attachment-name" [title]="file.name">{{ file.name }}</span>
-                  <button type="button" class="notice-management__attachment-remove" (click)="removeAttachment(i)">Remove</button>
+                <li class="attached-item">
+                  <div class="attached-info">
+                    <mat-icon class="attached-icon" aria-hidden="true">attachment</mat-icon>
+                    <div class="attached-copy">
+                      <span class="attached-name" [title]="file.name">{{ file.name }}</span>
+                      <span class="attached-size">{{ formatFileSize(file.size) }}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-remove-attachment"
+                    aria-label="Remove attachment"
+                    (click)="removeAttachment(i)">
+                    <mat-icon aria-hidden="true">close</mat-icon>
+                    <span>Remove</span>
+                  </button>
                 </li>
               }
             </ul>
           </div>
         }
 
-        <div class="notice-management__actions">
-          <button type="submit" class="notice-management__submit" [disabled]="isSubmitting()">
+        <!-- Status Messages -->
+        @if (submitSuccess()) {
+          <div class="status-banner status-banner--success" role="status">
+            <mat-icon aria-hidden="true">check_circle</mat-icon>
+            <span>{{ submitSuccess() }}</span>
+          </div>
+        }
+
+        @if (submitError()) {
+          <div class="status-banner status-banner--error" role="alert">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            <span>{{ submitError() }}</span>
+          </div>
+        }
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn-publish"
+            [disabled]="isSubmitting()">
             @if (isSubmitting()) {
+              <span class="spinner-btn"></span>
               <span>Publishing Notice...</span>
             } @else {
+              <mat-icon aria-hidden="true">send</mat-icon>
               <span>Publish Notice</span>
             }
           </button>
         </div>
 
-        @if (submitSuccess()) {
-          <p class="notice-management__status notice-management__status--success" role="status">{{ submitSuccess() }}</p>
-        }
-
-        @if (submitError()) {
-          <p class="notice-management__status notice-management__status--error" role="alert">{{ submitError() }}</p>
-        }
       </form>
     </section>
 
   </div>
+
+  <!-- Bottom Navigation Footer -->
+  <app-dashboard-footer role="school-admin" />
 </main>

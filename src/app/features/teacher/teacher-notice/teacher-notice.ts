@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
@@ -22,12 +22,14 @@ export class TeacherNotice {
   readonly error = signal('');
   readonly selectedNotice = signal<TeacherNoticeTableRecord | null>(null);
 
-  readonly tableRows = signal<Array<{
-    index: number;
-    noticeTitle: string;
-    announcementDate: string;
-    noticeDetail: string;
-  }>>([]);
+  readonly tableRows = computed(() =>
+    this.notices().map((notice, index) => ({
+      index: index + 1,
+      noticeTitle: notice.noticeTitle,
+      announcementDate: notice.announcementDate,
+      noticeDetail: notice.noticeDetail,
+    }))
+  );
 
   constructor() {
     this.loadNotices();
@@ -73,18 +75,11 @@ export class TeacherNotice {
         catchError(() => {
           this.error.set('Unable to load notices right now. Please try again.');
           this.notices.set([]);
-          this.tableRows.set([]);
           return of([] as TeacherNoticeTableRecord[]);
         }),
       )
       .subscribe(notices => {
         this.notices.set(notices);
-        this.tableRows.set(notices.map((notice, index) => ({
-          index: index + 1,
-          noticeTitle: notice.noticeTitle,
-          announcementDate: notice.announcementDate,
-          noticeDetail: notice.noticeDetail,
-        })));
         this.loading.set(false);
       });
   }

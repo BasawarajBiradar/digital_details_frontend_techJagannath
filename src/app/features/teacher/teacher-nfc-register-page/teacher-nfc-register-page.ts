@@ -25,7 +25,7 @@ export class TeacherNfcRegisterPage {
 
   readonly classLevels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
   readonly divisions = ['A', 'B', 'C', 'D', 'E'];
-  readonly bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', '0+ve', '0-ve'];
+  readonly bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   readonly relations = ['Father', 'Mother', 'Guardian', 'Sibling', 'Relative', 'Other'];
   readonly steps = ['Personal', 'Academic', 'Contact', 'Address'];
   readonly currentStep = signal(0);

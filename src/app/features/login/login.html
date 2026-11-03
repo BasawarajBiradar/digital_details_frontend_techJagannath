@@ -14,14 +14,11 @@
 
       <!-- Brand Header -->
       <header class="brand-header">
-        <div class="brand-logo-group">
-          <div class="brand-logo-badge">
-            <img src="TAPAXE_logo.svg" alt="TapAxe Logo" class="brand-logo-img" width="34" height="34" />
-          </div>
-          <div class="brand-text">
-            <span class="brand-name">TapAxe</span>
-            <span class="brand-company">Jagannath Tech Solutions</span>
-          </div>
+        <div class="brand-logo-group" aria-label="JT Solutions">
+          <img
+            src="jt-solutions-wordmark.png"
+            alt="JT Solutions — Smart Solutions • Global Impact"
+            class="brand-wordmark-img" />
         </div>
 
         <div class="system-status-badge" title="TapAxe School Safety System Online">
@@ -194,7 +191,9 @@
               type="button"
               class="toggle-password-btn"
               (click)="hidePassword = !hidePassword"
-              [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'">
+              [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+              [attr.aria-pressed]="!hidePassword"
+              aria-controls="login-password">
               <mat-icon aria-hidden="true">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
           </div>

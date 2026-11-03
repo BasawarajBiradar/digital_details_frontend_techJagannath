@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -7,28 +7,33 @@ import {
   StudentAttendanceHistoryRecord,
   AttendanceFilterPayload,
 } from '../services/api-school-admin';
+import { DashboardFooter } from '../../../shared/components/dashboard-footer/dashboard-footer';
+
+export type AttendancePreset = 'month' | '30days' | 'custom';
 
 @Component({
   selector: 'app-attendence-details-page',
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, DashboardFooter],
   templateUrl: './attendence-details-page.html',
   styleUrl: './attendence-details-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttendenceDetailsPage implements OnInit {
+  readonly records    = signal<StudentAttendanceHistoryRecord[]>([]);
+  readonly isLoading  = signal(true);
+  readonly hasError   = signal(false);
 
-  records    = signal<StudentAttendanceHistoryRecord[]>([]);
-  isLoading  = signal(true);
-  hasError   = signal(false);
-
-  // ── Month filter ──────────────────────────────────────────────────────────
+  // ── Month & Range filter ──────────────────────────────────────────────────
   readonly today         = this.startOfDay(new Date());
   readonly earliestDate  = this.addYears(this.today, -2);
   readonly earliestMonth = this.toMonthInputValue(this.earliestDate);
   readonly latestMonth   = this.toMonthInputValue(
     this.today.getDate() === 1
       ? new Date(this.today.getFullYear(), this.today.getMonth() - 1, 1)
-      : this.today
+      : this.today,
   );
+
+  readonly activePreset  = signal<AttendancePreset>('month');
   readonly selectedMonth = signal(this.latestMonth);
   readonly fromDate      = signal<Date | null>(this.getMonthRange(this.latestMonth)!.fromDate);
   readonly toDate        = signal<Date | null>(this.getMonthRange(this.latestMonth)!.toDate);
@@ -36,20 +41,28 @@ export class AttendenceDetailsPage implements OnInit {
   readonly roleId = signal<number | null>(null);
   readonly classLevel = signal<string | null>(null);
   readonly division = signal<string | null>(null);
-  private readonly isPresent  = signal<boolean | null>(null);
+  private readonly isPresent = signal<boolean | null>(null);
+
   readonly availableClasses = Array.from({ length: 12 }, (_, index) => String(index + 1));
   readonly availableDivisions = ['A', 'B', 'C', 'D', 'E'];
+
+  readonly memberColumnTitle = computed(() => {
+    if (this.roleId() === 4) return 'Faculty / Staff Member';
+    if (this.roleId() === 3) return 'Student Name';
+    return 'Student / Member';
+  });
 
   readonly attendanceDates = computed(() => {
     const dates = new Set(
       this.records().flatMap((record) =>
-        (record.childResult ?? []).map((dayResult) => dayResult.date)
-      )
+        (record.childResult ?? []).map((dayResult) => dayResult.date),
+      ),
     );
 
-    return [...dates].sort((left, right) =>
-      (this.parseAttendanceDate(left)?.getTime() ?? 0) -
-      (this.parseAttendanceDate(right)?.getTime() ?? 0)
+    return [...dates].sort(
+      (left, right) =>
+        (this.parseAttendanceDate(left)?.getTime() ?? 0) -
+        (this.parseAttendanceDate(right)?.getTime() ?? 0),
     );
   });
 
@@ -60,7 +73,7 @@ export class AttendenceDetailsPage implements OnInit {
         (record.childResult ?? []).map((dayResult) => [
           dayResult.date,
           this.formatStatus(dayResult.status),
-        ])
+        ]),
       );
 
       return {
@@ -81,13 +94,32 @@ export class AttendenceDetailsPage implements OnInit {
     this.fetchData();
   }
 
-  // ── Filter handlers ───────────────────────────────────────────────────────
+  // ── Preset & Filter handlers ──────────────────────────────────────────────
+
+  setPreset(preset: AttendancePreset): void {
+    this.activePreset.set(preset);
+    if (preset === 'month') {
+      const curMonth = this.toMonthInputValue(this.today);
+      this.selectedMonth.set(curMonth);
+      const range = this.getMonthRange(curMonth);
+      if (range) {
+        this.fromDate.set(range.fromDate);
+        this.toDate.set(range.toDate);
+        this.fetchData();
+      }
+    } else if (preset === '30days') {
+      this.fromDate.set(this.addDays(this.today, -30));
+      this.toDate.set(this.today);
+      this.fetchData();
+    }
+  }
 
   onMonthChanged(value: string): void {
     if (value < this.earliestMonth || value > this.latestMonth) return;
     const range = this.getMonthRange(value);
     if (!range) return;
 
+    this.activePreset.set('custom');
     this.selectedMonth.set(value);
     this.fromDate.set(range.fromDate);
     this.toDate.set(range.toDate);
@@ -110,8 +142,12 @@ export class AttendenceDetailsPage implements OnInit {
     this.fetchData();
   }
 
+  retry(): void {
+    this.fetchData();
+  }
+
   goBack(): void {
-    this.router.navigate(['/school-admin/dashboard']);
+    this.router.navigate(['/school-admin-dashboard']);
   }
 
   // ── Data fetching ──────────────────────────────────────────────────────────
@@ -210,6 +246,12 @@ export class AttendenceDetailsPage implements OnInit {
 
   private startOfDay(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
   }
 
   private addYears(date: Date, years: number): Date {

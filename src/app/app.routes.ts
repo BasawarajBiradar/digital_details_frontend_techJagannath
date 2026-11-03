@@ -40,7 +40,8 @@ export const routes: Routes = [
   {path: 'student/:uid', component: StudentNfcLandingpage},
   {path: 'register/:uid', component: StudentNfcRegisterPage}, 
   {path: 'nfc-scanner', component: NfcScanner},
-  { path: 'school-admin-dashboard', component: SchoolAdminDashboard},
+  { path: 'school-admin-dashboard', component: SchoolAdminDashboard },
+  { path: 'school-admin/dashboard', redirectTo: 'school-admin-dashboard', pathMatch: 'full' },
   { path: 'school-admin/notice', component: NoticeManagement },
   {path: 'tapaxe-admin-dashboard', component: TapaxeAdminDashboard},
   {path: 'school-admin/attendance-details', component: AttendenceDetailsPage}

@@ -46,6 +46,7 @@
           <p class="teacher-notice__state-subtext">There are currently no circulars or notices posted.</p>
         </div>
       } @else {
+        <!-- Desktop Table View -->
         <div class="teacher-notice__table-card">
           <div class="teacher-notice__table-wrap">
             <table class="teacher-notice__table">
@@ -88,6 +89,33 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- Mobile Card Feed -->
+        <div class="teacher-notice__mobile-cards" aria-label="Notices feed">
+          @for (row of tableRows(); track row.noticeTitle + row.announcementDate; let rowIndex = $index) {
+            <article class="teacher-notice__mobile-card">
+              <div class="teacher-notice__mobile-header">
+                <span class="teacher-notice__index-badge">#{{ row.index }}</span>
+                <div class="teacher-notice__date-cell">
+                  <mat-icon aria-hidden="true">event</mat-icon>
+                  <span>{{ row.announcementDate }}</span>
+                </div>
+              </div>
+              <h3 class="teacher-notice__mobile-title">{{ row.noticeTitle }}</h3>
+              @if (row.noticeDetail) {
+                <p class="teacher-notice__mobile-snippet">{{ row.noticeDetail }}</p>
+              }
+              <button
+                class="teacher-notice__details-button teacher-notice__details-button--mobile"
+                type="button"
+                aria-label="View details for notice {{ row.noticeTitle }}"
+                (click)="openDetails(notices()[rowIndex])">
+                <mat-icon aria-hidden="true">visibility</mat-icon>
+                <span>View Full Details</span>
+              </button>
+            </article>
+          }
         </div>
       }
     </section>
